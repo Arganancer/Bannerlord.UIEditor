@@ -1,22 +1,22 @@
 ﻿<Module>
-	<Name value="UIEditor" />
-	<Id value="UIEditor" />
-	<Version value="v0.0.1" />
-	<SingleplayerModule value="true" />
-	<MultiplayerModule value="false" />
-	<DependedModules>
-		<DependedModule Id="Bannerlord.Harmony" />
-	</DependedModules>
-	<SubModules>
-		<SubModule>
-			<Name value="UIEditor" />
-			<DLLName value="Bannerlord.UIEditor.Main.dll" />
-			<SubModuleClassType value="BetterSmithing.Main.Main" />
-			<Tags>
-				<Tag key="DedicatedServerType" value="none" />
-				<Tag key="IsNoRenderModeElement" value="false" />
-			</Tags>
-		</SubModule>
-	</SubModules>
-	<Xmls />
+    <Name value="UIEditor" />
+    <Id value="UIEditor" />
+    <Version value="v0.0.1" />
+    <SingleplayerModule value="true" />
+    <MultiplayerModule value="false" />
+    <DependedModules>
+        <DependedModule Id="Bannerlord.Harmony" />
+    </DependedModules>
+    <SubModules>
+        <SubModule>
+            <Name value="UIEditor" />
+            <DLLName value="Bannerlord.UIEditor.Main.dll" />
+            <SubModuleClassType value="Bannerlord.UIEditor.Main.UIEditorSubModule" />
+            <Tags>
+                <Tag key="DedicatedServerType" value="none" />
+                <Tag key="IsNoRenderModeElement" value="false" />
+            </Tags>
+        </SubModule>
+    </SubModules>
+    <Xmls />
 </Module>

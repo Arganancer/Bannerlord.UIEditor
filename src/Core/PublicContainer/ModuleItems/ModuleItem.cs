@@ -95,7 +95,7 @@ namespace Bannerlord.UIEditor.Core
 
         private void OnRegistered(object _module)
         {
-            foreach (Action<object> onModuleRegistered in ConnectedObjects.Values.Select(x => x.onModuleRegistered))
+            foreach (Action<object> onModuleRegistered in ConnectedObjects.Values.Select(_x => _x.onModuleRegistered))
             {
                 onModuleRegistered(_module);
             }
@@ -103,7 +103,7 @@ namespace Bannerlord.UIEditor.Core
 
         private void OnUnregistering(object _module)
         {
-            foreach (Action<object> onModuleUnregistering in ConnectedObjects.Values.Select(x => x.onModuleUnregistering))
+            foreach (Action<object> onModuleUnregistering in ConnectedObjects.Values.Select(_x => _x.onModuleUnregistering))
             {
                 onModuleUnregistering(_module);
             }

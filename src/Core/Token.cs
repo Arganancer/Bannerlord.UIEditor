@@ -36,7 +36,7 @@
 
         #region ValueType Members
 
-        public override bool Equals(object _obj) => _obj is Token other && Equals(other);
+        public override bool Equals(object? _obj) => _obj is Token other && Equals(other);
 
         public override int GetHashCode() => m_Value;
 

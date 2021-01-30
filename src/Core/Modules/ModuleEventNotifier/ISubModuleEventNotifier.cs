@@ -8,7 +8,7 @@ namespace Bannerlord.UIEditor.Core
         #region Events and Delegates
 
         event EventHandler BeforeInitialModuleScreenSetAsRoot;
-        event EventHandler<float> GameTick;
+        event EventHandler<float> ApplicationTick;
         event EventHandler<Harmony> PerformManualPatches;
 
         #endregion

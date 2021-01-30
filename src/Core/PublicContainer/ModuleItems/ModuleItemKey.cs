@@ -22,7 +22,7 @@ namespace Bannerlord.UIEditor.Core
         public ModuleItemKey(string _name, Type _interface)
         {
             Name = _name;
-            InterfaceFullName = _interface.FullName;
+            InterfaceFullName = _interface.FullName!;
             m_HashCode = HashCode.Combine(Name, InterfaceFullName);
         }
 

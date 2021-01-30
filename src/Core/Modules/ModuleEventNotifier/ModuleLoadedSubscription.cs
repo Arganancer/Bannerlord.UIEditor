@@ -87,25 +87,25 @@ namespace Bannerlord.UIEditor.Core
 
         #region Private Methods
 
-        private void SwapSubscriptions(ModuleLoadedSubscription x, ModuleLoadedSubscription y)
+        private void SwapSubscriptions(ModuleLoadedSubscription _x, ModuleLoadedSubscription _y)
         {
-            Action onModulesLoaded = x.OnModulesLoaded;
-            Type target = x.Target;
-            var callSequence = x.CallSequence;
-            Type subscriberType = x.SubscriberType;
-            List<ModuleLoadedSubscription> callAfterList = x.CallAfterList;
+            Action onModulesLoaded = _x.OnModulesLoaded;
+            Type target = _x.Target;
+            var callSequence = _x.CallSequence;
+            Type subscriberType = _x.SubscriberType;
+            List<ModuleLoadedSubscription> callAfterList = _x.CallAfterList;
 
-            x.OnModulesLoaded = y.OnModulesLoaded;
-            x.Target = y.Target;
-            x.CallSequence = y.CallSequence;
-            x.SubscriberType = y.SubscriberType;
-            x.CallAfterList = y.CallAfterList;
+            _x.OnModulesLoaded = _y.OnModulesLoaded;
+            _x.Target = _y.Target;
+            _x.CallSequence = _y.CallSequence;
+            _x.SubscriberType = _y.SubscriberType;
+            _x.CallAfterList = _y.CallAfterList;
 
-            y.OnModulesLoaded = onModulesLoaded;
-            y.Target = target;
-            y.CallSequence = callSequence;
-            y.SubscriberType = subscriberType;
-            y.CallAfterList = callAfterList;
+            _y.OnModulesLoaded = onModulesLoaded;
+            _y.Target = target;
+            _y.CallSequence = callSequence;
+            _y.SubscriberType = subscriberType;
+            _y.CallAfterList = callAfterList;
         }
 
         #endregion
