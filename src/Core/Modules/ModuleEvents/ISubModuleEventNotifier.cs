@@ -9,7 +9,6 @@ namespace Bannerlord.UIEditor.Core
 
         event EventHandler BeforeInitialModuleScreenSetAsRoot;
         event EventHandler<float> ApplicationTick;
-        event EventHandler<Harmony> PerformManualPatches;
 
         #endregion
 

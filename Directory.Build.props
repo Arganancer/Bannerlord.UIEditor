@@ -1,6 +1,6 @@
-<!--EXTERNAL_PROPERTIES: BANNERLORD_GAME_DIR;BANNERLORD_STABLE_DIR;BANNERLORD_BETA_DIR-->
+<!--EXTERNAL_PROPERTIES: BANNERLORD_GAME_DIR;BANNERLORD_STABLE_DIR;BANNERLORD_BETA_DIR;ButterLibVersion;UIExtenderExVersion-->
 <Project>
-
+    <!--Top Level props file-->
     <PropertyGroup>
         <AssemblyName>$(SolutionName).$(MSBuildProjectName)</AssemblyName>
         <RootNamespace>$(AssemblyName)</RootNamespace>
@@ -29,26 +29,69 @@
         <GameFolder Condition="!Exists($(GameFolder)) AND $(OS) == 'Unix'">~/.steam/root/steamapps/common/Mount &amp; Blade II Bannerlord</GameFolder>
     </PropertyGroup>
 
+    <PropertyGroup Condition="'$(Configuration)' == 'Stable_Debug' OR '$(Configuration)' == 'Beta_Debug'">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Stable_Release' OR '$(Configuration)' == 'Beta_Release'">
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>None</DebugType>
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+
+    <!-- Configuration -->
+    <PropertyGroup>
+        <OutputPath>$(GameFolder)\Modules\Bannerlord.UIEditor\bin\Win64_Shipping_Client\</OutputPath>
+        <BaseIntermediateOutputPath>$(SolutionDir)\obj\Output\$(ProjectName)</BaseIntermediateOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)</IntermediateOutputPath>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <PlatformTarget>x64</PlatformTarget>
+        <TargetFramework>net472</TargetFramework>
+        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <GameModArguments>/singleplayer _MODULES_*Bannerlord.Harmony*Bannerlord.ButterLib*Bannerlord.UIExtenderEx*Bannerlord.MBOptionScreen*Bannerlord.MBOptionScreen.MCMv3*Bannerlord.MBOptionScreen.ModLib*Bannerlord.UIEditor*Native*SandBoxCore*CustomBattle*Sandbox*StoryMode*_MODULES_</GameModArguments>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <StartAction>Program</StartAction>
+        <StartProgram>$(GameFolder)\bin\Win64_Shipping_Client\Bannerlord.exe</StartProgram>
+        <StartArguments>$(GameModArguments)</StartArguments>
+        <StartWorkingDirectory>$(GameFolder)\bin\Win64_Shipping_Client</StartWorkingDirectory>
+        <Version>0.0.1</Version>
+    </PropertyGroup>
+
     <ItemGroup>
         <PackageReference Include="Lib.Harmony" Version="2.0.4" IncludeAssets="compile" />
-        <PackageReference Include="Nullable" Version="1.3.0">
-            <PrivateAssets>all</PrivateAssets>
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        </PackageReference>
+        <PackageReference Include="Bannerlord.ButterLib" Version="1.*" IncludeAssets="compile" />
+        <PackageReference Include="Bannerlord.UIExtenderEx" Version="2.*" IncludeAssets="compile" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" IncludeAssets="compile" />
+        <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" IncludeAssets="compile" />
     </ItemGroup>
 
     <ItemGroup Condition="Exists($(GameFolder))">
         <Reference Include="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.*.dll">
             <HintPath>%(Identity)</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="$(GameFolder)\Modules\Native\bin\Win64_Shipping_Client\*.dll">
             <HintPath>%(Identity)</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="$(GameFolder)\Modules\SandBox\bin\Win64_Shipping_Client\*.dll">
             <HintPath>%(Identity)</HintPath>
+            <Private>False</Private>
         </Reference>
         <Reference Include="$(GameFolder)\Modules\StoryMode\bin\Win64_Shipping_Client\*.dll">
             <HintPath>%(Identity)</HintPath>
+            <Private>False</Private>
         </Reference>
     </ItemGroup>
 

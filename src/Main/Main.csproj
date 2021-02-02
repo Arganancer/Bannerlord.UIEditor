@@ -1,0 +1,20 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\AppContext\AppContext.csproj" />
+        <ProjectReference Include="..\Core\Core.csproj" />
+        <ProjectReference Include="..\MainFrame\MainFrame.csproj" />
+        <ProjectReference Include="..\WidgetLibrary\WidgetLibrary.csproj" />
+    </ItemGroup>
+
+    <!--Copy ModuleData to output.-->
+    <Target Name="CopyModuleDataToOutput" AfterTargets="PostBuildEvent">
+        <Exec Command="xcopy %22$(ProjectDir)ModuleData%22 %22$(TargetDir)..\..%22 /y /s /i" />
+    </Target>
+
+</Project>

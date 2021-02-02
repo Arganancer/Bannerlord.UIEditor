@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using HarmonyLib;
+using Bannerlord.UIEditor.Core;
 
-namespace Bannerlord.UIEditor.Core
+namespace Bannerlord.UIEditor.Main.Modules
 {
-    public class SubModuleEventNotifier : Module, ISubModuleEventNotifier
+    internal class SubModuleEventNotifier : Module, ISubModuleEventNotifier
     {
-        #region Private Fields
+        #region Fields
 
         private readonly List<ModuleLoadedSubscription> m_OnModulesLoadedSubscribers;
 
@@ -26,7 +26,6 @@ namespace Bannerlord.UIEditor.Core
 
         public event EventHandler? BeforeInitialModuleScreenSetAsRoot;
         public event EventHandler<float>? ApplicationTick;
-        public event EventHandler<Harmony>? PerformManualPatches;
 
         public void SubscribeToModulesLoaded(ModuleLoadedSubscription _subscription)
         {
@@ -60,11 +59,6 @@ namespace Bannerlord.UIEditor.Core
         public void OnApplicationTick(float _e)
         {
             ApplicationTick?.Invoke(this, _e);
-        }
-
-        public void OnPerformManualPatches(Harmony _e)
-        {
-            PerformManualPatches?.Invoke(this, _e);
         }
 
         public void OnModulesLoaded()

@@ -4,12 +4,12 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 {
     public class UIEditorWidgetAttribute
     {
-        #region Public Properties
+        #region Properties
 
         public Type Type { get; }
         public object? DefaultValue { get; }
         public string Name { get; }
-        public object? Value { get; }
+        public object? Value { get; set; }
 
         #endregion
 

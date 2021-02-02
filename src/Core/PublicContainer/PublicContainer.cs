@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Bannerlord.UIEditor.Core
 {
-    public sealed class PublicContainer : IPublicContainer
+    internal sealed class PublicContainer : IPublicContainer
     {
         #region Private Fields
 
@@ -77,7 +77,7 @@ namespace Bannerlord.UIEditor.Core
             var moduleItem = GetModuleItem<T>(_moduleName);
             if (moduleItem?.Module is null)
             {
-                throw new NullReferenceException($"Module of type {typeof( T ).Name}{(string.IsNullOrWhiteSpace(_moduleName) ? "" : $" with name {_moduleName}")} was not registered in PublicContainer {Name}");
+                throw new NullReferenceException($"Module of type {typeof( T ).Name}{(string.IsNullOrWhiteSpace(_moduleName) ? "" : $" with name {_moduleName}")} was not registered in MainPublicContainer {Name}");
             }
 
             return (moduleItem.Module as T)!;
@@ -104,8 +104,9 @@ namespace Bannerlord.UIEditor.Core
         private void OnModuleItemCanBeDestroyed(object? _sender, ModuleItemKey _key)
         {
             if (m_Modules.TryGetValue(_key.InterfaceFullName, out var moduleItems) &&
-                moduleItems.Remove(_key, out var moduleItem))
+                moduleItems.TryGetValue(_key, out var moduleItem))
             {
+                moduleItems.Remove(_key);
                 m_ModulesByToken.Remove(moduleItem.Token);
                 if (moduleItems.Count == 0)
                 {
@@ -127,7 +128,7 @@ namespace Bannerlord.UIEditor.Core
                 throw new ArgumentNullException(nameof( _moduleName ));
             }
 
-            if (_module == null || !_createPlaceholder)
+            if (_module == null && !_createPlaceholder)
             {
                 throw new ArgumentNullException(nameof( _module ));
             }
@@ -187,7 +188,9 @@ namespace Bannerlord.UIEditor.Core
                 throw new ArgumentException($"{nameof( GetModuleItem )}: {moduleType.Name} needs to be an interface.");
             }
 
-            return string.IsNullOrWhiteSpace(_moduleName) ? GetModuleItemFromInterfaceFullName<T>(moduleType.Name) : GetModuleItemFromKey<T>(new ModuleItemKey(_moduleName, moduleType));
+            return string.IsNullOrWhiteSpace(_moduleName) ? 
+                GetModuleItemFromKey<T>(new ModuleItemKey(_moduleName, moduleType)) :
+                GetModuleItemFromInterfaceFullName<T>(moduleType.Name);
         }
 
         private ModuleItem? GetModuleItemFromInterfaceFullName<T>(string _interfaceFullName) where T : class

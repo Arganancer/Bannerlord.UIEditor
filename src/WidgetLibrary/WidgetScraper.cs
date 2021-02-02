@@ -1,40 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 using TaleWorlds.GauntletUI;
-using Module = Bannerlord.UIEditor.Core.Module;
+using TaleWorlds.GauntletUI.PrefabSystem;
 
 namespace Bannerlord.UIEditor.WidgetLibrary
 {
-	public class WidgetScraper : Module
-	{
-        public override void Load()
-        {
-            base.Load();
-            ScrapeAssembly(typeof(Widget).Assembly);
-        }
+    internal static class WidgetScraper
+    {
+        #region Consts/Statics
 
-        public IEnumerable<UIEditorWidget> ScrapeAssembly(Assembly _assembly)
+        internal static IEnumerable<WidgetTemplate> ScrapeAssembly(Assembly _assembly)
         {
             IEnumerable<Type> widgetTypes = _assembly.GetTypes().Where(_type => !_type.IsAbstract && typeof( Widget ).IsAssignableFrom(_type));
-            return widgetTypes.Select(ConvertTypeToWidget);
+            return widgetTypes.Select(CreateWidgetTemplateFromType);
         }
 
-        private UIEditorWidget ConvertTypeToWidget(Type _type)
+        internal static WidgetTemplate CreateWidgetTemplateFromType(Type _type)
         {
-            List<UIEditorWidgetAttribute> attributes = new();
-            foreach (PropertyInfo propertyInfo in _type.GetProperties())
+            List<Func<object, UIEditorWidgetAttribute>> attributeInstantiators = (
+                from propertyInfo in _type.GetProperties(BindingFlags.Instance | BindingFlags.Public | BindingFlags.FlattenHierarchy)
+                where propertyInfo.GetCustomAttribute(typeof( EditorAttribute )) is not null
+                let getter = propertyInfo.GetMethod
+                where getter is not null
+                select CreateAttributeInstantiator(_type, getter, propertyInfo)).ToList();
+
+            UIEditorWidget CreateWidget(WidgetFactory _widgetFactory, UIContext _context)
             {
-                if (propertyInfo.GetCustomAttribute(typeof( EditorAttribute )) is not null)
-                {
-                    // TODO: Find a way to get the default value of the property.
-                    // Best way would most likely be to create an instance of the Widget type, then check the value of the property.
-                    attributes.Add(new UIEditorWidgetAttribute(propertyInfo.PropertyType, null, propertyInfo.Name, null ));
-                }
+                Widget instance = _widgetFactory.CreateBuiltinWidget(_context, _type.Name);
+                return new UIEditorWidget(_type.Name, (from createAttribute in attributeInstantiators select createAttribute(instance)).ToList());
             }
 
-            return new UIEditorWidget(_type.Name, _type.Assembly, attributes);
+            return new WidgetTemplate(_type, _type.Assembly, CreateWidget);
         }
+
+        #endregion
+
+        #region Private Methods
+
+        private static Func<object, UIEditorWidgetAttribute> CreateAttributeInstantiator(Type _widgetType, MethodInfo _getter, PropertyInfo _propertyInfo)
+        {
+            ParameterExpression instanceParam = Expression.Parameter(typeof( object ));
+            Expression returnExpression = Expression.Call(Expression.Convert(instanceParam, _widgetType), _getter);
+            if (!_propertyInfo.PropertyType.IsClass)
+            {
+                returnExpression = Expression.Convert(returnExpression, typeof( object ));
+            }
+
+            Func<object, object> getPropertyValue = (Func<object, object>)Expression.Lambda(returnExpression, instanceParam).Compile();
+            return _instance =>
+            {
+                var defaultPropertyValue = getPropertyValue(_instance);
+                return new UIEditorWidgetAttribute(_getter.ReturnType, defaultPropertyValue, _propertyInfo.Name, defaultPropertyValue);
+            };
+        }
+
+        #endregion
     }
 }

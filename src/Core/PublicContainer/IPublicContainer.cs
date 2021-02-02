@@ -43,7 +43,7 @@ namespace Bannerlord.UIEditor.Core
         /// <exception cref="ArgumentException">Thrown when the generic type (T) is not an interface.</exception>
         /// <typeparam name="T">The interface of the type of module you wish to get.</typeparam>
         /// <param name="_moduleName">Name of the module to return. Leave blank to get the first module of the specified type.</param>
-        T? GetModule<T>(string _moduleName = "") where T : class;
+        T GetModule<T>(string _moduleName = "") where T : class;
 
         /// <summary>
         /// If called from an <see cref="IModule"/>, should be called inside the <see cref="IModule.Load"/> method.
