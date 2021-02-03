@@ -5,15 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="600" Width="1200">
     <Grid>
-        <ListBox 
-            Name="WidgetsList" 
-            HorizontalContentAlignment="Stretch" 
-            Width="200" 
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition Width="400" />
+            <ColumnDefinition Width="180" />
+        </Grid.ColumnDefinitions>
+
+        <Grid Grid.Column="1"
+              Width="Auto">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="20"/>
+                <RowDefinition />
+            </Grid.RowDefinitions>
+            <TextBlock Grid.Row="0" FontWeight="Bold" Text="{Binding SelectedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
+            <ListBox
+                Grid.Row="1"
+                Width="Auto"
+                Name="WidgetProperties"
+                HorizontalContentAlignment="Stretch"
+                HorizontalAlignment="Right"
+                ScrollViewer.VerticalScrollBarVisibility="Visible"
+                ItemsSource="{Binding SelectedWidget.Attributes, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type widgetLibrary:UIEditorWidgetAttribute }">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="200"/>
+                                <ColumnDefinition Width="200" />
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}" />
+                            <TextBlock Grid.Column="1" Text="{Binding ValueAsString}" />
+                        </Grid>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Grid>
+
+        <ListBox
+            Grid.Column="2"
+            Name="WidgetsList"
+            HorizontalContentAlignment="Stretch"
             HorizontalAlignment="Right"
             ScrollViewer.VerticalScrollBarVisibility="Visible"
-            ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}">
+            ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
+            SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
             <ListBox.ItemTemplate>
                 <DataTemplate DataType="{x:Type widgetLibrary:IWidgetTemplate }">
                     <TextBlock Text="{Binding Name}" />

@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.MainFrame.Gauntlet;
 using Bannerlord.UIEditor.WidgetLibrary;
@@ -9,7 +11,7 @@ namespace Bannerlord.UIEditor.MainFrame
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : IModule
+    public partial class MainWindow : IModule, INotifyPropertyChanged
     {
         #region Properties
 
@@ -17,7 +19,43 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public ObservableCollection<IWidgetTemplate> WidgetTemplates { get; }
 
-        public UIEditorWidget? SelectedWidget { get; private set; }
+        public IWidgetTemplate? SelectedWidgetTemplate
+        {
+            get => m_SelectedWidgetTemplate;
+            set
+            {
+                if (m_SelectedWidgetTemplate != value)
+                {
+                    m_SelectedWidgetTemplate = value;
+                    if (m_SelectedWidgetTemplate is not null)
+                    {
+                        if (GauntletManager?.UIContext is not null)
+                        {
+                            SelectedWidget = m_WidgetManager!.CreateWidget(GauntletManager.UIContext, m_SelectedWidgetTemplate);
+                        }
+                    }
+                    else
+                    {
+                        SelectedWidget = null;
+                    }
+
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        public UIEditorWidget? SelectedWidget
+        {
+            get => m_SelectedWidget;
+            private set
+            {
+                if (m_SelectedWidget != value)
+                {
+                    m_SelectedWidget = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private IPublicContainer PublicContainer { get; set; } = null!;
 
@@ -45,17 +83,15 @@ namespace Bannerlord.UIEditor.MainFrame
             }
         }
 
-        private IGauntletManager? GauntletManager
-        {
-            get;
-            set;
-        }
+        private IGauntletManager? GauntletManager { get; set; }
 
         #endregion
 
         #region Fields
 
         private IWidgetManager? m_WidgetManager;
+        private IWidgetTemplate? m_SelectedWidgetTemplate;
+        private UIEditorWidget? m_SelectedWidget;
 
         #endregion
 
@@ -114,15 +150,9 @@ namespace Bannerlord.UIEditor.MainFrame
 
         #endregion
 
-        #region Public Methods
+        #region INotifyPropertyChanged Members
 
-        public void OnWidgetTemplatesSelectionChanged(IWidgetTemplate _widgetTemplate)
-        {
-            if (GauntletManager?.UIContext is not null)
-            {
-                SelectedWidget = m_WidgetManager!.CreateWidget(GauntletManager.UIContext, _widgetTemplate);
-            }
-        }
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         #endregion
 
@@ -131,6 +161,11 @@ namespace Bannerlord.UIEditor.MainFrame
         protected virtual void OnDisposing()
         {
             Disposing?.Invoke(this, this);
+        }
+
+        protected virtual void OnPropertyChanged([CallerMemberName] string? _propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_propertyName));
         }
 
         #endregion

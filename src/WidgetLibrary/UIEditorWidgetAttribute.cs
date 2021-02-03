@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace Bannerlord.UIEditor.WidgetLibrary
 {
@@ -10,6 +11,22 @@ namespace Bannerlord.UIEditor.WidgetLibrary
         public object? DefaultValue { get; }
         public string Name { get; }
         public object? Value { get; set; }
+
+        public string ValueAsString
+        {
+            get
+            {
+                try
+                {
+                    return Value?.ToString() ?? "";
+                }
+                catch (Exception e)
+                {
+                    Trace.WriteLine(e);
+                    return "";
+                }
+            }
+        }
 
         #endregion
 
