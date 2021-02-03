@@ -6,7 +6,7 @@ namespace Bannerlord.UIEditor.Core
 {
     internal sealed class PublicContainer : IPublicContainer
     {
-        #region Private Fields
+        #region Fields
 
         private readonly Dictionary<string, Dictionary<ModuleItemKey, ModuleItem>> m_Modules;
         private readonly Dictionary<Token, ModuleItemKey> m_ModulesByToken;
@@ -95,6 +95,10 @@ namespace Bannerlord.UIEditor.Core
             void OnConnectedModuleRegistered(object _module) => _onConnectedModuleRegistered((_module as T)!);
             void OnConnectedModuleUnregistering(object _module) => _onConnectedModuleUnregistering((_module as T)!);
             moduleItem.AddConnectedObject(_connectedObject, OnConnectedModuleRegistered, OnConnectedModuleUnregistering);
+            if (moduleItem.Module is not null)
+            {
+                OnConnectedModuleRegistered(moduleItem.Module);
+            }
         }
 
         #endregion
@@ -188,9 +192,7 @@ namespace Bannerlord.UIEditor.Core
                 throw new ArgumentException($"{nameof( GetModuleItem )}: {moduleType.Name} needs to be an interface.");
             }
 
-            return string.IsNullOrWhiteSpace(_moduleName) ? 
-                GetModuleItemFromKey<T>(new ModuleItemKey(_moduleName, moduleType)) :
-                GetModuleItemFromInterfaceFullName<T>(moduleType.Name);
+            return string.IsNullOrWhiteSpace(_moduleName) ? GetModuleItemFromKey<T>(new ModuleItemKey(_moduleName, moduleType)) : GetModuleItemFromInterfaceFullName<T>(moduleType.Name);
         }
 
         private ModuleItem? GetModuleItemFromInterfaceFullName<T>(string _interfaceFullName) where T : class

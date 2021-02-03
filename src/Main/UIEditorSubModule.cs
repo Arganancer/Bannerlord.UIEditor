@@ -25,7 +25,6 @@ namespace Bannerlord.UIEditor.Main
         private ModuleCoordinator m_ModuleCoordinator = null!;
         private SubModuleEventNotifier m_SubModuleEventNotifier = null!;
         private IGlobalEventManager m_GlobalEventManager = null!;
-        private AppDomain? m_UIEditorAppDomain;
 
         #endregion
 
@@ -88,8 +87,6 @@ namespace Bannerlord.UIEditor.Main
         {
             if (!m_ModuleCoordinator.ContainsPublicContainer("UIEditor"))
             {
-                m_UIEditorAppDomain = AppDomain.CreateDomain("UIEditor");
-
                 m_ModuleCoordinator.AddPublicContainer("UIEditor", "", new List<Assembly>
                 {
                     Assembly.Load(typeof( MainWindow ).Assembly.FullName), // MainFrame

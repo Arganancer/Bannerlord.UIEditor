@@ -31,15 +31,15 @@ namespace Bannerlord.UIEditor.AppContext
             }
         }
 
-        public void Dispatch(Action _action, bool _invokeSynchronously = true)
+        public void Dispatch(Action _action, bool _invokeAsync)
         {
-            if (_invokeSynchronously)
+            if (_invokeAsync)
             {
-                m_Dispatcher.Invoke(_action);
+                m_Dispatcher.BeginInvoke(_action);
             }
             else
             {
-                m_Dispatcher.BeginInvoke(_action);
+                m_Dispatcher.Invoke(_action);
             }
         }
 

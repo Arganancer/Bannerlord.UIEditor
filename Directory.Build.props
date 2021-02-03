@@ -17,7 +17,6 @@
         <GameFolder Condition="$(Configuration) == 'Stable_Debug' OR $(Configuration) == 'Stable_Release'">$(BANNERLORD_STABLE_DIR)</GameFolder>
         <GameFolder Condition="$(Configuration) == 'Beta_Debug' OR $(Configuration) == 'Beta_Release'">$(BANNERLORD_BETA_DIR)</GameFolder>
         <GameFolder Condition="$(BANNERLORD_STABLE_DIR) == '' AND $(BANNERLORD_BETA_DIR) == ''">$(BANNERLORD_GAME_DIR)</GameFolder>
-
         <!--Automatic Path Resolution-->
         <!--Windows-->
         <!--Get from Registry (not working with dotnet right now)-->
@@ -27,33 +26,6 @@
         <!--Unix-->
         <!--Set a default value if registry value is missing-->
         <GameFolder Condition="!Exists($(GameFolder)) AND $(OS) == 'Unix'">~/.steam/root/steamapps/common/Mount &amp; Blade II Bannerlord</GameFolder>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)' == 'Stable_Debug' OR '$(Configuration)' == 'Beta_Debug'">
-        <DebugSymbols>true</DebugSymbols>
-        <DebugType>full</DebugType>
-        <Optimize>false</Optimize>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(Configuration)' == 'Stable_Release' OR '$(Configuration)' == 'Beta_Release'">
-        <DebugSymbols>false</DebugSymbols>
-        <DebugType>None</DebugType>
-        <Optimize>true</Optimize>
-    </PropertyGroup>
-
-    <!-- Configuration -->
-    <PropertyGroup>
-        <OutputPath>$(GameFolder)\Modules\Bannerlord.UIEditor\bin\Win64_Shipping_Client\</OutputPath>
-        <BaseIntermediateOutputPath>$(SolutionDir)\obj\Output\$(ProjectName)</BaseIntermediateOutputPath>
-        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)</IntermediateOutputPath>
-        <ErrorReport>prompt</ErrorReport>
-        <WarningLevel>4</WarningLevel>
-        <PlatformTarget>x64</PlatformTarget>
-        <TargetFramework>net472</TargetFramework>
-        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
-        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
-        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
-        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
     </PropertyGroup>
 
     <PropertyGroup>

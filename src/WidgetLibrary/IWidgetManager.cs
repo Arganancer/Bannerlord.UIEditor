@@ -4,7 +4,7 @@ using TaleWorlds.GauntletUI;
 
 namespace Bannerlord.UIEditor.WidgetLibrary
 {
-    public interface IWidgetFactory
+    public interface IWidgetManager
     {
         #region Properties
 

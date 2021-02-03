@@ -9,7 +9,7 @@ using Module = Bannerlord.UIEditor.Core.Module;
 
 namespace Bannerlord.UIEditor.WidgetLibrary
 {
-    public class WidgetManager : Module, IWidgetFactory
+    public class WidgetManager : Module, IWidgetManager
     {
         #region Properties
 
@@ -23,7 +23,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 
         #endregion
 
-        #region IWidgetFactory Members
+        #region IWidgetManager Members
 
         public IReadOnlyList<IWidgetTemplate> WidgetTemplates => m_WidgetTemplates.SelectMany(_x => _x.Value).ToList();
 
@@ -49,7 +49,8 @@ namespace Bannerlord.UIEditor.WidgetLibrary
         {
             base.Create(_publicContainer);
             m_WidgetTemplates = new Dictionary<Assembly, List<WidgetTemplate>>();
-            RegisterModule<IWidgetFactory>();
+            LoadAssembly(typeof( Widget ).Assembly);
+            RegisterModule<IWidgetManager>();
         }
 
         #endregion

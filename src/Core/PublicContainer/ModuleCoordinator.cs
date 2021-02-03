@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Reflection;
 
 namespace Bannerlord.UIEditor.Core
@@ -17,6 +18,7 @@ namespace Bannerlord.UIEditor.Core
 
         private PublicContainer m_MainPublicContainer = null!;
         private readonly Dictionary<PublicContainer, List<IModule>> m_PublicContainers;
+        private Dictionary<Assembly, Func<IEnumerable<IModule>>> m_CachedInstantiators;
 
         #endregion
 
@@ -24,6 +26,7 @@ namespace Bannerlord.UIEditor.Core
 
         public ModuleCoordinator()
         {
+            m_CachedInstantiators = new Dictionary<Assembly, Func<IEnumerable<IModule>>>();
             m_PublicContainers = new Dictionary<PublicContainer, List<IModule>>();
         }
 
@@ -170,22 +173,30 @@ namespace Bannerlord.UIEditor.Core
             m_PublicContainers.Remove(_publicContainer.Key);
         }
 
-        private static List<IModule> InstantiateModulesInAssemblies(IEnumerable<Assembly> _assemblies)
+        private List<IModule> InstantiateModulesInAssemblies(IEnumerable<Assembly> _assemblies)
         {
-            Type[] types = _assemblies.SelectMany(_assembly => _assembly.GetTypes())
-                .Where(_type => !_type.IsAbstract && !_type.IsInterface && typeof( IModule ).IsAssignableFrom(_type)).ToArray();
-            return InstantiateAndGetBaseModules(types.Where(_type => typeof( Module ).IsAssignableFrom(_type))).ToList();
-        }
-
-        private static IEnumerable<IModule> InstantiateAndGetBaseModules(IEnumerable<Type> _baseModuleTypes)
-        {
-            List<IModule> modules = new();
-            foreach (Type baseModuleType in _baseModuleTypes)
+            List<IModule> output = new();
+            foreach (Assembly assembly in _assemblies)
             {
-                modules.Add((IModule)Activator.CreateInstance(baseModuleType)!);
+                if (!m_CachedInstantiators.TryGetValue(assembly, out Func<IEnumerable<IModule>> moduleInstantiator))
+                {
+                    Type[] types = assembly.GetTypes().Where(_type => !_type.IsAbstract && !_type.IsInterface && typeof( IModule ).IsAssignableFrom(_type)).ToArray();
+                    moduleInstantiator = CreateModulesInstantiator(types.Where(_type => typeof( Module ).IsAssignableFrom(_type)));
+                    m_CachedInstantiators.Add(assembly, moduleInstantiator);
+                }
+
+                output.AddRange(moduleInstantiator());
             }
 
-            return modules;
+            return output;
+        }
+
+        private static Func<IEnumerable<IModule>> CreateModulesInstantiator(IEnumerable<Type> _moduleTypes)
+        {
+            IEnumerable<Func<IModule>> moduleInstantiators = from moduleType in _moduleTypes
+                select (Func<IModule>)Expression.Lambda(Expression.Convert(Expression.New(moduleType), typeof( IModule ))).Compile();
+
+            return () => moduleInstantiators.Select(_x => _x());
         }
 
         #endregion

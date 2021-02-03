@@ -1,14 +1,15 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
 
 	<PropertyGroup>
-		<UseWPF>true</UseWPF>
-		<LangVersion>9.0</LangVersion>
-		<Nullable>enable</Nullable>
+        <LangVersion>9.0</LangVersion>
+        <Nullable>enable</Nullable>
+        <UseWPF>true</UseWPF>
 	</PropertyGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\AppContext\AppContext.csproj" />
 	  <ProjectReference Include="..\Core\Core.csproj" />
+	  <ProjectReference Include="..\WidgetLibrary\WidgetLibrary.csproj" />
 	</ItemGroup>
 
 </Project>

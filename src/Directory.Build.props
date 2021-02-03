@@ -1,0 +1,33 @@
+<!--EXTERNAL_PROPERTIES: GameFolder-->
+<Project>
+    <Import Project="../Directory.Build.props"/>
+
+    <!--src props file-->
+    <PropertyGroup Condition="'$(Configuration)' == 'Stable_Debug' OR '$(Configuration)' == 'Beta_Debug'">
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)' == 'Stable_Release' OR '$(Configuration)' == 'Beta_Release'">
+        <DebugSymbols>false</DebugSymbols>
+        <DebugType>None</DebugType>
+        <Optimize>true</Optimize>
+    </PropertyGroup>
+
+    <!-- Configuration -->
+    <PropertyGroup>
+        <OutputPath>$(GameFolder)\Modules\Bannerlord.UIEditor\bin\Win64_Shipping_Client\</OutputPath>
+        <BaseIntermediateOutputPath>$(SolutionDir)\obj\Output\$(ProjectName)</BaseIntermediateOutputPath>
+        <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(Configuration)</IntermediateOutputPath>
+        <ErrorReport>prompt</ErrorReport>
+        <WarningLevel>4</WarningLevel>
+        <PlatformTarget>x64</PlatformTarget>
+        <TargetFramework>net472</TargetFramework>
+        <RuntimeIdentifier>win7-x64</RuntimeIdentifier>
+        <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+        <AppendRuntimeIdentifierToOutputPath>false</AppendRuntimeIdentifierToOutputPath>
+        <ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+    </PropertyGroup>
+
+</Project>

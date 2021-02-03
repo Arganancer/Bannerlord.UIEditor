@@ -6,6 +6,7 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{200A3AD7-1A03-434F-BA89-34CBF70DD1B8}"
 	ProjectSection(SolutionItems) = preProject
 		.editorconfig = .editorconfig
+		src\Directory.Build.props = src\Directory.Build.props
 		Directory.Build.props = Directory.Build.props
 	EndProjectSection
 EndProject
@@ -21,7 +22,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WidgetLibraryTests", "Tests
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Main", "src\Main\Main.csproj", "{44E2CB4E-561B-444B-A87C-0DADE8755DE5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AppContext", "src\AppContext\AppContext.csproj", "{D911BE0A-A252-4053-8464-235F03729E7E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppContext", "src\AppContext\AppContext.csproj", "{D911BE0A-A252-4053-8464-235F03729E7E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -1,9 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net5.0-windows</TargetFramework>
-
-    <IsPackable>false</IsPackable>
+      <LangVersion>9.0</LangVersion>
+      <Nullable>enable</Nullable>
+      <PlatformTarget>x64</PlatformTarget>
+      <TargetFramework>net472</TargetFramework>
+      <IsTestProject>true</IsTestProject>
+      <IsPackable>false</IsPackable>
   </PropertyGroup>
 
   <ItemGroup>

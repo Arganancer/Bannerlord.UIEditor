@@ -2,7 +2,11 @@
 {
     public interface IGlobalEventManager
     {
+        #region Public Methods
+
         IGlobalEvent GetEvent(string _eventName);
-        InvokeGlobalEvent GetEventInvoker(string _eventName, object _sender);
+        InvokeGlobalEvent GetEventInvoker(string _eventName, object _sender, bool _pushEventToApplicationTick = false);
+
+        #endregion
     }
 }

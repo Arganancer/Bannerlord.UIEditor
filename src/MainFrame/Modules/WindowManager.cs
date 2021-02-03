@@ -34,7 +34,7 @@ namespace Bannerlord.UIEditor.MainFrame
             base.Load();
 
             m_GlobalEventManager = PublicContainer.GetModule<IGlobalEventManager>();
-            m_OnCloseUIEditor = m_GlobalEventManager.GetEventInvoker("OnCloseUIEditor", this);
+            m_OnCloseUIEditor = m_GlobalEventManager.GetEventInvoker("OnCloseUIEditor", this, true);
 
             m_MainWindow.Load();
             m_ApplicationManager.Dispatch(() =>

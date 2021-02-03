@@ -6,7 +6,7 @@ namespace Bannerlord.UIEditor.Core
     /// <inheritdoc />
     public abstract class Module : IModule
     {
-        #region Protected Properties
+        #region Properties
 
         protected IPublicContainer PublicContainer { get; private set; } = null!;
 
@@ -14,20 +14,11 @@ namespace Bannerlord.UIEditor.Core
 
         #endregion
 
-        #region Private Fields
+        #region Fields
 
         private Token m_RegistrationToken;
 
         private readonly List<Token> m_SubModuleRegistrationTokens = new();
-
-        #endregion
-
-        #region Constructors
-
-        protected Module()
-        {
-            Disposed = false;
-        }
 
         #endregion
 
@@ -41,7 +32,12 @@ namespace Bannerlord.UIEditor.Core
 
         public void Dispose()
         {
-            Dispose(true);
+            if (!Disposed)
+            {
+                OnDisposing();
+                Dispose(true);
+            }
+
             //GC.SuppressFinalize(this);
         }
 
@@ -96,33 +92,34 @@ namespace Bannerlord.UIEditor.Core
         protected virtual void Dispose(bool _disposing)
         {
             // Execute if resources have not already been disposed.
-            if (!Disposed)
+            if (!Disposed && _disposing)
             {
-                if (_disposing)
+                OnDisposing();
+                for (var i = 0; i < m_SubModuleRegistrationTokens.Count; i++)
                 {
-                    OnDisposing();
-                    for (var i = 0; i < m_SubModuleRegistrationTokens.Count; i++)
+                    var token = m_SubModuleRegistrationTokens[i];
+                    if (token.IsValid())
                     {
-                        var token = m_SubModuleRegistrationTokens[i];
-                        if (token.IsValid())
-                        {
-                            PublicContainer.UnregisterModule(token);
-                            m_SubModuleRegistrationTokens[i] = Token.CreateInvalid();
-                        }
-                    }
-
-                    if (m_RegistrationToken.IsValid())
-                    {
-                        PublicContainer.UnregisterModule(m_RegistrationToken);
-                        m_RegistrationToken = Token.CreateInvalid();
+                        PublicContainer.UnregisterModule(token);
+                        m_SubModuleRegistrationTokens[i] = Token.CreateInvalid();
                     }
                 }
-            }
 
-            Disposed = true;
+                if (m_RegistrationToken.IsValid())
+                {
+                    PublicContainer.UnregisterModule(m_RegistrationToken);
+                    m_RegistrationToken = Token.CreateInvalid();
+                }
+
+                Disposed = true;
+            }
         }
 
-        protected virtual void OnDisposing()
+        #endregion
+
+        #region Private Methods
+
+        private void OnDisposing()
         {
             Disposing?.Invoke(this, this);
         }
