@@ -1,0 +1,23 @@
+﻿<core:ConnectedUserControl x:Class="Bannerlord.UIEditor.MainFrame.WidgetListControl"
+                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
+                           xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary"
+                           xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame" d:DataContext="{d:DesignInstance Type=mainframe:WidgetListControl}"
+                           mc:Ignorable="d"
+                           d:DesignHeight="500" d:DesignWidth="180">
+    <ListBox
+        HorizontalContentAlignment="Stretch"
+        HorizontalAlignment="Right"
+        ScrollViewer.VerticalScrollBarVisibility="Visible"
+        ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
+        SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
+        <ListBox.ItemTemplate>
+            <DataTemplate DataType="{x:Type widgetLibrary:IWidgetTemplate }">
+                <TextBlock Text="{Binding Name}" />
+            </DataTemplate>
+        </ListBox.ItemTemplate>
+    </ListBox>
+</core:ConnectedUserControl>

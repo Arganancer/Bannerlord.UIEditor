@@ -1,0 +1,41 @@
+﻿<core:ConnectedUserControl x:Class="Bannerlord.UIEditor.MainFrame.WidgetAttributesControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
+             xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary" 
+             xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame" d:DataContext="{d:DesignInstance Type=mainframe:WidgetAttributesControl}"
+             mc:Ignorable="d" 
+             d:DesignHeight="600" d:DesignWidth="300">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="20" />
+            <RowDefinition />
+        </Grid.RowDefinitions>
+        <TextBlock Grid.Row="0" FontWeight="Bold" Text="{Binding SelectedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
+        <ListBox
+            Grid.Row="1"
+            Width="Auto"
+            Name="WidgetProperties"
+            HorizontalContentAlignment="Stretch"
+            HorizontalAlignment="Right"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            ItemsSource="{Binding SelectedWidget.Attributes, UpdateSourceTrigger=PropertyChanged}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type widgetLibrary:UIEditorWidgetAttribute }">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition MinWidth="150"
+                                              MaxWidth="200"/>
+                            <ColumnDefinition MinWidth="150"
+                                              MaxWidth="200"/>
+                        </Grid.ColumnDefinitions>
+                        <TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}" />
+                        <TextBlock Grid.Column="1" Text="{Binding ValueAsString}" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Grid>
+</core:ConnectedUserControl>

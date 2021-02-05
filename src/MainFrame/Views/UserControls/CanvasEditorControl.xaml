@@ -1,0 +1,31 @@
+﻿<core:ConnectedUserControl x:Class="Bannerlord.UIEditor.MainFrame.CanvasEditorControl"
+                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core" 
+                           xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame" d:DataContext="{d:DesignInstance Type=mainframe:CanvasEditorControl}"
+                           mc:Ignorable="d"
+                           d:DesignHeight="450" d:DesignWidth="800">
+    <Border Name="CanvasBorder"
+            BorderThickness="2"
+            BorderBrush="DarkGray"
+            Width="Auto"
+            Height="Auto"
+            ClipToBounds="true">
+        <Canvas Name="UIEditorCanvas"
+                MouseMove="UIEditorCanvas_OnMouseMove"
+                MouseDown="UIEditorCanvas_OnMouseDown"
+                MouseUp="UIEditorCanvas_OnMouseUp"
+                MouseWheel="UIEditorCanvas_OnMouseWheel"
+                SizeChanged="UIEditorCanvas_OnSizeChanged">
+            <Canvas.RenderTransform>
+                <TransformGroup>
+                    <ScaleTransform x:Name="CanvasScaleTransform" />
+                    <TranslateTransform x:Name="CanvasTranslateTransform" />
+                </TransformGroup>
+            </Canvas.RenderTransform>
+        </Canvas>
+    </Border>
+
+</core:ConnectedUserControl>

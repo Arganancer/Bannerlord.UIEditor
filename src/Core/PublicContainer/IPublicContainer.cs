@@ -49,7 +49,7 @@ namespace Bannerlord.UIEditor.Core
         /// If called from an <see cref="IModule"/>, should be called inside the <see cref="IModule.Load"/> method.
         /// Connects the given <paramref name="_connectedObject"/> to a module specified by the given interface (T).<br/>
         /// Use this when the target module can be registered and unregistered repeatedly during the life-cycle of the connected object.<br/>
-        /// Otherwise, use <see cref="GetModule{T}"/>.<br/><br/>
+        /// Otherwise, you should be able to use <see cref="GetModule{T}"/>.<br/><br/>
         /// Throws an <see cref="ArgumentException"/> when the generic type (T) is not an interface.
         /// </summary>
         /// <exception cref="ArgumentException">Thrown when the generic type (T) is not an interface.</exception>
