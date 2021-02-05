@@ -13,7 +13,7 @@ namespace Bannerlord.UIEditor.Main
         #region Fields
 
         private IGlobalEventManager? m_GlobalEventManager;
-        private InvokeGlobalEvent m_OnLaunchUIEditor;
+        private InvokeGlobalEvent? m_OnLaunchUIEditor;
 
         #endregion
 
@@ -39,7 +39,7 @@ namespace Bannerlord.UIEditor.Main
 
         public void LaunchUIEditor()
         {
-            m_OnLaunchUIEditor();
+            m_OnLaunchUIEditor?.Invoke();
         }
 
         #endregion

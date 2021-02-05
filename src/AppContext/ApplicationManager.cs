@@ -3,7 +3,6 @@ using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Bannerlord.UIEditor.Core;
-using Bannerlord.UIEditor.MainFrame;
 
 namespace Bannerlord.UIEditor.AppContext
 {

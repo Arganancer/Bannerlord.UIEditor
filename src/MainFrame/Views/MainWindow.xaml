@@ -8,15 +8,52 @@
         Title="MainWindow" Height="600" Width="1200">
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition />
-            <ColumnDefinition Width="400" />
             <ColumnDefinition Width="180" />
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="400" />
         </Grid.ColumnDefinitions>
 
-        <Grid Grid.Column="1"
+        <ListBox
+            Grid.Column="0"
+            Name="WidgetsList"
+            HorizontalContentAlignment="Stretch"
+            HorizontalAlignment="Right"
+            ScrollViewer.VerticalScrollBarVisibility="Visible"
+            ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
+            SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type widgetLibrary:IWidgetTemplate }">
+                    <TextBlock Text="{Binding Name}" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Border Name="CanvasBorder"
+                Grid.Column="1"
+                BorderThickness="2"
+                BorderBrush="DarkGray"
+                Width="Auto"
+                Height="Auto"
+                ClipToBounds="true">
+            <Canvas Name="UIEditorCanvas"
+                    MouseMove="UIEditorCanvas_OnMouseMove"
+                    MouseDown="UIEditorCanvas_OnMouseDown"
+                    MouseUp="UIEditorCanvas_OnMouseUp"
+                    MouseWheel="UIEditorCanvas_OnMouseWheel"
+                    SizeChanged="UIEditorCanvas_OnSizeChanged">
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="CanvasScaleTransform" />
+                        <TranslateTransform x:Name="CanvasTranslateTransform" />
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+            </Canvas>
+        </Border>
+
+        <Grid Grid.Column="2"
               Width="Auto">
             <Grid.RowDefinitions>
-                <RowDefinition Height="20"/>
+                <RowDefinition Height="20" />
                 <RowDefinition />
             </Grid.RowDefinitions>
             <TextBlock Grid.Row="0" FontWeight="Bold" Text="{Binding SelectedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
@@ -32,8 +69,8 @@
                     <DataTemplate DataType="{x:Type widgetLibrary:UIEditorWidgetAttribute }">
                         <Grid>
                             <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="200"/>
                                 <ColumnDefinition Width="200" />
+                                <ColumnDefinition Width="*" />
                             </Grid.ColumnDefinitions>
                             <TextBlock Grid.Column="0" Text="{Binding Name}" TextTrimming="CharacterEllipsis" ToolTip="{Binding Name}" />
                             <TextBlock Grid.Column="1" Text="{Binding ValueAsString}" />
@@ -42,20 +79,5 @@
                 </ListBox.ItemTemplate>
             </ListBox>
         </Grid>
-
-        <ListBox
-            Grid.Column="2"
-            Name="WidgetsList"
-            HorizontalContentAlignment="Stretch"
-            HorizontalAlignment="Right"
-            ScrollViewer.VerticalScrollBarVisibility="Visible"
-            ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
-            SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type widgetLibrary:IWidgetTemplate }">
-                    <TextBlock Text="{Binding Name}" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
     </Grid>
 </Window>

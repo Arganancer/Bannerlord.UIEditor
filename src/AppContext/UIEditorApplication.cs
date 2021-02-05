@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Bannerlord.UIEditor.MainFrame
+namespace Bannerlord.UIEditor.AppContext
 {
     public class UIEditorApplication : Application
     {

@@ -8,7 +8,6 @@
         <HarmonyVersion>2.0.2</HarmonyVersion>
         <BuildResourcesVersion>1.0.0.32</BuildResourcesVersion>
         <BUTRSharedVersion>1.6.1.22</BUTRSharedVersion>
-        <GameVersion>1.4.0</GameVersion>
         <Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release</Configurations>
     </PropertyGroup>
 
