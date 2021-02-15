@@ -5,18 +5,19 @@
                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                            xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
                            xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary"
-                           xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame" d:DataContext="{d:DesignInstance Type=mainframe:WidgetListControl}"
+                           xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame"
+                           d:DataContext="{d:DesignInstance Type=mainframe:WidgetListControl}"
                            mc:Ignorable="d"
                            d:DesignHeight="500" d:DesignWidth="180">
-    <ListBox
-        HorizontalContentAlignment="Stretch"
-        HorizontalAlignment="Right"
-        ScrollViewer.VerticalScrollBarVisibility="Visible"
-        ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
-        SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
+    <ListBox Name="WidgetListBox"
+             HorizontalContentAlignment="Stretch"
+             ScrollViewer.VerticalScrollBarVisibility="Visible"
+             ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
+             SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
         <ListBox.ItemTemplate>
             <DataTemplate DataType="{x:Type widgetLibrary:IWidgetTemplate }">
-                <TextBlock Text="{Binding Name}" />
+                <TextBlock Text="{Binding Name}"
+                           MinWidth="50" />
             </DataTemplate>
         </ListBox.ItemTemplate>
     </ListBox>

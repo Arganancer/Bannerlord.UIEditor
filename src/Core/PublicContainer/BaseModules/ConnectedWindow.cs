@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Media;
 
 namespace Bannerlord.UIEditor.Core
 {
@@ -18,6 +18,8 @@ namespace Bannerlord.UIEditor.Core
         #endregion
 
         #region Fields
+
+        //private ManualResetEvent m_WaitForInitialized;
 
         private readonly List<IModule> m_Children = new();
 
@@ -53,7 +55,17 @@ namespace Bannerlord.UIEditor.Core
         public virtual void Create(IPublicContainer _publicContainer)
         {
             PublicContainer = _publicContainer;
-            m_Children.AddRange(GetChildrenOfType<IModule>(this));
+
+            foreach (FieldInfo fieldInfo in GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.FlattenHierarchy))
+            {
+                if (typeof( ConnectedUserControl ).IsAssignableFrom(fieldInfo.FieldType))
+                {
+                    if (fieldInfo.GetValue(this) is IModule module)
+                    {
+                        m_Children.Add(module);
+                    }
+                }
+            }
 
             foreach (IModule child in m_Children)
             {
@@ -95,27 +107,6 @@ namespace Bannerlord.UIEditor.Core
         protected void OnPropertyChanged([CallerMemberName] string _propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_propertyName));
-        }
-
-        #endregion
-
-        #region Private Methods
-
-        private static IEnumerable<T> GetChildrenOfType<T>(DependencyObject _dependencyObject)
-        {
-            for (var i = 0; i < VisualTreeHelper.GetChildrenCount(_dependencyObject); i++)
-            {
-                var child = VisualTreeHelper.GetChild(_dependencyObject, i);
-                if (child is T castChild)
-                {
-                    yield return castChild;
-                }
-
-                foreach (var childOfChild in GetChildrenOfType<T>(child))
-                {
-                    yield return childOfChild;
-                }
-            }
         }
 
         #endregion

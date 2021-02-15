@@ -105,6 +105,15 @@ namespace Bannerlord.UIEditor.Core
             List<IModule> modules = InstantiateModulesInAssemblies(_assemblies);
             m_PublicContainers.Add(publicContainer, modules);
 
+            //IEnumerable<ConnectedWindow> connectedWindowModules = modules.OfType<ConnectedWindow>().ToList();
+            //if(connectedWindowModules.Any())
+            //{
+            //    foreach (ConnectedWindow connectedWindow in connectedWindowModules)
+            //    {
+            //        connectedWindow.WaitForInitialized();
+            //    }
+            //}
+
             foreach (IModule module in modules)
             {
                 module.Create(publicContainer);

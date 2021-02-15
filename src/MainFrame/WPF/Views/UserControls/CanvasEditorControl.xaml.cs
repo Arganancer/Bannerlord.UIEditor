@@ -30,6 +30,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public CanvasEditorControl()
         {
+            DataContext = this;
             InitializeComponent();
         }
 

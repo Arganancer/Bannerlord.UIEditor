@@ -38,6 +38,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public WidgetAttributesControl()
         {
+            DataContext = this;
             InitializeComponent();
         }
 

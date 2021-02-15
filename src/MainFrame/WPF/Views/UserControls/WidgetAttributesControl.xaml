@@ -1,0 +1,36 @@
+﻿<core:ConnectedUserControl x:Class="Bannerlord.UIEditor.MainFrame.WidgetAttributesControl"
+                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
+                           xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary"
+                           xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame" d:DataContext="{d:DesignInstance Type=mainframe:WidgetAttributesControl}"
+                           mc:Ignorable="d"
+                           d:DesignHeight="600" d:DesignWidth="300">
+    <DockPanel>
+        <TextBlock DockPanel.Dock="Top"
+                   FontWeight="Bold"
+                   Text="{Binding SelectedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
+        <ListBox DockPanel.Dock="Bottom"
+                 Name="WidgetProperties"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.VerticalScrollBarVisibility="Visible"
+                 ItemsSource="{Binding SelectedWidget.Attributes, UpdateSourceTrigger=PropertyChanged}">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type widgetLibrary:UIEditorWidgetAttribute }">
+                    <DockPanel>
+                        <TextBlock DockPanel.Dock="Left" 
+                                   MinWidth="50" 
+                                   Text="{Binding Name}"
+                                   TextTrimming="CharacterEllipsis" 
+                                   ToolTip="{Binding Name}" />
+                        <TextBlock DockPanel.Dock="Right"
+                                   MinWidth="50"
+                                   Text="{Binding ValueAsString}" />
+                    </DockPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </DockPanel>
+</core:ConnectedUserControl>

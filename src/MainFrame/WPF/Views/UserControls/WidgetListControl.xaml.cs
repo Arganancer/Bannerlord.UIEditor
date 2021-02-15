@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using Bannerlord.UIEditor.Core;
-using Bannerlord.UIEditor.MainFrame.Gauntlet;
 using Bannerlord.UIEditor.WidgetLibrary;
 
 namespace Bannerlord.UIEditor.MainFrame
@@ -13,24 +12,7 @@ namespace Bannerlord.UIEditor.MainFrame
     {
         #region Properties
 
-        public event EventHandler<IWidgetTemplate?>? SelectedWidgetTemplateChanged; 
-
         public ObservableCollection<IWidgetTemplate> WidgetTemplates { get; }
-
-        public IWidgetTemplate? SelectedWidgetTemplate
-        {
-            get => m_SelectedWidgetTemplate;
-            set
-            {
-                if (m_SelectedWidgetTemplate != value)
-                {
-                    m_SelectedWidgetTemplate = value;
-
-                    OnSelectedWidgetTemplateChanged(m_SelectedWidgetTemplate);
-                    OnPropertyChanged();
-                }
-            }
-        }
 
         private IWidgetManager? WidgetManager
         {
@@ -50,6 +32,11 @@ namespace Bannerlord.UIEditor.MainFrame
                         {
                             Dispatcher.Invoke(() => WidgetTemplates.Add(widgetTemplate));
                         }
+
+                        //Dispatcher.Invoke(() =>
+                        //{
+                        //    WidgetListBox.ItemsSource = WidgetTemplates;
+                        //});
                     }
                 }
             }
@@ -69,7 +56,29 @@ namespace Bannerlord.UIEditor.MainFrame
         public WidgetListControl()
         {
             WidgetTemplates = new ObservableCollection<IWidgetTemplate>();
+            DataContext = this;
             InitializeComponent();
+        }
+
+        #endregion
+
+        #region IWidgetListControl Members
+
+        public event EventHandler<IWidgetTemplate?>? SelectedWidgetTemplateChanged;
+
+        public IWidgetTemplate? SelectedWidgetTemplate
+        {
+            get => m_SelectedWidgetTemplate;
+            set
+            {
+                if (m_SelectedWidgetTemplate != value)
+                {
+                    m_SelectedWidgetTemplate = value;
+
+                    OnSelectedWidgetTemplateChanged(m_SelectedWidgetTemplate);
+                    OnPropertyChanged();
+                }
+            }
         }
 
         #endregion
@@ -94,9 +103,13 @@ namespace Bannerlord.UIEditor.MainFrame
 
         #endregion
 
-        protected virtual void OnSelectedWidgetTemplateChanged(IWidgetTemplate? _selectedWidgetTemplate)
+        #region Private Methods
+
+        private void OnSelectedWidgetTemplateChanged(IWidgetTemplate? _selectedWidgetTemplate)
         {
             SelectedWidgetTemplateChanged?.Invoke(this, _selectedWidgetTemplate);
         }
+
+        #endregion
     }
 }

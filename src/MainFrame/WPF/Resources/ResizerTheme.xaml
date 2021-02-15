@@ -1,0 +1,56 @@
+﻿<!--Reference: https://github.com/microsoftarchive/msdn-code-gallery-microsoft/blob/master/OneCodeTeam/How%20to%20Resize%20WPF%20panel%20on%20Runtime/%5BC%23%5D-How%20to%20Resize%20WPF%20panel%20on%20Runtime/C%23/RuntimeResizablePanel/ResizablePanel.cs-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:Bannerlord.UIEditor.MainFrame">
+    <Style TargetType="{x:Type local:Resizer}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:Resizer}">
+                    <Border Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type local:ResizableControl}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type local:ResizableControl}">
+                    <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="5" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="5" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="5" />
+                            <RowDefinition Height="*" />
+                            <RowDefinition Height="5" />
+                        </Grid.RowDefinitions>
+                        <local:Resizer Cursor="SizeNWSE" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                                           Height="{TemplateBinding BorderSize}" Grid.Row="0" Grid.Column="0" ThumbDirection="TopLeft" />
+                        <local:Resizer Cursor="SizeWE" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                                           Grid.Row="1" Grid.Column="0" ThumbDirection="Left" />
+                        <local:Resizer Cursor="SizeNESW" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                                           Height="{TemplateBinding BorderSize}" Grid.Row="2" Grid.Column="0" ThumbDirection="BottomLeft" />
+                        <local:Resizer Cursor="SizeNS" Background="{TemplateBinding BorderColor}" Height="{TemplateBinding BorderSize}"
+                                           Grid.Row="2" Grid.Column="1" ThumbDirection="Bottom" />
+                        <local:Resizer Cursor="SizeNWSE" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                                           Height="{TemplateBinding BorderSize}" Grid.Row="2" Grid.Column="2" ThumbDirection="BottomRight" />
+                        <local:Resizer Cursor="SizeWE" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                                           Grid.Row="1" Grid.Column="2" ThumbDirection="Right" />
+                        <local:Resizer Cursor="SizeNESW" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                                           Height="{TemplateBinding BorderSize}" Grid.Row="0" Grid.Column="2" ThumbDirection="TopRight" />
+                        <local:Resizer Cursor="SizeNS" Background="{TemplateBinding BorderColor}" Height="{TemplateBinding BorderSize}"
+                                           Grid.Row="0" Grid.Column="1" ThumbDirection="Top" />
+
+                        <ContentPresenter Grid.Row="1" Grid.Column="1" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />
+
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
