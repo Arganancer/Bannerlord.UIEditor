@@ -53,7 +53,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             return _instance =>
             {
                 var defaultPropertyValue = getPropertyValue(_instance);
-                return new UIEditorWidgetAttribute(_getter.ReturnType, defaultPropertyValue, _propertyInfo.Name, defaultPropertyValue);
+                return new UIEditorWidgetAttribute(_getter.ReturnType, defaultPropertyValue, _propertyInfo.Name, defaultPropertyValue, _propertyInfo.DeclaringType!);
             };
         }
 

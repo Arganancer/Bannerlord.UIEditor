@@ -1,4 +1,8 @@
-﻿using Bannerlord.UIEditor.Core;
+﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.MainFrame.Gauntlet;
 using Bannerlord.UIEditor.WidgetLibrary;
 

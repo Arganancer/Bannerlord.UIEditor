@@ -1,4 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using TaleWorlds.GauntletUI;
 
 namespace Bannerlord.UIEditor.WidgetLibrary
 {
@@ -8,6 +11,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 
         public string Name { get; }
         public List<UIEditorWidgetAttribute> Attributes { get; }
+        public List<AttributeCategory> AttributeCategories { get; }
 
         #endregion
 
@@ -17,6 +21,93 @@ namespace Bannerlord.UIEditor.WidgetLibrary
         {
             Name = _name;
             Attributes = _attributes;
+            AttributeCategories = SortAttributes(_attributes);
+        }
+
+        #endregion
+
+        #region Private Methods
+
+        private static List<AttributeCategory> SortAttributes(List<UIEditorWidgetAttribute> _attributes)
+        {
+            List<AttributeCategory> categories = new()
+            {
+                new AttributeCategory("Main", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "Id"),
+                    _attributes.First(_a => _a.Name == "IsEnabled"),
+                    _attributes.First(_a => _a.Name == "IsDisabled"),
+                    _attributes.First(_a => _a.Name == "IsFocusable"),
+                    _attributes.First(_a => _a.Name == "IsHidden"),
+                    _attributes.First(_a => _a.Name == "IsVisible"),
+                    _attributes.First(_a => _a.Name == "UpdateChildrenStates")
+                }),
+                new AttributeCategory("Position", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "PositionXOffset"), 
+                    _attributes.First(_a => _a.Name == "PositionYOffset")
+                }),
+                new AttributeCategory("Alignment", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "MarginTop"),
+                    _attributes.First(_a => _a.Name == "MarginLeft"),
+                    _attributes.First(_a => _a.Name == "MarginBottom"),
+                    _attributes.First(_a => _a.Name == "MarginRight"),
+                    _attributes.First(_a => _a.Name == "VerticalAlignment"),
+                    _attributes.First(_a => _a.Name == "HorizontalAlignment")
+                }),
+                new AttributeCategory("Size", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "SuggestedWidth"),
+                    _attributes.First(_a => _a.Name == "SuggestedHeight"),
+                    _attributes.First(_a => _a.Name == "WidthSizePolicy"),
+                    _attributes.First(_a => _a.Name == "HeightSizePolicy"),
+                    _attributes.First(_a => _a.Name == "MaxWidth"),
+                    _attributes.First(_a => _a.Name == "MaxHeight"),
+                    _attributes.First(_a => _a.Name == "MinWidth"),
+                    _attributes.First(_a => _a.Name == "MinHeight"),
+                    _attributes.First(_a => _a.Name == "DoNotUseCustomScaleAndChildren")
+                }),
+                new AttributeCategory("Events", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "DoNotPassEventsToChildren"),
+                    _attributes.First(_a => _a.Name == "DoNotAcceptEvents"),
+                    _attributes.First(_a => _a.Name == "CanAcceptEvents"),
+                    _attributes.First(_a => _a.Name == "HoveredCursorState"),
+                    _attributes.First(_a => _a.Name == "AlternateClickEventHasSpecialEvent"),
+                    _attributes.First(_a => _a.Name == "AcceptDrag"),
+                    _attributes.First(_a => _a.Name == "AcceptDrop"),
+                    _attributes.First(_a => _a.Name == "DropEventHandledManually"),
+                    _attributes.First(_a => _a.Name == "HideOnDrag"),
+                    _attributes.First(_a => _a.Name == "DragWidget")
+                }),
+                new AttributeCategory("Animations", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "TweenPosition"), 
+                    _attributes.First(_a => _a.Name == "RestartAnimationFirstFrame")
+                }),
+                new AttributeCategory("Rendering", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "VisualDefinition"),
+                    _attributes.First(_a => _a.Name == "Sprite"),
+                    _attributes.First(_a => _a.Name == "ForcePixelPerfectRenderPlacement"),
+                    _attributes.First(_a => _a.Name == "ClipContents"),
+                    _attributes.First(_a => _a.Name == "CircularClipEnabled"),
+                    _attributes.First(_a => _a.Name == "CircularClipRadius"),
+                    _attributes.First(_a => _a.Name == "IsCircularClipRadiusHalfOfWidth"),
+                    _attributes.First(_a => _a.Name == "IsCircularClipRadiusHalfOfHeight"),
+                    _attributes.First(_a => _a.Name == "CircularClipSmoothingRadius"),
+                    _attributes.First(_a => _a.Name == "CircularClipXOffset"),
+                    _attributes.First(_a => _a.Name == "CircularClipYOffset"),
+                    _attributes.First(_a => _a.Name == "RenderLate"),
+                    _attributes.First(_a => _a.Name == "DoNotRenderIfNotFullyInsideScissor")
+                })
+            };
+
+            IEnumerable<Type> types = _attributes.Select(_a => _a.DeclaringType).Distinct().Where(_t => _t != typeof( Widget ));
+            categories.AddRange(types.Select(_t => new AttributeCategory(_t.Name, _t, _attributes.Where(_a => _a.DeclaringType == _t).ToList())));
+
+            return categories;
         }
 
         #endregion

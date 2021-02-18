@@ -5,16 +5,18 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using Bannerlord.UIEditor.Core;
+using Bannerlord.UIEditor.WidgetLibrary;
 
 namespace Bannerlord.UIEditor.MainFrame
 {
     /// <summary>
     /// TODO: UIEditor Canvas Elements: https://stackoverflow.com/questions/21635892/how-to-set-x-y-coordinates-of-wpf-canvas-children-through-code/21637725
     /// TODO: Remove magic numbers and allow changing resolution/aspect ratio.
+    /// TODO: Add left/top pixel rulers.
     /// </summary>
-    public partial class CanvasEditorControl : ConnectedUserControl
+    public partial class CanvasEditorControl : ConnectedUserControl, ICanvasEditorControl
     {
-        #region Fields
+        public Canvas Canvas => UIEditorCanvas;
 
         private Rectangle m_Background = null!;
         private Rectangle m_ViewableArea = null!;
@@ -24,28 +26,43 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private double m_CurrentZoomScale = 1.0;
 
-        #endregion
-
-        #region Constructors
-
         public CanvasEditorControl()
         {
             DataContext = this;
             InitializeComponent();
         }
 
-        #endregion
+        private void UIEditorCanvas_OnDragOver(object _sender, DragEventArgs _e)
+        {
+            if (_e.Data.GetDataPresent(nameof(IWidgetTemplate)))
+            {
+                _e.Effects = _e.Data.GetDataPresent(nameof(IWidgetTemplate)) ? DragDropEffects.Copy : DragDropEffects.None;
+                _e.Handled = true;
+            }
+        }
 
-        #region ConnectedUserControl Members
+        private void UIEditorCanvas_OnDrop(object _sender, DragEventArgs _e)
+        {
+            if (_e.Data.GetDataPresent(nameof(IWidgetTemplate)))
+            {
+                IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof(IWidgetTemplate))!;
+                AddWidget(widgetTemplate, _e.GetPosition(UIEditorCanvas));
+                _e.Handled = true;
+            }
+        }
+
+        public void AddWidget(IWidgetTemplate _widgetTemplate, Point _point)
+        {
+
+        }
 
         public override void Create(IPublicContainer _publicContainer)
         {
+            base.Create(_publicContainer);
             InitializeCanvas();
+
+            PublicContainer.RegisterModule<ICanvasEditorControl>(this);
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void InitializeCanvas()
         {
@@ -184,7 +201,5 @@ namespace Bannerlord.UIEditor.MainFrame
                 CanvasTranslateTransform.Y = -((1580 * m_CurrentZoomScale) - canvasSize.Height);
             }
         }
-
-        #endregion
     }
 }

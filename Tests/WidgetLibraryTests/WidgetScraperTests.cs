@@ -59,7 +59,7 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
             var instance = widgetTemplate.CreateInstance(m_MockUIResourceManager.WidgetFactory, m_MockGauntletLayer.GauntletUIContext);
             Assert.IsNotNull(instance);
             Assert.AreEqual(nameof( Widget ), instance.Name);
-            Assert.IsTrue(instance.Attributes.Any());
+            Assert.IsTrue(instance.AttributeCategories.Any());
         }
 
         #endregion

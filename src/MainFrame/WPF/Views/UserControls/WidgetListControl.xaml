@@ -9,16 +9,26 @@
                            d:DataContext="{d:DesignInstance Type=mainframe:WidgetListControl}"
                            mc:Ignorable="d"
                            d:DesignHeight="500" d:DesignWidth="180">
-    <ListBox Name="WidgetListBox"
-             HorizontalContentAlignment="Stretch"
-             ScrollViewer.VerticalScrollBarVisibility="Visible"
-             ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
-             SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
-        <ListBox.ItemTemplate>
-            <DataTemplate DataType="{x:Type widgetLibrary:IWidgetTemplate }">
-                <TextBlock Text="{Binding Name}"
-                           MinWidth="50" />
-            </DataTemplate>
-        </ListBox.ItemTemplate>
-    </ListBox>
+    <Border>
+        <ListBox Name="WidgetListBox"
+                 HorizontalContentAlignment="Stretch"
+                 ScrollViewer.VerticalScrollBarVisibility="Auto"
+                 ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
+                 SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
+            <ListBox.ItemTemplate>
+                <DataTemplate DataType="{x:Type widgetLibrary:IWidgetTemplate }">
+                    <DataTemplate.Resources>
+                        <ResourceDictionary>
+                            <ResourceDictionary.MergedDictionaries>
+                                <ResourceDictionary Source="../../Resources/Theme.xaml" />
+                            </ResourceDictionary.MergedDictionaries>
+                        </ResourceDictionary>
+                    </DataTemplate.Resources>
+                    <TextBlock Text="{Binding Name}"
+                               MouseMove="Widget_OnMouseMove"
+                               MinWidth="50" />
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+    </Border>
 </core:ConnectedUserControl>

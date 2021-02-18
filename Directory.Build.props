@@ -45,6 +45,7 @@
         <PackageReference Include="Bannerlord.UIExtenderEx" Version="2.*" IncludeAssets="compile" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" IncludeAssets="compile" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" IncludeAssets="compile" />
+        <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.31" IncludeAssets="compile" />
     </ItemGroup>
 
     <ItemGroup Condition="Exists($(GameFolder))">

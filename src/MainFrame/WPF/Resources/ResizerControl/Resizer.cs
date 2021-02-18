@@ -10,23 +10,13 @@ namespace Bannerlord.UIEditor.MainFrame
     /// </summary>
     public class Resizer : Thumb
     {
-        #region Consts/Statics
-
         public static DependencyProperty ThumbDirectionProperty = DependencyProperty.Register("ThumbDirection", typeof( ResizeDirection ), typeof( Resizer ));
-
-        #endregion
-
-        #region Properties
 
         public ResizeDirection ThumbDirection
         {
             get => (ResizeDirection)GetValue(ThumbDirectionProperty);
             set => SetValue(ThumbDirectionProperty, value);
         }
-
-        #endregion
-
-        #region Constructors
 
         static Resizer()
         {
@@ -38,14 +28,20 @@ namespace Bannerlord.UIEditor.MainFrame
             DragDelta += Resizer_DragDelta;
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void Resizer_DragDelta(object _sender, DragDeltaEventArgs _dragDeltaEvent)
         {
             if (DataContext is Control designerItem)
             {
+                //if (double.IsNaN(designerItem.Width))
+                //{
+                //    designerItem.Width = designerItem.ActualWidth;
+                //}
+
+                //if (double.IsNaN(designerItem.Height))
+                //{
+                //    designerItem.Height = designerItem.ActualHeight;
+                //}
+
                 switch (ThumbDirection)
                 {
                     case ResizeDirection.TopLeft:
@@ -105,8 +101,6 @@ namespace Bannerlord.UIEditor.MainFrame
             var deltaHorizontal = Math.Min(-_dragDeltaEvent.VerticalChange, _designerItem.ActualHeight - _designerItem.MinHeight);
             _designerItem.Height -= deltaHorizontal;
         }
-
-        #endregion
     }
 
     public enum ResizeDirection

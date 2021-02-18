@@ -19,7 +19,10 @@
                 MouseDown="UIEditorCanvas_OnMouseDown"
                 MouseUp="UIEditorCanvas_OnMouseUp"
                 MouseWheel="UIEditorCanvas_OnMouseWheel"
-                SizeChanged="UIEditorCanvas_OnSizeChanged">
+                SizeChanged="UIEditorCanvas_OnSizeChanged"
+                DragOver="UIEditorCanvas_OnDragOver"
+                Drop="UIEditorCanvas_OnDrop"
+                AllowDrop="True">
             <Canvas.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform x:Name="CanvasScaleTransform" />

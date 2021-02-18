@@ -1,4 +1,4 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Controls;
@@ -9,9 +9,20 @@ namespace Bannerlord.UIEditor.MainFrame
 {
     public class WidgetViewModel : INotifyPropertyChanged
     {
-        #region Properties
+        public ObservableCollection<WidgetViewModel> Children { get; set; }
 
-        public IReadOnlyList<WidgetViewModel> Children => m_Children;
+        public string Name
+        {
+            get => m_Name;
+            set
+            {
+                if (m_Name != value)
+                {
+                    m_Name = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         public bool IsVisible
         {
@@ -21,7 +32,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_IsVisible != value)
                 {
                     m_IsVisible = value;
-                    foreach (WidgetViewModel child in m_Children)
+                    foreach (WidgetViewModel child in Children)
                     {
                         child.ParentIsHidden = ParentIsHidden || !IsVisible;
                     }
@@ -40,7 +51,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 {
                     m_ZIndex = value;
                     Panel.SetZIndex(m_Rectangle, ZIndex);
-                    foreach (WidgetViewModel child in m_Children)
+                    foreach (WidgetViewModel child in Children)
                     {
                         child.ZIndex = m_ZIndex + 1;
                     }
@@ -114,7 +125,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_ParentIsHidden != value)
                 {
                     m_ParentIsHidden = value;
-                    foreach (WidgetViewModel child in m_Children)
+                    foreach (WidgetViewModel child in Children)
                     {
                         child.ParentIsHidden = ParentIsHidden || !IsVisible;
                     }
@@ -124,13 +135,7 @@ namespace Bannerlord.UIEditor.MainFrame
             }
         }
 
-        #endregion
-
-        #region Fields
-
-        private readonly Canvas m_Canvas;
-
-        private readonly List<WidgetViewModel> m_Children;
+        private readonly ICanvasEditorControl m_CanvasEditorControl;
 
         private int m_X;
         private int m_Y;
@@ -140,85 +145,99 @@ namespace Bannerlord.UIEditor.MainFrame
         private int m_ZIndex;
         private Rectangle m_Rectangle;
         private bool m_ParentIsHidden;
+        private string m_Name;
 
-        #endregion
-
-        #region Constructors
-
-        public WidgetViewModel(UIEditorWidget _widget, Canvas _canvas, int _zIndex)
+        public WidgetViewModel(string _name, UIEditorWidget _widget, ICanvasEditorControl _canvasEditorControl)
         {
+            Children = new ObservableCollection<WidgetViewModel>();
+            m_CanvasEditorControl = _canvasEditorControl;
+            m_CanvasEditorControl.Dispatcher.Invoke(() => { m_Rectangle = new Rectangle(); });
+
+            Name = _name;
             IsVisible = true;
             ParentIsHidden = false;
 
-            m_Canvas = _canvas;
-            m_Rectangle = new Rectangle();
-            m_Children = new List<WidgetViewModel>();
             Widget = _widget;
-            ZIndex = _zIndex;
+            ZIndex = 0;
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
         public event PropertyChangedEventHandler? PropertyChanged;
-
-        #endregion
-
-        #region Public Methods
 
         public void AddChildren(int _index, params WidgetViewModel[] _children)
         {
             foreach (WidgetViewModel child in _children)
             {
-                child.ParentIsHidden = !IsVisible || ParentIsHidden;
+                m_CanvasEditorControl.Dispatcher.Invoke(() =>
+                {
+                    child.ParentIsHidden = !IsVisible || ParentIsHidden;
+                    child.ZIndex = ZIndex + 1;
+                });
             }
 
-            m_Children.InsertRange(_index, _children);
+            if (_index >= Children.Count)
+            {
+                foreach (WidgetViewModel child in _children)
+                {
+                    Children.Add(child);
+                }
+            }
+            else
+            {
+                for (var i = 0; i < _children.Length; i++)
+                {
+                    Children.Insert(_index + i, _children[i]);
+                }
+            }
+        }
+
+        public int GetIndexOfChild(WidgetViewModel _child)
+        {
+            return Children.IndexOf(_child);
+        }
+
+        public void AddChildren(params WidgetViewModel[] _children)
+        {
+            AddChildren(int.MaxValue, _children);
         }
 
         public void RemoveChildren(params WidgetViewModel[] _children)
         {
             foreach (WidgetViewModel child in _children)
             {
-                m_Children.Remove(child);
+                Children.Remove(child);
             }
         }
-
-        #endregion
-
-        #region Protected Methods
 
         protected void OnPropertyChanged([CallerMemberName] string? _propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_propertyName));
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void UpdateVisibility()
         {
-            var rectangleInCanvas = m_Canvas.Children.Contains(m_Rectangle);
-            if ((ParentIsHidden || !IsVisible) && rectangleInCanvas)
+            m_CanvasEditorControl.Dispatcher.Invoke(() =>
             {
-                m_Canvas.Children.Remove(m_Rectangle);
-            }
-            else if (!rectangleInCanvas)
-            {
-                m_Canvas.Children.Add(m_Rectangle);
-            }
+                var rectangleInCanvas = m_CanvasEditorControl.Canvas.Children.Contains(m_Rectangle);
+                if ((ParentIsHidden || !IsVisible) && rectangleInCanvas)
+                {
+                    m_CanvasEditorControl.Canvas.Children.Remove(m_Rectangle);
+                }
+                else if (!rectangleInCanvas)
+                {
+                    m_CanvasEditorControl.Canvas.Children.Add(m_Rectangle);
+                }
+            });
         }
 
         private void UpdateRectangle()
         {
-            m_Rectangle.Width = Width;
-            m_Rectangle.Height = Height;
-            Canvas.SetLeft(m_Rectangle, X);
-            Canvas.SetTop(m_Rectangle, Y);
+            m_CanvasEditorControl.Dispatcher.Invoke(() =>
+            {
+                m_Rectangle.Width = Width;
+                m_Rectangle.Height = Height;
+                Canvas.SetLeft(m_Rectangle, X);
+                Canvas.SetTop(m_Rectangle, Y);
+            });
         }
-
-        #endregion
     }
 }

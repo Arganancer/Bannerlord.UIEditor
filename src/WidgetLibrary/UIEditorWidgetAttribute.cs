@@ -11,6 +11,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
         public object? DefaultValue { get; }
         public string Name { get; }
         public object? Value { get; set; }
+        public Type DeclaringType { get; }
 
         public string ValueAsString
         {
@@ -32,12 +33,13 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 
         #region Constructors
 
-        public UIEditorWidgetAttribute(Type _type, object? _defaultValue, string _name, object? _value)
+        public UIEditorWidgetAttribute(Type _type, object? _defaultValue, string _name, object? _value, Type _declaringType)
         {
             Type = _type;
             DefaultValue = _defaultValue;
             Name = _name;
             Value = _value;
+            DeclaringType = _declaringType;
         }
 
         #endregion

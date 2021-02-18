@@ -1,0 +1,9 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="Themes/Brushes.xaml"/>
+        <ResourceDictionary Source="Themes/QuickStyles.xaml"/>
+        <ResourceDictionary Source="Themes/ScrollbarTemplate.xaml"/>
+        <ResourceDictionary Source="Themes/ExpanderTemplate.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+</ResourceDictionary>

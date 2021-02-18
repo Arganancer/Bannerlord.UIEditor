@@ -5,32 +5,72 @@
                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                            xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
                            xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary"
-                           xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame" d:DataContext="{d:DesignInstance Type=mainframe:WidgetAttributesControl}"
+                           xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame"
+                           xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+                           d:DataContext="{d:DesignInstance Type=mainframe:WidgetAttributesControl}"
                            mc:Ignorable="d"
                            d:DesignHeight="600" d:DesignWidth="300">
-    <DockPanel>
-        <TextBlock DockPanel.Dock="Top"
-                   FontWeight="Bold"
-                   Text="{Binding SelectedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
-        <ListBox DockPanel.Dock="Bottom"
-                 Name="WidgetProperties"
-                 HorizontalContentAlignment="Stretch"
-                 ScrollViewer.VerticalScrollBarVisibility="Visible"
-                 ItemsSource="{Binding SelectedWidget.Attributes, UpdateSourceTrigger=PropertyChanged}">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type widgetLibrary:UIEditorWidgetAttribute }">
-                    <DockPanel>
-                        <TextBlock DockPanel.Dock="Left" 
-                                   MinWidth="50" 
-                                   Text="{Binding Name}"
-                                   TextTrimming="CharacterEllipsis" 
-                                   ToolTip="{Binding Name}" />
-                        <TextBlock DockPanel.Dock="Right"
-                                   MinWidth="50"
-                                   Text="{Binding ValueAsString}" />
-                    </DockPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-    </DockPanel>
+    <Border>
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top"
+                       FontWeight="Bold"
+                       Padding="4"
+                       Text="{Binding SelectedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
+            <ListBox DockPanel.Dock="Bottom"
+                     Name="WidgetAttributeCategories"
+                     HorizontalContentAlignment="Stretch"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ScrollViewer.CanContentScroll="False"
+                     ItemsSource="{Binding SelectedWidget.AttributeCategories, UpdateSourceTrigger=PropertyChanged}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type widgetLibrary:AttributeCategory }">
+                        <DataTemplate.Resources>
+                            <ResourceDictionary>
+                                <ResourceDictionary.MergedDictionaries>
+                                    <ResourceDictionary Source="../../Resources/Theme.xaml" />
+                                </ResourceDictionary.MergedDictionaries>
+                            </ResourceDictionary>
+                        </DataTemplate.Resources>
+                        <Border BorderThickness="0, 0, 0, 1">
+                            <Expander Header="{Binding Name}">
+                                <ListBox ItemsSource="{Binding Attributes}"
+                                         HorizontalContentAlignment="Stretch">
+                                    <i:Interaction.Behaviors>
+                                        <mainframe:BubbleMouseWheelEvents />
+                                    </i:Interaction.Behaviors>
+                                    <ListBox.ItemTemplate>
+                                        <DataTemplate DataType="{x:Type widgetLibrary:UIEditorWidgetAttribute}">
+                                            <DataTemplate.Resources>
+                                                <ResourceDictionary>
+                                                    <ResourceDictionary.MergedDictionaries>
+                                                        <ResourceDictionary Source="../../Resources/Theme.xaml" />
+                                                    </ResourceDictionary.MergedDictionaries>
+                                                </ResourceDictionary>
+                                            </DataTemplate.Resources>
+                                            <StackPanel Orientation="Horizontal"
+                                                        HorizontalAlignment="Stretch">
+                                                <Label ToolTip="{Binding Name}"
+                                                       VerticalContentAlignment="Center"
+                                                       Width="150">
+                                                    <TextBlock Text="{Binding Name}"
+                                                               Foreground="{StaticResource Text}"
+                                                               TextTrimming="CharacterEllipsis" />
+                                                </Label>
+                                                <!--TODO: Create dynamic template to change control type depending on attribute type.
+                                                Also add ability to switch between fixed value, and reference data binding.-->
+                                                <TextBox Text="{Binding ValueAsString, Mode=OneWay}"
+                                                         VerticalContentAlignment="Center"
+                                                         Height="24"
+                                                         MinWidth="150" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </ListBox.ItemTemplate>
+                                </ListBox>
+                            </Expander>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </Border>
 </core:ConnectedUserControl>

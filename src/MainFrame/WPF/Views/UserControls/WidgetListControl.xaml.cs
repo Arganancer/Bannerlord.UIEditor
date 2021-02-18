@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Windows;
+using System.Windows.Input;
 using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.WidgetLibrary;
 
@@ -10,9 +12,22 @@ namespace Bannerlord.UIEditor.MainFrame
     /// </summary>
     public partial class WidgetListControl : ConnectedUserControl, IWidgetListControl
     {
-        #region Properties
-
         public ObservableCollection<IWidgetTemplate> WidgetTemplates { get; }
+
+        public IWidgetTemplate? SelectedWidgetTemplate
+        {
+            get => m_SelectedWidgetTemplate;
+            set
+            {
+                if (m_SelectedWidgetTemplate != value)
+                {
+                    m_SelectedWidgetTemplate = value;
+
+                    OnSelectedWidgetTemplateChanged(m_SelectedWidgetTemplate);
+                    OnPropertyChanged();
+                }
+            }
+        }
 
         private IWidgetManager? WidgetManager
         {
@@ -32,26 +47,13 @@ namespace Bannerlord.UIEditor.MainFrame
                         {
                             Dispatcher.Invoke(() => WidgetTemplates.Add(widgetTemplate));
                         }
-
-                        //Dispatcher.Invoke(() =>
-                        //{
-                        //    WidgetListBox.ItemsSource = WidgetTemplates;
-                        //});
                     }
                 }
             }
         }
 
-        #endregion
-
-        #region Fields
-
         private IWidgetManager? m_WidgetManager;
         private IWidgetTemplate? m_SelectedWidgetTemplate;
-
-        #endregion
-
-        #region Constructors
 
         public WidgetListControl()
         {
@@ -60,30 +62,7 @@ namespace Bannerlord.UIEditor.MainFrame
             InitializeComponent();
         }
 
-        #endregion
-
-        #region IWidgetListControl Members
-
         public event EventHandler<IWidgetTemplate?>? SelectedWidgetTemplateChanged;
-
-        public IWidgetTemplate? SelectedWidgetTemplate
-        {
-            get => m_SelectedWidgetTemplate;
-            set
-            {
-                if (m_SelectedWidgetTemplate != value)
-                {
-                    m_SelectedWidgetTemplate = value;
-
-                    OnSelectedWidgetTemplateChanged(m_SelectedWidgetTemplate);
-                    OnPropertyChanged();
-                }
-            }
-        }
-
-        #endregion
-
-        #region ConnectedUserControl Members
 
         public override void Create(IPublicContainer _publicContainer)
         {
@@ -101,15 +80,43 @@ namespace Bannerlord.UIEditor.MainFrame
                 _ => WidgetManager = null);
         }
 
-        #endregion
+        protected override void OnGiveFeedback(GiveFeedbackEventArgs _e)
+        {
+            base.OnGiveFeedback(_e);
 
-        #region Private Methods
+            Cursor cursor = Cursors.No;
+            if (_e.Effects.HasFlag(DragDropEffects.Move))
+            {
+                cursor = Cursors.SizeWE;
+            }
+            else if (_e.Effects.HasFlag(DragDropEffects.Copy))
+            {
+                cursor = Cursors.Cross;
+            }
+
+            Mouse.SetCursor(cursor);
+
+            _e.Handled = true;
+        }
 
         private void OnSelectedWidgetTemplateChanged(IWidgetTemplate? _selectedWidgetTemplate)
         {
             SelectedWidgetTemplateChanged?.Invoke(this, _selectedWidgetTemplate);
         }
 
-        #endregion
+        /// <summary>
+        /// TODO: Add Drag and Drop between this, SceneExplorer, and Canvas:
+        /// General: https://docs.microsoft.com/en-us/dotnet/desktop/wpf/advanced/drag-and-drop-overview?view=netframeworkdesktop-4.8
+        /// Walkthrough: https://docs.microsoft.com/en-us/dotnet/desktop/wpf/advanced/walkthrough-enabling-drag-and-drop-on-a-user-control?view=netframeworkdesktop-4.8
+        /// </summary>
+        private void Widget_OnMouseMove(object _sender, MouseEventArgs _e)
+        {
+            if (_e.LeftButton == MouseButtonState.Pressed)
+            {
+                DataObject data = new();
+                data.SetData(nameof( IWidgetTemplate ), SelectedWidgetTemplate!);
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
+            }
+        }
     }
 }

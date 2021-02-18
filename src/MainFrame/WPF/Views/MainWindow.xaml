@@ -7,34 +7,82 @@
                       xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
                       d:DataContext="{d:DesignInstance Type=mainFrame:MainWindow}"
                       mc:Ignorable="d"
+                      WindowStyle="None"
                       Title="MainWindow" Height="600" Width="1200">
-
+    <WindowChrome.WindowChrome>
+        <WindowChrome CaptionHeight="32" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
+    </WindowChrome.WindowChrome>
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resources/ResizerTheme.xaml" />
+                <ResourceDictionary Source="../Resources/ResizerControl/ResizerTheme.xaml" />
+                <ResourceDictionary Source="../Resources/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
+                <Setter Property="BorderBrush" Value="{DynamicResource WindowBorderBrush}" />
+                <Setter Property="BorderThickness" Value="1" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, 
+                        Path=WindowState}" Value="Maximized">
+                        <Setter Property="BorderThickness" Value="0" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
         </ResourceDictionary>
     </Window.Resources>
+    <Window.Background>
+        <StaticResource ResourceKey="App_Background" />
+    </Window.Background>
 
-    <DockPanel LastChildFill="true">
-        <mainFrame:ResizableControl  DockPanel.Dock="Left"
-                                     MinWidth="50"
-                                     Width="180"
-                                     BorderColor="DimGray"
-                                     BorderSize="1">
-            <mainFrame:WidgetListControl x:Name="WidgetListControl" />
-        </mainFrame:ResizableControl>
+    <Border Style="{StaticResource WindowMainPanelStyle}">
+        <Grid Margin="4, 4, 4, 4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
 
-        <mainFrame:ResizableControl DockPanel.Dock="Right"
-                                    MinWidth="50"
-                                    Width="300"
-                                    BorderColor="DimGray"
-                                    BorderSize="1">
-            <mainFrame:WidgetAttributesControl x:Name="WidgetAttributesControl" />
-        </mainFrame:ResizableControl>
+            <!--Custom Title Bar-->
+            <mainFrame:TitleBarControl />
+
+            <!--App Content-->
+            <!--TODO: Load layout dynamically in code-behind.-->
+            <DockPanel Grid.Row="1"
+                       LastChildFill="true">
+                <mainFrame:ResizableControl DockPanel.Dock="Left"
+                                            MinWidth="50"
+                                            Width="400">
+                    <DockPanel LastChildFill="true">
+                        <mainFrame:ResizableControl DockPanel.Dock="Left"
+                                                    MinWidth="50"
+                                                    Width="180">
+                            <mainFrame:WidgetListControl x:Name="WidgetListControl"
+                                                         HorizontalContentAlignment="Stretch"
+                                                         VerticalContentAlignment="Stretch"/>
+                        </mainFrame:ResizableControl>
+                        <mainFrame:ResizableControl DockPanel.Dock="Right"
+                                                    MinWidth="50">
+                            <mainFrame:SceneExplorerControl x:Name="SceneExplorerControl"
+                                                            HorizontalContentAlignment="Stretch"
+                                                            VerticalContentAlignment="Stretch" />
+                        </mainFrame:ResizableControl>
+                    </DockPanel>
+                </mainFrame:ResizableControl>
+
+                <mainFrame:ResizableControl DockPanel.Dock="Right"
+                                            MinWidth="50"
+                                            Width="300">
+                    <mainFrame:WidgetAttributesControl x:Name="WidgetAttributesControl"
+                                                       HorizontalContentAlignment="Stretch"
+                                                       VerticalContentAlignment="Stretch"/>
+                </mainFrame:ResizableControl>
 
 
-        <mainFrame:CanvasEditorControl x:Name="CanvasEditorControl" />
-    </DockPanel>
+                <mainFrame:CanvasEditorControl x:Name="CanvasEditorControl" />
+            </DockPanel>
+        </Grid>
+
+    </Border>
 </core:ConnectedWindow>
