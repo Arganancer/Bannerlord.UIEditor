@@ -9,6 +9,7 @@ namespace Bannerlord.UIEditor.MainFrame
 {
     public class WidgetViewModel : INotifyPropertyChanged
     {
+        public WidgetViewModel? Parent { get; protected set; } = null;
         public ObservableCollection<WidgetViewModel> Children { get; set; }
 
         public string Name
@@ -192,6 +193,11 @@ namespace Bannerlord.UIEditor.MainFrame
             }
         }
 
+        public bool WidgetExistsInParents(WidgetViewModel _widgetViewModel)
+        {
+            return Parent is not null && (Parent.Equals(_widgetViewModel) || Parent.WidgetExistsInParents(_widgetViewModel));
+        }
+
         public void AddChildren(int _index, params WidgetViewModel[] _children)
         {
             foreach (WidgetViewModel child in _children)
@@ -201,6 +207,7 @@ namespace Bannerlord.UIEditor.MainFrame
                     child.ParentIsHidden = !IsVisible || ParentIsHidden;
                     child.ZIndex = ZIndex + 1;
                 });
+                child.Parent = this;
             }
 
             if (_index >= Children.Count)

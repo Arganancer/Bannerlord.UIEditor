@@ -90,11 +90,17 @@ namespace Bannerlord.UIEditor.MainFrame
             {
                 StackPanel stackPanel = (StackPanel)_sender;
                 var point = _e.GetPosition(stackPanel);
-                if (point.Y <= 3 || point.Y >= stackPanel.ActualHeight - 3)
+                TreeViewItem target = ((StackPanel)_sender).GetVisualAncestorOfType<TreeViewItem>()!;
+                WidgetViewModel targetWidget = (target.DataContext as WidgetViewModel)!;
+
+                if (_e.Data.GetData(nameof( WidgetViewModel )) is WidgetViewModel newWidget &&
+                    (targetWidget.Equals(newWidget) || targetWidget.WidgetExistsInParents(newWidget)))
                 {
-                    TreeViewItem target = ((StackPanel)_sender).GetVisualAncestorOfType<TreeViewItem>()!;
-                    WidgetViewModel sibling = (target.DataContext as WidgetViewModel)!;
-                    if (sibling == RootWidget || point.Y > stackPanel.ActualHeight)
+                    _e.Effects = DragDropEffects.None;
+                }
+                else if (point.Y <= 3 || point.Y >= stackPanel.ActualHeight - 3)
+                {
+                    if (targetWidget == RootWidget || point.Y > stackPanel.ActualHeight)
                     {
                         _e.Effects = DragDropEffects.None;
                     }
@@ -125,6 +131,17 @@ namespace Bannerlord.UIEditor.MainFrame
                 TreeViewItem target = ((StackPanel)_sender).GetVisualAncestorOfType<TreeViewItem>()!;
                 WidgetViewModel parent;
                 var targetIndex = int.MaxValue;
+
+                if (_e.Data.GetData(nameof(WidgetViewModel)) is not WidgetViewModel viewModel)
+                {
+                    IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof(IWidgetTemplate))!;
+                    viewModel = CreateWidget(widgetTemplate);
+                }
+                else
+                {
+                    RootWidget!.RemoveChildren(viewModel);
+                }
+
                 if (point.Y <= 3 || point.Y >= stackPanel.ActualHeight - 3)
                 {
                     WidgetViewModel sibling = (target.DataContext as WidgetViewModel)!;
@@ -149,16 +166,6 @@ namespace Bannerlord.UIEditor.MainFrame
                     parent = (target.DataContext as WidgetViewModel)!;
                 }
 
-                WidgetViewModel? viewModel = _e.Data.GetData(nameof(WidgetViewModel)) as WidgetViewModel;
-                if (viewModel is null)
-                {
-                    IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof(IWidgetTemplate))!;
-                    viewModel = CreateWidget(widgetTemplate);
-                }
-                else
-                {
-                    RootWidget!.RemoveChildren(viewModel);
-                }
                 parent.AddChildren(targetIndex, viewModel);
                 _e.Handled = true;
             }
