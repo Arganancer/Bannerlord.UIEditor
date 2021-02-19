@@ -5,5 +5,8 @@
         <ResourceDictionary Source="Themes/QuickStyles.xaml"/>
         <ResourceDictionary Source="Themes/ScrollbarTemplate.xaml"/>
         <ResourceDictionary Source="Themes/ExpanderTemplate.xaml"/>
+        <ResourceDictionary Source="Themes/ComboBoxTemplate.xaml"/>
+        <ResourceDictionary Source="Themes/CheckBoxTemplate.xaml"/>
+        <ResourceDictionary Source="Themes/TextBoxTemplate.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

@@ -10,7 +10,6 @@ namespace Bannerlord.UIEditor.AppContext
 
         public static void Main()
         {
-
         }
     }
 }

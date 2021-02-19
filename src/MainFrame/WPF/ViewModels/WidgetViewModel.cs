@@ -135,6 +135,19 @@ namespace Bannerlord.UIEditor.MainFrame
             }
         }
 
+        public bool IsReadonly
+        {
+            get => m_IsReadonly;
+            set
+            {
+                if(m_IsReadonly != value)
+                {
+                    m_IsReadonly = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         private readonly ICanvasEditorControl m_CanvasEditorControl;
 
         private int m_X;
@@ -146,6 +159,7 @@ namespace Bannerlord.UIEditor.MainFrame
         private Rectangle m_Rectangle;
         private bool m_ParentIsHidden;
         private string m_Name;
+        private bool m_IsReadonly;
 
         public WidgetViewModel(string _name, UIEditorWidget _widget, ICanvasEditorControl _canvasEditorControl)
         {

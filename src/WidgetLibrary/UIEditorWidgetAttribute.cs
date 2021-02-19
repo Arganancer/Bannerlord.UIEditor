@@ -1,37 +1,17 @@
 ﻿using System;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace Bannerlord.UIEditor.WidgetLibrary
 {
     public class UIEditorWidgetAttribute
     {
-        #region Properties
-
         public Type Type { get; }
+        public string TypeName => Type.ToString();
         public object? DefaultValue { get; }
         public string Name { get; }
         public object? Value { get; set; }
         public Type DeclaringType { get; }
-
-        public string ValueAsString
-        {
-            get
-            {
-                try
-                {
-                    return Value?.ToString() ?? "";
-                }
-                catch (Exception e)
-                {
-                    Trace.WriteLine(e);
-                    return "";
-                }
-            }
-        }
-
-        #endregion
-
-        #region Constructors
 
         public UIEditorWidgetAttribute(Type _type, object? _defaultValue, string _name, object? _value, Type _declaringType)
         {
@@ -41,7 +21,16 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             Value = _value;
             DeclaringType = _declaringType;
         }
+    }
 
-        #endregion
+    public class UIEditorWidgetAttributeCollection : UIEditorWidgetAttribute
+    {
+        public ObservableCollection<object> Collection { get; }
+
+        public UIEditorWidgetAttributeCollection(Type _type, object? _defaultValue, string _name, object? _value, Type _declaringType, IEnumerable<object> _collection) :
+            base(_type, _defaultValue, _name, _value, _declaringType)
+        {
+            Collection = new ObservableCollection<object>(_collection);
+        }
     }
 }

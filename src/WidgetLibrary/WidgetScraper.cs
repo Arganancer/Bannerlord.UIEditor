@@ -50,6 +50,14 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             }
 
             Func<object, object> getPropertyValue = (Func<object, object>)Expression.Lambda(returnExpression, instanceParam).Compile();
+            if(_propertyInfo.PropertyType.IsEnum)
+            {
+                return _instance =>
+                {
+                    var defaultPropertyValue = getPropertyValue(_instance);
+                    return new UIEditorWidgetAttributeCollection(_getter.ReturnType, defaultPropertyValue, _propertyInfo.Name, defaultPropertyValue, _propertyInfo.DeclaringType!, Enum.GetValues(_propertyInfo.PropertyType).Cast<Enum>());
+                };
+            }
             return _instance =>
             {
                 var defaultPropertyValue = getPropertyValue(_instance);

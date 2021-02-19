@@ -23,6 +23,11 @@
         <Setter Property="BorderThickness" Value="0" />
     </Style>
 
+    <Style TargetType="{x:Type ItemsControl}">
+        <Setter Property="Background" Value="{StaticResource Container_Background}" />
+        <Setter Property="BorderThickness" Value="0" />
+    </Style>
+
     <Style x:Key="{x:Type ScrollViewer}" TargetType="{x:Type ScrollViewer}">
         <Style.Resources>
             <Style x:Key="{x:Type Rectangle}" TargetType="{x:Type Rectangle}">
@@ -52,4 +57,24 @@
     <Style x:Key="{x:Type TextBlock}" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="{StaticResource Text}" />
     </Style>
+
+    <!--<Style x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
+        <Setter Property="Background" Value="{StaticResource ContainerItem_Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+        <Setter Property="Foreground" Value="{StaticResource Text}"/>
+        <Setter Property="CaretBrush" Value="{StaticResource Text_Selected}"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Style.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Text_Hovered}" />
+                <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundHovered}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Border_Hovered}" />
+            </Trigger>
+            <Trigger Property="IsFocused" Value="True">
+                <Setter Property="Foreground" Value="{StaticResource Text_Selected}" />
+                <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundSelected}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Border_Selected}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>-->
 </ResourceDictionary>

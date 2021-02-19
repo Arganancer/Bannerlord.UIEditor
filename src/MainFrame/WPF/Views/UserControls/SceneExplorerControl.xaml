@@ -1,15 +1,16 @@
-﻿<core:ConnectedUserControl x:Class="Bannerlord.UIEditor.MainFrame.SceneExplorerControl"
+﻿<core:ConnectedUserControl
                            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                            xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
                            xmlns:mainFrame="clr-namespace:Bannerlord.UIEditor.MainFrame"
-                           d:DataContext="{d:DesignInstance Type=mainFrame:SceneExplorerControl}"
+                           x:Class="Bannerlord.UIEditor.MainFrame.SceneExplorerControl"
+                           d:DataContext="{d:DesignInstance Type={x:Type mainFrame:SceneExplorerControl}}"
                            mc:Ignorable="d"
                            d:DesignHeight="600" d:DesignWidth="300">
     <Border>
-        <TreeView Name="SceneTreeView"
+        <TreeView x:Name="SceneTreeView"
                   HorizontalContentAlignment="Stretch"
                   ScrollViewer.VerticalScrollBarVisibility="Auto"
                   ScrollViewer.CanContentScroll="False"
@@ -25,10 +26,10 @@
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type mainFrame:WidgetViewModel}" 
                                           ItemsSource="{Binding Children}">
-                    <DataTemplate.Resources>
+                    <HierarchicalDataTemplate.Resources>
                         <ResourceDictionary Source="../../Resources/Theme.xaml" />
-                    </DataTemplate.Resources>
-                    <StackPanel Name="WidgetItem" 
+                    </HierarchicalDataTemplate.Resources>
+                    <StackPanel x:Name="WidgetItem" 
                                 Orientation="Horizontal"
                                 AllowDrop="True"
                                 DragOver="WidgetItem_OnDragOver"

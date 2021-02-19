@@ -22,18 +22,22 @@
 
     <SolidColorBrush x:Key="ContainerItem_Background" Color="Transparent" />
     <SolidColorBrush x:Key="ContainerItem_BackgroundHovered" Color="{StaticResource Grey}" />
-    <SolidColorBrush x:Key="ContainerItem_BackgroundSelected" Color="{StaticResource HighlightBlue}" />
+    <SolidColorBrush x:Key="ContainerItem_BackgroundSelected" Color="{StaticResource DarkGrey}" />
+    <SolidColorBrush x:Key="ContainerItem_BackgroundDisabled" Color="{StaticResource MediumGrey}" />
 
     <SolidColorBrush x:Key="Border" Color="{StaticResource LightGrey}" />
     <SolidColorBrush x:Key="Border_Hovered" Color="{StaticResource LighterGrey}" />
     <SolidColorBrush x:Key="Border_Selected" Color="{StaticResource HighlightBlue}" />
+    <SolidColorBrush x:Key="Border_Disabled" Color="Transparent" />
 
     <SolidColorBrush x:Key="Text" Color="{StaticResource OffWhite}" />
     <SolidColorBrush x:Key="Text_Hovered" Color="{StaticResource LighterOffWhite}" />
     <SolidColorBrush x:Key="Text_Selected" Color="{StaticResource LighterOffWhite}" />
+    <SolidColorBrush x:Key="Text_Disabled" Color="{StaticResource LightGrey}" />
 
     <SolidColorBrush x:Key="Gadget_Background" Color="{StaticResource LightGrey}" />
     <SolidColorBrush x:Key="Gadget_Foreground" Color="{StaticResource LighterGrey}" />
     <SolidColorBrush x:Key="Gadget_ForegroundHovered" Color="{StaticResource LightestGrey}" />
     <SolidColorBrush x:Key="Gadget_ForegroundSelected" Color="{StaticResource HighlightBlue}" />
+    <SolidColorBrush x:Key="Gadget_ForegroundDisabled" Color="{StaticResource LightGrey}" />
 </ResourceDictionary>
