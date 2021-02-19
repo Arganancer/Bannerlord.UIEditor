@@ -6,13 +6,7 @@ namespace Bannerlord.UIEditor.Core
 {
     internal class ModuleItem
     {
-        #region Events and Delegates
-
         public event EventHandler<ModuleItemKey>? CanBeDestroyed;
-
-        #endregion
-
-        #region Public Properties
 
         public Type Type { get; }
 
@@ -47,15 +41,7 @@ namespace Bannerlord.UIEditor.Core
 
         public Dictionary<IConnectedObject, (Action<object> onModuleRegistered, Action<object> onModuleUnregistering)> ConnectedObjects { get; }
 
-        #endregion
-
-        #region Private Fields
-
         private object? m_Module;
-
-        #endregion
-
-        #region Constructors
 
         public ModuleItem(
             Type _type,
@@ -70,28 +56,16 @@ namespace Bannerlord.UIEditor.Core
             Token = _token;
         }
 
-        #endregion
-
-        #region Public Methods
-
         public void AddConnectedObject(IConnectedObject _subscriber, Action<object> _onModuleRegistered, Action<object> _onModuleUnregistering)
         {
             _subscriber.Disposing += OnSubscriberDisposing;
             ConnectedObjects.Add(_subscriber, (_onModuleRegistered, _onModuleUnregistering));
         }
 
-        #endregion
-
-        #region Protected Methods
-
         protected virtual void OnCanBeDestroyed()
         {
             CanBeDestroyed?.Invoke(this, new ModuleItemKey(Name, Type));
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void OnRegistered(object _module)
         {
@@ -118,7 +92,5 @@ namespace Bannerlord.UIEditor.Core
                 OnCanBeDestroyed();
             }
         }
-
-        #endregion
     }
 }

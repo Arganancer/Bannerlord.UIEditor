@@ -32,36 +32,35 @@ namespace Bannerlord.UIEditor.MainFrame
             InitializeComponent();
         }
 
-        private void UIEditorCanvas_OnDragOver(object _sender, DragEventArgs _e)
-        {
-            if (_e.Data.GetDataPresent(nameof(IWidgetTemplate)))
-            {
-                _e.Effects = _e.Data.GetDataPresent(nameof(IWidgetTemplate)) ? DragDropEffects.Copy : DragDropEffects.None;
-                _e.Handled = true;
-            }
-        }
-
-        private void UIEditorCanvas_OnDrop(object _sender, DragEventArgs _e)
-        {
-            if (_e.Data.GetDataPresent(nameof(IWidgetTemplate)))
-            {
-                IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof(IWidgetTemplate))!;
-                AddWidget(widgetTemplate, _e.GetPosition(UIEditorCanvas));
-                _e.Handled = true;
-            }
-        }
-
-        public void AddWidget(IWidgetTemplate _widgetTemplate, Point _point)
-        {
-
-        }
-
         public override void Create(IPublicContainer _publicContainer)
         {
             base.Create(_publicContainer);
             InitializeCanvas();
 
             PublicContainer.RegisterModule<ICanvasEditorControl>(this);
+        }
+
+        public void AddWidget(IWidgetTemplate _widgetTemplate, Point _point)
+        {
+        }
+
+        private void UIEditorCanvas_OnDragOver(object _sender, DragEventArgs _e)
+        {
+            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )))
+            {
+                _e.Effects = _e.Data.GetDataPresent(nameof( IWidgetTemplate )) ? DragDropEffects.Copy : DragDropEffects.None;
+                _e.Handled = true;
+            }
+        }
+
+        private void UIEditorCanvas_OnDrop(object _sender, DragEventArgs _e)
+        {
+            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )))
+            {
+                IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof( IWidgetTemplate ))!;
+                AddWidget(widgetTemplate, _e.GetPosition(UIEditorCanvas));
+                _e.Handled = true;
+            }
         }
 
         private void InitializeCanvas()

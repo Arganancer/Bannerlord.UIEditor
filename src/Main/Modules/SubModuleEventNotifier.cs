@@ -7,22 +7,12 @@ namespace Bannerlord.UIEditor.Main.Modules
 {
     internal class SubModuleEventNotifier : Module, ISubModuleEventNotifier
     {
-        #region Fields
-
         private readonly List<ModuleLoadedSubscription> m_OnModulesLoadedSubscribers;
-
-        #endregion
-
-        #region Constructors
 
         public SubModuleEventNotifier()
         {
             m_OnModulesLoadedSubscribers = new List<ModuleLoadedSubscription>();
         }
-
-        #endregion
-
-        #region ISubModuleEventNotifier Members
 
         public event EventHandler? BeforeInitialModuleScreenSetAsRoot;
         public event EventHandler<float>? ApplicationTick;
@@ -37,19 +27,11 @@ namespace Bannerlord.UIEditor.Main.Modules
             m_OnModulesLoadedSubscribers.Add(_subscription);
         }
 
-        #endregion
-
-        #region Module Members
-
         public override void Create(IPublicContainer _publicContainer)
         {
             base.Create(_publicContainer);
             RegisterModule<ISubModuleEventNotifier>();
         }
-
-        #endregion
-
-        #region Public Methods
 
         public void OnBeforeInitialModuleScreenSetAsRoot()
         {
@@ -68,7 +50,5 @@ namespace Bannerlord.UIEditor.Main.Modules
                 moduleLoadedSubscription.CallModulesLoaded();
             }
         }
-
-        #endregion
     }
 }

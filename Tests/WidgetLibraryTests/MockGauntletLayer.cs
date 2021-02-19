@@ -13,18 +13,12 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
 {
     public class MockGauntletLayer : ScreenLayer
     {
-        #region Public Fields
-
         public readonly TwoDimensionView TwoDimensionView;
         public readonly UIContext GauntletUIContext;
         public readonly List<Tuple<GauntletMovie, ViewModel>> MoviesAndDatasources;
         public readonly TwoDimensionEnginePlatform TwoDimensionEnginePlatform;
         public readonly EngineInputService EngineInputService;
         public readonly WidgetFactory WidgetFactory;
-
-        #endregion
-
-        #region Constructors
 
         public MockGauntletLayer(MockUIResourceManager _resourceManager, int _localOrder, string _categoryId = "GauntletLayer") : base(_localOrder, _categoryId)
         {
@@ -39,7 +33,5 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
             GauntletUIContext.Initialize();
             MouseEnabled = true;
         }
-
-        #endregion
     }
 }

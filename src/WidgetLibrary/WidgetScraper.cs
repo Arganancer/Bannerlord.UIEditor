@@ -10,8 +10,6 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 {
     internal static class WidgetScraper
     {
-        #region Consts/Statics
-
         internal static IEnumerable<WidgetTemplate> ScrapeAssembly(Assembly _assembly)
         {
             IEnumerable<Type> widgetTypes = _assembly.GetTypes().Where(_type => !_type.IsAbstract && typeof( Widget ).IsAssignableFrom(_type));
@@ -36,10 +34,6 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             return new WidgetTemplate(_type, _type.Assembly, CreateWidget);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private static Func<object, UIEditorWidgetAttribute> CreateAttributeInstantiator(Type _widgetType, MethodInfo _getter, PropertyInfo _propertyInfo)
         {
             ParameterExpression instanceParam = Expression.Parameter(typeof( object ));
@@ -50,7 +44,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             }
 
             Func<object, object> getPropertyValue = (Func<object, object>)Expression.Lambda(returnExpression, instanceParam).Compile();
-            if(_propertyInfo.PropertyType.IsEnum)
+            if (_propertyInfo.PropertyType.IsEnum)
             {
                 return _instance =>
                 {
@@ -58,13 +52,12 @@ namespace Bannerlord.UIEditor.WidgetLibrary
                     return new UIEditorWidgetAttributeCollection(_getter.ReturnType, defaultPropertyValue, _propertyInfo.Name, defaultPropertyValue, _propertyInfo.DeclaringType!, Enum.GetValues(_propertyInfo.PropertyType).Cast<Enum>());
                 };
             }
+
             return _instance =>
             {
                 var defaultPropertyValue = getPropertyValue(_instance);
                 return new UIEditorWidgetAttribute(_getter.ReturnType, defaultPropertyValue, _propertyInfo.Name, defaultPropertyValue, _propertyInfo.DeclaringType!);
             };
         }
-
-        #endregion
     }
 }

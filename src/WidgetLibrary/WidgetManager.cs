@@ -11,21 +11,11 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 {
     public class WidgetManager : Module, IWidgetManager
     {
-        #region Properties
+        public IReadOnlyList<IWidgetTemplate> WidgetTemplates => m_WidgetTemplates.SelectMany(_x => _x.Value).ToList();
 
         internal WidgetFactory WidgetFactory => UIResourceManager.WidgetFactory;
 
-        #endregion
-
-        #region Fields
-
         private Dictionary<Assembly, List<WidgetTemplate>> m_WidgetTemplates = null!;
-
-        #endregion
-
-        #region IWidgetManager Members
-
-        public IReadOnlyList<IWidgetTemplate> WidgetTemplates => m_WidgetTemplates.SelectMany(_x => _x.Value).ToList();
 
         public UIEditorWidget CreateWidget(UIContext _context, IWidgetTemplate _widgetTemplate)
         {
@@ -41,10 +31,6 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             }
         }
 
-        #endregion
-
-        #region Module Members
-
         public override void Create(IPublicContainer _publicContainer)
         {
             base.Create(_publicContainer);
@@ -52,7 +38,5 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             LoadAssembly(typeof( Widget ).Assembly);
             RegisterModule<IWidgetManager>();
         }
-
-        #endregion
     }
 }

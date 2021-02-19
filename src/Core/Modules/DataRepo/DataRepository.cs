@@ -5,13 +5,7 @@ namespace Bannerlord.UIEditor.Core.DataRepo
 {
     public class DataRepository : Module, IDataRepository
     {
-        #region Fields
-
         private ConcurrentDictionary<string, object> m_Data = null!;
-
-        #endregion
-
-        #region IDataRepository Members
 
         public bool TryGetData<T>(string _name, out T? _data)
         {
@@ -42,10 +36,6 @@ namespace Bannerlord.UIEditor.Core.DataRepo
             return data!;
         }
 
-        #endregion
-
-        #region Module Members
-
         public override void Create(IPublicContainer _publicContainer)
         {
             base.Create(_publicContainer);
@@ -54,7 +44,5 @@ namespace Bannerlord.UIEditor.Core.DataRepo
 
             RegisterModule<IDataRepository>();
         }
-
-        #endregion
     }
 }

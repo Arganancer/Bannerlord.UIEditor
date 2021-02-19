@@ -1,6 +1,6 @@
 <!--EXTERNAL_PROPERTIES: GameFolder-->
 <Project>
-    <Import Project="../Directory.Build.props"/>
+    <Import Project="../Directory.Build.props" />
 
     <!--src props file-->
     <PropertyGroup Condition="'$(Configuration)' == 'Stable_Debug' OR '$(Configuration)' == 'Beta_Debug'">

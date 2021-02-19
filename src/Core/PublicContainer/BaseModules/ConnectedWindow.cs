@@ -9,29 +9,17 @@ namespace Bannerlord.UIEditor.Core
 {
     public class ConnectedWindow : Window, IModule, INotifyPropertyChanged
     {
-        #region Properties
-
         public bool Disposed { get; private set; }
 
         protected IPublicContainer PublicContainer { get; private set; } = null!;
-
-        #endregion
-
-        #region Fields
 
         //private ManualResetEvent m_WaitForInitialized;
 
         private readonly List<IModule> m_Children = new();
 
-        #endregion
-
-        #region IConnectedObject Members
-
         public event EventHandler<IConnectedObject>? Disposing;
 
-        #endregion
-
-        #region IDisposable Members
+        public event PropertyChangedEventHandler? PropertyChanged;
 
         public void Dispose()
         {
@@ -47,10 +35,6 @@ namespace Bannerlord.UIEditor.Core
 
             Disposed = true;
         }
-
-        #endregion
-
-        #region IModule Members
 
         public virtual void Create(IPublicContainer _publicContainer)
         {
@@ -89,16 +73,6 @@ namespace Bannerlord.UIEditor.Core
             }
         }
 
-        #endregion
-
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler? PropertyChanged;
-
-        #endregion
-
-        #region Protected Methods
-
         protected virtual void OnDisposing()
         {
             Disposing?.Invoke(this, this);
@@ -108,7 +82,5 @@ namespace Bannerlord.UIEditor.Core
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_propertyName));
         }
-
-        #endregion
     }
 }

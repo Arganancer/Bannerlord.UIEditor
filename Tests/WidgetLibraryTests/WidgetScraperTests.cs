@@ -8,8 +8,6 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
     [TestClass]
     public class WidgetScraperTests
     {
-        #region Public Constants Statics
-
         [ClassInitialize]
         public static void Init(TestContext _context)
         {
@@ -24,16 +22,8 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
             m_MockGauntletLayer = null;
         }
 
-        #endregion
-
-        #region Static/Const Fields
-
         private static MockUIResourceManager m_MockUIResourceManager;
         private static MockGauntletLayer m_MockGauntletLayer;
-
-        #endregion
-
-        #region Public Methods
 
         [TestMethod]
         public void WidgetScraper_ScrapeAssembly_NoExceptionsThrown()
@@ -61,7 +51,5 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
             Assert.AreEqual(nameof( Widget ), instance.Name);
             Assert.IsTrue(instance.AttributeCategories.Any());
         }
-
-        #endregion
     }
 }

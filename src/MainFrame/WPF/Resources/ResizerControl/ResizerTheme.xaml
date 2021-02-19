@@ -18,7 +18,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="{x:Type local:ResizableControl}">
-                    <Grid Name="ResizerGrid"  DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
+                    <Grid Name="ResizerGrid" DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="0" />
                             <ColumnDefinition Width="*" />

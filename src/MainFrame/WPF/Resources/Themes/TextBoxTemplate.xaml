@@ -25,7 +25,7 @@
                 <Setter Property="Template">
                     <Setter.Value>
                         <ControlTemplate TargetType="{x:Type TextBox}">
-                            <Border BorderBrush="{TemplateBinding BorderBrush}" 
+                            <Border BorderBrush="{TemplateBinding BorderBrush}"
                                     BorderThickness="{TemplateBinding BorderThickness}"
                                     Background="{TemplateBinding Background}"
                                     Focusable="False" Uid="Border_17"
@@ -40,14 +40,14 @@
                 <Style.Triggers>
                     <Trigger Property="IsMouseOver" Value="True">
                         <Setter Property="Foreground" Value="{StaticResource Text_Hovered}" />
-                        <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundHovered}"/>
+                        <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundHovered}" />
                         <Setter Property="BorderBrush" Value="{StaticResource Border_Hovered}" />
                     </Trigger>
                     <Trigger Property="IsFocused" Value="True">
                         <Setter Property="Foreground" Value="{StaticResource Text_Selected}" />
-                        <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundSelected}"/>
+                        <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundSelected}" />
                         <Setter Property="BorderBrush" Value="{StaticResource Border_Selected}" />
-                        <Setter Property="CaretBrush" Value="{StaticResource Text_Selected}"/>
+                        <Setter Property="CaretBrush" Value="{StaticResource Text_Selected}" />
                     </Trigger>
                     <Trigger Property="IsEnabled" Value="False">
                         <Setter Property="Foreground" Value="{DynamicResource InputDisabledForegroundBrush}" />

@@ -2,8 +2,6 @@
 {
     public interface IModule : IConnectedObject
     {
-        #region Public Methods
-
         /// <summary>
         ///     Used to register the <see cref="IModule" /> into the given <see cref="PublicContainer" />.<br />
         ///     Any other initialization should also be done here.
@@ -19,7 +17,5 @@
         ///     Used to sever links with any objects in the <see cref="PublicContainer" />, such as unsubscribing from events.
         /// </summary>
         void Unload();
-
-        #endregion
     }
 }

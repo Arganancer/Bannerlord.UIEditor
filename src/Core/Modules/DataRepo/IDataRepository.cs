@@ -4,8 +4,6 @@ namespace Bannerlord.UIEditor.Core.DataRepo
 {
     public interface IDataRepository
     {
-        #region Public Methods
-
         bool TryGetData<T>(string _name, out T? _data);
         void AddOrUpdateData(string _name, object _data);
 
@@ -14,7 +12,5 @@ namespace Bannerlord.UIEditor.Core.DataRepo
         /// then returns the created value.
         /// </summary>
         T GetDataWithDefault<T>(string _name, Func<T> _addDefaultIfNotExist);
-
-        #endregion
     }
 }

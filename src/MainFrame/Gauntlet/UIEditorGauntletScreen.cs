@@ -7,24 +7,14 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
 {
     public class UIEditorGauntletScreen : ConnectedGauntletScreenBase
     {
-        #region Properties
-
         public UIEditorVM UIEditorVM { get; private set; } = null!;
         public GauntletLayer? UIEditorGauntletLayer { get; private set; }
-
-        #endregion
-
-        #region Fields
 
         private GauntletMovie? m_UIEditorMovie;
 
         private BackdropOverlayVM m_BackgroundOverlayVM = null!;
         private GauntletLayer? m_BackdropOverlayGauntletLayer;
         private GauntletMovie? m_BackdropOverlayMovie;
-
-        #endregion
-
-        #region ConnectedGauntletScreenBase Members
 
         public override void Create(IPublicContainer _publicContainer)
         {
@@ -52,10 +42,6 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
             UIEditorVM.Dispose();
             base.Dispose(_disposing);
         }
-
-        #endregion
-
-        #region ScreenBase Members
 
         protected override void OnInitialize()
         {
@@ -101,7 +87,5 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
             m_BackgroundOverlayVM.OnFinalize();
             RemoveLayer(m_BackdropOverlayGauntletLayer);
         }
-
-        #endregion
     }
 }

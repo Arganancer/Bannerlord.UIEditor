@@ -31,10 +31,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
                 if (monitor != IntPtr.Zero)
                 {
-                    var monitorInfo = new MonitorInfo
-                    {
-                        cbSize = Marshal.SizeOf(typeof( MonitorInfo ))
-                    };
+                    var monitorInfo = new MonitorInfo {cbSize = Marshal.SizeOf(typeof( MonitorInfo ))};
 
                     GetMonitorInfo(monitor, ref monitorInfo);
                     var rcWorkArea = monitorInfo.rcWork;

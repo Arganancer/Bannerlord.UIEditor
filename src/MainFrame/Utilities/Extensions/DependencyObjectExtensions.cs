@@ -7,11 +7,9 @@ namespace Bannerlord.UIEditor.MainFrame
 {
     public static class DependencyObjectExtensions
     {
-        #region Consts/Statics
-
         public static T? GetVisualAncestorOfType<T>(this DependencyObject _instance) where T : class
         {
-            DependencyObject? currentObject = _instance;
+            var currentObject = _instance;
             do
             {
                 currentObject = VisualTreeHelper.GetParent(currentObject);
@@ -26,7 +24,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public static IEnumerable<T>? GetVisualAncestorsOfType<T>(this DependencyObject _instance) where T : class
         {
-            DependencyObject? currentObject = _instance;
+            var currentObject = _instance;
             do
             {
                 currentObject = VisualTreeHelper.GetParent(currentObject);
@@ -182,7 +180,5 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             return _instance.GetVisualDescendantsOfType<T>(_expandChildren).Union(_instance.GetLogicalDescendantsOfType<T>(_expandChildren));
         }
-
-        #endregion
     }
 }

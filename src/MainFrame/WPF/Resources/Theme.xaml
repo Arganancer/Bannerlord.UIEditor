@@ -1,12 +1,12 @@
 ﻿<ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="Themes/Brushes.xaml"/>
-        <ResourceDictionary Source="Themes/QuickStyles.xaml"/>
-        <ResourceDictionary Source="Themes/ScrollbarTemplate.xaml"/>
-        <ResourceDictionary Source="Themes/ExpanderTemplate.xaml"/>
-        <ResourceDictionary Source="Themes/ComboBoxTemplate.xaml"/>
-        <ResourceDictionary Source="Themes/CheckBoxTemplate.xaml"/>
-        <ResourceDictionary Source="Themes/TextBoxTemplate.xaml"/>
+        <ResourceDictionary Source="Themes/Brushes.xaml" />
+        <ResourceDictionary Source="Themes/QuickStyles.xaml" />
+        <ResourceDictionary Source="Themes/ScrollbarTemplate.xaml" />
+        <ResourceDictionary Source="Themes/ExpanderTemplate.xaml" />
+        <ResourceDictionary Source="Themes/ComboBoxTemplate.xaml" />
+        <ResourceDictionary Source="Themes/CheckBoxTemplate.xaml" />
+        <ResourceDictionary Source="Themes/TextBoxTemplate.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

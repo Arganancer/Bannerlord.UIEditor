@@ -11,22 +11,12 @@ namespace Bannerlord.UIEditor.Core
 
     public class ModuleLoadedSubscription
     {
-        #region Public Properties
-
         public Action OnModulesLoaded { get; private set; }
         public Type? Target { get; private set; }
         public CallSequence CallSequence { get; private set; }
         public Type SubscriberType { get; private set; }
 
-        #endregion
-
-        #region Public Fields
-
         public List<ModuleLoadedSubscription> CallAfterList;
-
-        #endregion
-
-        #region Constructors
 
         public ModuleLoadedSubscription(Type _subscriberType, Action _onModulesLoaded)
         {
@@ -34,10 +24,6 @@ namespace Bannerlord.UIEditor.Core
             SubscriberType = _subscriberType;
             OnModulesLoaded = _onModulesLoaded;
         }
-
-        #endregion
-
-        #region Public Methods
 
         public void CallModulesLoaded()
         {
@@ -83,10 +69,6 @@ namespace Bannerlord.UIEditor.Core
             return false;
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void SwapSubscriptions(ModuleLoadedSubscription _x, ModuleLoadedSubscription _y)
         {
             Action onModulesLoaded = _x.OnModulesLoaded;
@@ -107,7 +89,5 @@ namespace Bannerlord.UIEditor.Core
             _y.SubscriberType = subscriberType;
             _y.CallAfterList = callAfterList;
         }
-
-        #endregion
     }
 }

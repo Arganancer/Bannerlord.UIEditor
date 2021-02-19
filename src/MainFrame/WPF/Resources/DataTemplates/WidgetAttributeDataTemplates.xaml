@@ -9,8 +9,8 @@
         <DataTemplate.Resources>
             <ResourceDictionary Source="../Theme.xaml" />
         </DataTemplate.Resources>
-        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}" 
-                  VerticalAlignment="Center"/>
+        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}"
+                  VerticalAlignment="Center" />
     </DataTemplate>
 
     <DataTemplate x:Key="WidgetAttribute_TextBox"
@@ -21,7 +21,7 @@
         <TextBox Text="{Binding Value, Mode=TwoWay}"
                  VerticalAlignment="Center"
                  VerticalContentAlignment="Center"
-                 HorizontalAlignment="Stretch"/>
+                 HorizontalAlignment="Stretch" />
     </DataTemplate>
 
     <DataTemplate x:Key="WidgetAttribute_EnumDropDown"
@@ -33,18 +33,17 @@
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </DataTemplate.Resources>
-        <ComboBox ItemsSource="{Binding Collection }" 
+        <ComboBox ItemsSource="{Binding Collection }"
                   SelectedItem="{Binding Value}"
                   VerticalAlignment="Center"
                   VerticalContentAlignment="Center"
-                  HorizontalAlignment="Stretch">
-        </ComboBox>
+                  HorizontalAlignment="Stretch" />
     </DataTemplate>
 
     <mainFrame:WidgetAttributeDataTemplateSelector x:Key="WidgetAttributeDataTemplateSelector"
                                                    BooleanDataTemplate="{StaticResource WidgetAttribute_CheckBox}"
-                                                   TextDataTemplate="{StaticResource WidgetAttribute_TextBox}" 
-                                                   EnumDropDownDataTemplate="{StaticResource WidgetAttribute_EnumDropDown}"/>
+                                                   TextDataTemplate="{StaticResource WidgetAttribute_TextBox}"
+                                                   EnumDropDownDataTemplate="{StaticResource WidgetAttribute_EnumDropDown}" />
 
     <!--Base Widget Attribute Data Template-->
     <DataTemplate x:Key="WidgetAttributeDataTemplate"
@@ -56,21 +55,21 @@
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="2*"
                                   MinWidth="50"
-                                  MaxWidth="200"/>
-                <ColumnDefinition Width="3*"/>
+                                  MaxWidth="200" />
+                <ColumnDefinition Width="3*" />
             </Grid.ColumnDefinitions>
 
-            <Label Grid.Column="0" 
+            <Label Grid.Column="0"
                    ToolTip="{Binding Name}"
                    VerticalContentAlignment="Center"
                    ClipToBounds="True">
                 <TextBlock Text="{Binding Name}"
-                           TextTrimming="CharacterEllipsis"/>
+                           TextTrimming="CharacterEllipsis" />
             </Label>
-            <ContentPresenter Grid.Column="1" 
+            <ContentPresenter Grid.Column="1"
                               Content="{Binding}"
-                              ContentTemplateSelector="{StaticResource WidgetAttributeDataTemplateSelector}" 
-                              HorizontalAlignment="Stretch"/>
+                              ContentTemplateSelector="{StaticResource WidgetAttributeDataTemplateSelector}"
+                              HorizontalAlignment="Stretch" />
         </Grid>
     </DataTemplate>
 

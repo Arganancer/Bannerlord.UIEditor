@@ -14,21 +14,11 @@ namespace Bannerlord.UIEditor.Main
 {
     public class UIEditorSubModule : MBSubModuleBase
     {
-        #region Consts/Statics
-
         private const string HarmonyName = "Bannerlord.UIEditor";
-
-        #endregion
-
-        #region Fields
 
         private ModuleCoordinator m_ModuleCoordinator = null!;
         private SubModuleEventNotifier m_SubModuleEventNotifier = null!;
         private IGlobalEventManager m_GlobalEventManager = null!;
-
-        #endregion
-
-        #region MBSubModuleBase Members
 
         protected override void OnSubModuleLoad()
         {
@@ -79,10 +69,6 @@ namespace Bannerlord.UIEditor.Main
             base.OnApplicationTick(_deltaTime);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void OnLaunchUIEditor(object _sender, IEnumerable<object> _params)
         {
             if (!m_ModuleCoordinator.ContainsPublicContainer("UIEditor"))
@@ -114,7 +100,5 @@ namespace Bannerlord.UIEditor.Main
             }
 #endif
         }
-
-        #endregion
     }
 }

@@ -12,8 +12,6 @@ namespace Bannerlord.UIEditor.Main.Patches
     [HarmonyPatch(typeof( InitialMenuVM ))]
     public class InitialMenuVMPatches
     {
-        #region Harmony Patches
-
         [HarmonyPatch(MethodType.Constructor, new Type[0]), HarmonyPostfix, MethodImpl(MethodImplOptions.NoInlining)]
         // ReSharper disable once InconsistentNaming
         public static void ConstructorPostfix(MBBindingList<InitialMenuOptionVM> ____menuOptions)
@@ -29,7 +27,5 @@ namespace Bannerlord.UIEditor.Main.Patches
                 )));
             }
         }
-
-        #endregion
     }
 }

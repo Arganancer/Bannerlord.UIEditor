@@ -1,7 +1,7 @@
 {
-  "profiles": {
-    "Core": {
-      "commandName": "Project"
+    "profiles": {
+        "Core": {
+            "commandName": "Project"
+        }
     }
-  }
 }

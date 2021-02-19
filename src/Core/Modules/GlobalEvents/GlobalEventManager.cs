@@ -8,26 +8,16 @@ namespace Bannerlord.UIEditor.Core
 
     internal class GlobalEventManager : Module, IGlobalEventManager
     {
-        #region Fields
-
         private ISubModuleEventNotifier m_SubModuleEventNotifier = null!;
 
         private readonly Dictionary<string, GlobalEvent> m_GlobalEventHandlers;
         private readonly ConcurrentQueue<Action> m_QueuedApplicationTickEvents;
-
-        #endregion
-
-        #region Constructors
 
         public GlobalEventManager()
         {
             m_QueuedApplicationTickEvents = new ConcurrentQueue<Action>();
             m_GlobalEventHandlers = new Dictionary<string, GlobalEvent>();
         }
-
-        #endregion
-
-        #region IGlobalEventManager Members
 
         public IGlobalEvent GetEvent(string _eventName)
         {
@@ -47,10 +37,6 @@ namespace Bannerlord.UIEditor.Core
 
             return _params => globalEvent.OnEvent(_sender, _params);
         }
-
-        #endregion
-
-        #region Module Members
 
         public override void Load()
         {
@@ -73,10 +59,6 @@ namespace Bannerlord.UIEditor.Core
             RegisterModule<IGlobalEventManager>();
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void OnApplicationTick(object _sender, float _deltaT)
         {
             while (m_QueuedApplicationTickEvents.TryDequeue(out Action invokeEvent))
@@ -95,7 +77,5 @@ namespace Bannerlord.UIEditor.Core
 
             return globalEvent;
         }
-
-        #endregion
     }
 }

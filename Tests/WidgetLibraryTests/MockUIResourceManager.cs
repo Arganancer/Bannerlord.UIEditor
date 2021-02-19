@@ -9,8 +9,6 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
 {
     public class MockUIResourceManager
     {
-        #region Public Properties
-
         public ResourceDepot UIResourceDepot { get; }
 
         public WidgetFactory WidgetFactory { get; }
@@ -22,10 +20,6 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
         public FontFactory FontFactory { get; }
 
         public TwoDimensionEngineResourceContext ResourceContext { get; }
-
-        #endregion
-
-        #region Constructors
 
         public MockUIResourceManager()
         {
@@ -41,7 +35,5 @@ namespace Bannerlord.UIEditor.WidgetLibraryTests
             //BrushFactory.Initialize();
             ResourceContext = new TwoDimensionEngineResourceContext();
         }
-
-        #endregion
     }
 }

@@ -8,16 +8,6 @@ namespace Bannerlord.UIEditor.AppContext
 {
     internal class ApplicationManager : Module, IApplicationManager
     {
-        #region Fields
-
-        private Thread? m_MainWindowThread;
-        private UIEditorApplication m_App = null!;
-        private Dispatcher m_Dispatcher = null!;
-
-        #endregion
-
-        #region IApplicationManager Members
-
         public Window? MainWindow
         {
             get => m_App.MainWindow;
@@ -30,6 +20,10 @@ namespace Bannerlord.UIEditor.AppContext
             }
         }
 
+        private Thread? m_MainWindowThread;
+        private UIEditorApplication m_App = null!;
+        private Dispatcher m_Dispatcher = null!;
+
         public void Dispatch(Action _action, bool _invokeAsync)
         {
             if (_invokeAsync)
@@ -41,10 +35,6 @@ namespace Bannerlord.UIEditor.AppContext
                 m_Dispatcher.Invoke(_action);
             }
         }
-
-        #endregion
-
-        #region Module Members
 
         public override void Create(IPublicContainer _publicContainer)
         {
@@ -67,10 +57,6 @@ namespace Bannerlord.UIEditor.AppContext
             m_App.Dispatcher.BeginInvokeShutdown(DispatcherPriority.Background);
             m_MainWindowThread?.Join();
         }
-
-        #endregion
-
-        #region Private Methods
 
         [STAThread]
         private void StartApplicationThread()
@@ -99,7 +85,5 @@ namespace Bannerlord.UIEditor.AppContext
 
             mainWindowOpened.WaitOne();
         }
-
-        #endregion
     }
 }

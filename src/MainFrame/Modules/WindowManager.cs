@@ -7,16 +7,10 @@ namespace Bannerlord.UIEditor.MainFrame
 {
     internal class WindowManager : Module, IWindowManager
     {
-        #region Fields
-
         private IGlobalEventManager m_GlobalEventManager = null!;
         private IApplicationManager m_ApplicationManager = null!;
         private InvokeGlobalEvent m_OnCloseUIEditor = null!;
         private MainWindow m_MainWindow = null!;
-
-        #endregion
-
-        #region Module Members
 
         public override void Create(IPublicContainer _publicContainer)
         {
@@ -52,10 +46,6 @@ namespace Bannerlord.UIEditor.MainFrame
             base.Unload();
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void InitializeMainWindow()
         {
             m_ApplicationManager.Dispatch(() =>
@@ -76,7 +66,5 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             m_ApplicationManager.MainWindow = null;
         }
-
-        #endregion
     }
 }

@@ -9,7 +9,7 @@
         <Widget Name="BackdropOverlay"
                 Sprite="BlankWhiteSquare"
                 WidthSizePolicy="StretchToParent"
-                HeightSizePolicy="StretchToParent" 
-                Color="#636260BF"/>
+                HeightSizePolicy="StretchToParent"
+                Color="#636260BF" />
     </Window>
 </Prefab>

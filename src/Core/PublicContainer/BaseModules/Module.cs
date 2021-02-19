@@ -6,29 +6,15 @@ namespace Bannerlord.UIEditor.Core
     /// <inheritdoc />
     public abstract class Module : IModule
     {
-        #region Properties
-
         protected IPublicContainer PublicContainer { get; private set; } = null!;
 
         protected bool Disposed { get; private set; }
-
-        #endregion
-
-        #region Fields
 
         private Token m_RegistrationToken;
 
         private readonly List<Token> m_SubModuleRegistrationTokens = new();
 
-        #endregion
-
-        #region IConnectedObject Members
-
         public event EventHandler<IConnectedObject>? Disposing;
-
-        #endregion
-
-        #region IDisposable Members
 
         public void Dispose()
         {
@@ -40,10 +26,6 @@ namespace Bannerlord.UIEditor.Core
 
             //GC.SuppressFinalize(this);
         }
-
-        #endregion
-
-        #region IModule Members
 
         /// <inheritdoc />
         public virtual void Create(IPublicContainer _publicContainer)
@@ -60,10 +42,6 @@ namespace Bannerlord.UIEditor.Core
         public virtual void Unload()
         {
         }
-
-        #endregion
-
-        #region Protected Methods
 
         /// <summary>
         /// This register is meant to be used when a module creates and wishes to register instances of its own submodules
@@ -115,15 +93,9 @@ namespace Bannerlord.UIEditor.Core
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void OnDisposing()
         {
             Disposing?.Invoke(this, this);
         }
-
-        #endregion
     }
 }

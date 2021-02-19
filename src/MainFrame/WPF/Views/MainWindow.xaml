@@ -60,7 +60,7 @@
                                                     Width="180">
                             <mainFrame:WidgetListControl x:Name="WidgetListControl"
                                                          HorizontalContentAlignment="Stretch"
-                                                         VerticalContentAlignment="Stretch"/>
+                                                         VerticalContentAlignment="Stretch" />
                         </mainFrame:ResizableControl>
                         <mainFrame:ResizableControl DockPanel.Dock="Right"
                                                     MinWidth="50">
@@ -76,7 +76,7 @@
                                             Width="300">
                     <mainFrame:WidgetAttributesControl x:Name="WidgetAttributesControl"
                                                        HorizontalContentAlignment="Stretch"
-                                                       VerticalContentAlignment="Stretch"/>
+                                                       VerticalContentAlignment="Stretch" />
                 </mainFrame:ResizableControl>
 
 

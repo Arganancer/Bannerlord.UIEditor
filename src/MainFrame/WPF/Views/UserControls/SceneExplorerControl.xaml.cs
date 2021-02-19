@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.MainFrame.Gauntlet;
@@ -81,6 +80,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 {
                     _e.Effects = DragDropEffects.Copy;
                 }
+
                 _e.Handled = true;
             }
             else
@@ -97,8 +97,8 @@ namespace Bannerlord.UIEditor.MainFrame
                 var point = _e.GetPosition(stackPanel);
                 TreeViewItem target = ((StackPanel)_sender).GetVisualAncestorOfType<TreeViewItem>()!;
                 WidgetViewModel parent;
-                IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof(IWidgetTemplate))!;
-                int targetIndex = int.MaxValue;
+                IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof( IWidgetTemplate ))!;
+                var targetIndex = int.MaxValue;
                 if (point.Y <= 3 || point.Y >= stackPanel.ActualHeight - 3)
                 {
                     WidgetViewModel sibling = (target.DataContext as WidgetViewModel)!;
@@ -122,7 +122,7 @@ namespace Bannerlord.UIEditor.MainFrame
                     target.IsExpanded = true;
                     parent = (target.DataContext as WidgetViewModel)!;
                 }
-                
+
                 parent.AddChildren(targetIndex, CreateWidget(widgetTemplate));
                 _e.Handled = true;
             }

@@ -117,6 +117,19 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public UIEditorWidget Widget { get; }
 
+        public bool IsReadonly
+        {
+            get => m_IsReadonly;
+            set
+            {
+                if (m_IsReadonly != value)
+                {
+                    m_IsReadonly = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
         protected bool ParentIsHidden
         {
             get => m_ParentIsHidden;
@@ -131,19 +144,6 @@ namespace Bannerlord.UIEditor.MainFrame
                     }
 
                     UpdateVisibility();
-                }
-            }
-        }
-
-        public bool IsReadonly
-        {
-            get => m_IsReadonly;
-            set
-            {
-                if(m_IsReadonly != value)
-                {
-                    m_IsReadonly = value;
-                    OnPropertyChanged();
                 }
             }
         }

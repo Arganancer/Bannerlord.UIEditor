@@ -2,10 +2,6 @@
 {
     public interface IWidgetTemplate
     {
-        #region Properties
-
         string Name { get; }
-
-        #endregion
     }
 }

@@ -8,31 +8,17 @@ namespace Bannerlord.UIEditor.Core
 {
     public class ModuleCoordinator
     {
-        #region Properties
-
         public IPublicContainer MainPublicContainer => m_MainPublicContainer;
-
-        #endregion
-
-        #region Fields
 
         private PublicContainer m_MainPublicContainer = null!;
         private readonly Dictionary<PublicContainer, List<IModule>> m_PublicContainers;
         private Dictionary<Assembly, Func<IEnumerable<IModule>>> m_CachedInstantiators;
-
-        #endregion
-
-        #region Constructors
 
         public ModuleCoordinator()
         {
             m_CachedInstantiators = new Dictionary<Assembly, Func<IEnumerable<IModule>>>();
             m_PublicContainers = new Dictionary<PublicContainer, List<IModule>>();
         }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Creates the Main PublicContainer.<br/>
@@ -162,10 +148,6 @@ namespace Bannerlord.UIEditor.Core
             RemovePublicContainer(publicContainerToRemove);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void RemovePublicContainer(KeyValuePair<PublicContainer, List<IModule>> _publicContainer)
         {
             foreach (var child in m_PublicContainers.Where(_x => _x.Key.Parent == _publicContainer.Key))
@@ -207,7 +189,5 @@ namespace Bannerlord.UIEditor.Core
 
             return () => moduleInstantiators.Select(_x => _x());
         }
-
-        #endregion
     }
 }

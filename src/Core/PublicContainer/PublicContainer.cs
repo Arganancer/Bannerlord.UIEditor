@@ -6,15 +6,12 @@ namespace Bannerlord.UIEditor.Core
 {
     internal sealed class PublicContainer : IPublicContainer
     {
-        #region Fields
+        public string Name { get; }
+        public IPublicContainer? Parent => m_Parent;
 
         private readonly Dictionary<string, Dictionary<ModuleItemKey, ModuleItem>> m_Modules;
         private readonly Dictionary<Token, ModuleItemKey> m_ModulesByToken;
         private readonly PublicContainer? m_Parent;
-
-        #endregion
-
-        #region Constructors
 
         public PublicContainer(string _name, PublicContainer? _parent = null)
         {
@@ -23,13 +20,6 @@ namespace Bannerlord.UIEditor.Core
             m_Modules = new Dictionary<string, Dictionary<ModuleItemKey, ModuleItem>>();
             m_ModulesByToken = new Dictionary<Token, ModuleItemKey>();
         }
-
-        #endregion
-
-        #region IPublicContainer Members
-
-        public string Name { get; }
-        public IPublicContainer? Parent => m_Parent;
 
         public Token RegisterModule<T>(IModule _module, string _moduleName) where T : class
         {
@@ -100,10 +90,6 @@ namespace Bannerlord.UIEditor.Core
                 OnConnectedModuleRegistered(moduleItem.Module);
             }
         }
-
-        #endregion
-
-        #region Private Methods
 
         private void OnModuleItemCanBeDestroyed(object? _sender, ModuleItemKey _key)
         {
@@ -229,7 +215,5 @@ namespace Bannerlord.UIEditor.Core
                 return moduleItem;
             }
         }
-
-        #endregion
     }
 }

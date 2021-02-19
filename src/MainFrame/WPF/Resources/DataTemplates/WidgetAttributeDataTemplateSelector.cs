@@ -15,7 +15,7 @@ namespace Bannerlord.UIEditor.MainFrame
             if (_container is FrameworkElement element &&
                 _item is UIEditorWidgetAttribute widgetAttribute)
             {
-                if (widgetAttribute.Type == typeof(bool))
+                if (widgetAttribute.Type == typeof( bool ))
                 {
                     return BooleanDataTemplate;
                 }

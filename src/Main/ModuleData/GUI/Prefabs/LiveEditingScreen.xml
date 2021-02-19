@@ -1,11 +1,11 @@
 ﻿<Prefab>
-	<Constants>
-	</Constants>
-	<Variables>
-	</Variables>
-	<VisualDefinitions>
-	</VisualDefinitions>
-	<Window>
-        <Widget/>
-	</Window>
+    <Constants>
+    </Constants>
+    <Variables>
+    </Variables>
+    <VisualDefinitions>
+    </VisualDefinitions>
+    <Window>
+        <Widget />
+    </Window>
 </Prefab>

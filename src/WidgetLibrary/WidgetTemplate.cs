@@ -9,15 +9,11 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 
     internal class WidgetTemplate : IWidgetTemplate
     {
-        #region Properties
-
         public Type WidgetType { get; }
         public Assembly Owner { get; }
         public CreateWidget CreateInstance { get; }
 
-        #endregion
-
-        #region Constructors
+        public string Name => WidgetType.Name;
 
         public WidgetTemplate(Type _widgetType, Assembly _owner, CreateWidget _createInstance)
         {
@@ -25,13 +21,5 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             Owner = _owner;
             CreateInstance = _createInstance;
         }
-
-        #endregion
-
-        #region IWidgetTemplate Members
-
-        public string Name => WidgetType.Name;
-
-        #endregion
     }
 }

@@ -7,15 +7,9 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 {
     public class UIEditorWidget
     {
-        #region Properties
-
         public string Name { get; }
         public List<UIEditorWidgetAttribute> Attributes { get; }
         public List<AttributeCategory> AttributeCategories { get; }
-
-        #endregion
-
-        #region Constructors
 
         public UIEditorWidget(string _name, List<UIEditorWidgetAttribute> _attributes)
         {
@@ -23,10 +17,6 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             Attributes = _attributes;
             AttributeCategories = SortAttributes(_attributes);
         }
-
-        #endregion
-
-        #region Private Methods
 
         private static List<AttributeCategory> SortAttributes(List<UIEditorWidgetAttribute> _attributes)
         {
@@ -42,11 +32,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
                     _attributes.First(_a => _a.Name == "IsVisible"),
                     _attributes.First(_a => _a.Name == "UpdateChildrenStates")
                 }),
-                new AttributeCategory("Position", typeof( Widget ), new List<UIEditorWidgetAttribute>
-                {
-                    _attributes.First(_a => _a.Name == "PositionXOffset"), 
-                    _attributes.First(_a => _a.Name == "PositionYOffset")
-                }),
+                new AttributeCategory("Position", typeof( Widget ), new List<UIEditorWidgetAttribute> {_attributes.First(_a => _a.Name == "PositionXOffset"), _attributes.First(_a => _a.Name == "PositionYOffset")}),
                 new AttributeCategory("Alignment", typeof( Widget ), new List<UIEditorWidgetAttribute>
                 {
                     _attributes.First(_a => _a.Name == "MarginTop"),
@@ -81,11 +67,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
                     _attributes.First(_a => _a.Name == "HideOnDrag"),
                     _attributes.First(_a => _a.Name == "DragWidget")
                 }),
-                new AttributeCategory("Animations", typeof( Widget ), new List<UIEditorWidgetAttribute>
-                {
-                    _attributes.First(_a => _a.Name == "TweenPosition"), 
-                    _attributes.First(_a => _a.Name == "RestartAnimationFirstFrame")
-                }),
+                new AttributeCategory("Animations", typeof( Widget ), new List<UIEditorWidgetAttribute> {_attributes.First(_a => _a.Name == "TweenPosition"), _attributes.First(_a => _a.Name == "RestartAnimationFirstFrame")}),
                 new AttributeCategory("Rendering", typeof( Widget ), new List<UIEditorWidgetAttribute>
                 {
                     _attributes.First(_a => _a.Name == "VisualDefinition"),
@@ -109,7 +91,5 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 
             return categories;
         }
-
-        #endregion
     }
 }

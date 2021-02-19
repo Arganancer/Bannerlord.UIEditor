@@ -5,21 +5,11 @@ namespace Bannerlord.UIEditor.Core
 {
     public abstract class ConnectedGauntletViewModel : ViewModel, IModule
     {
-        #region Properties
-
         protected bool Disposed { get; private set; }
 
         protected IPublicContainer PublicContainer { get; private set; } = null!;
 
-        #endregion
-
-        #region IConnectedObject Members
-
         public event EventHandler<IConnectedObject>? Disposing;
-
-        #endregion
-
-        #region IDisposable Members
 
         public void Dispose()
         {
@@ -29,10 +19,6 @@ namespace Bannerlord.UIEditor.Core
                 Dispose(true);
             }
         }
-
-        #endregion
-
-        #region IModule Members
 
         public virtual void Create(IPublicContainer _publicContainer)
         {
@@ -49,10 +35,6 @@ namespace Bannerlord.UIEditor.Core
         {
         }
 
-        #endregion
-
-        #region Protected Methods
-
         protected virtual void Dispose(bool _disposing)
         {
             // Execute if resources have not already been disposed.
@@ -62,15 +44,9 @@ namespace Bannerlord.UIEditor.Core
             }
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void OnDisposing()
         {
             Disposing?.Invoke(this, this);
         }
-
-        #endregion
     }
 }

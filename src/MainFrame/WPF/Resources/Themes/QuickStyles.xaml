@@ -31,8 +31,8 @@
     <Style x:Key="{x:Type ScrollViewer}" TargetType="{x:Type ScrollViewer}">
         <Style.Resources>
             <Style x:Key="{x:Type Rectangle}" TargetType="{x:Type Rectangle}">
-                <Setter Property="Fill" Value="{StaticResource Container_Background}"/>
-                <Setter Property="Opacity" Value="0"/>
+                <Setter Property="Fill" Value="{StaticResource Container_Background}" />
+                <Setter Property="Opacity" Value="0" />
             </Style>
         </Style.Resources>
     </Style>

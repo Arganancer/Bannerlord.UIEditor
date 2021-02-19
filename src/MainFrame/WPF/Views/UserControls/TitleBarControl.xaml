@@ -98,8 +98,7 @@
             Grid.Column="1"
             Margin="4 0 0 0"
             VerticalAlignment="Center"
-            FontSize="14"
-            >
+            FontSize="14">
             <TextBlock.Style>
                 <Style TargetType="{x:Type TextBlock}">
                     <Style.Triggers>
@@ -108,8 +107,9 @@
                         </DataTrigger>
                     </Style.Triggers>
                 </Style>
-            </TextBlock.Style><InlineUIContainer>
-            </InlineUIContainer></TextBlock>
+            </TextBlock.Style>
+            <InlineUIContainer />
+        </TextBlock>
 
         <Button
             Grid.Column="2"

@@ -4,15 +4,9 @@ namespace Bannerlord.UIEditor.Core
 {
     public interface IPublicContainer
     {
-        #region Public Properties
-
         string Name { get; }
 
         IPublicContainer? Parent { get; }
-
-        #endregion
-
-        #region Public Methods
 
         /// <summary>
         /// Should be called from the <see cref="IModule.Create"/> method.<br/>
@@ -63,7 +57,5 @@ namespace Bannerlord.UIEditor.Core
             Action<T> _onConnectedModuleRegistered,
             Action<T> _onConnectedModuleUnregistering,
             string _moduleName = "") where T : class;
-
-        #endregion
     }
 }

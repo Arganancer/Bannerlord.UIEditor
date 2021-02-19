@@ -7,15 +7,9 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
 {
     public class GauntletManager : Module, IGauntletManager
     {
-        #region IGauntletManager Members
-
         public UIEditorGauntletScreen UIEditorGauntletScreen { get; private set; } = null!;
 
         public UIContext? UIContext => UIEditorGauntletScreen.UIEditorGauntletLayer?._gauntletUIContext;
-
-        #endregion
-
-        #region Module Members
 
         public override void Create(IPublicContainer _publicContainer)
         {
@@ -53,16 +47,10 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
             base.Dispose(_disposing);
         }
 
-        #endregion
-
-        #region Private Methods
-
         private void InitializeUIEditorGauntletScreen()
         {
             UIEditorGauntletScreen = (UIEditorGauntletScreen)ViewCreatorManager.CreateScreenView<UIEditorGauntletScreen>();
             UIEditorGauntletScreen.Create(PublicContainer);
         }
-
-        #endregion
     }
 }
