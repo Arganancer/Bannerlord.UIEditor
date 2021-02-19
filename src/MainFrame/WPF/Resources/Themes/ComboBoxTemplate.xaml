@@ -80,8 +80,6 @@
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ContainerItem_BackgroundHovered}" />
                                                         <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource Border_Hovered}" />
-                                                        <!--<Setter Property="Background" TargetName="splitBorder" Value="{StaticResource Gadget_ForegroundHovered}"/>
-                                                        <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource Gadget_ForegroundHovered}" />-->
                                                     </MultiDataTrigger>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
@@ -91,8 +89,6 @@
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ContainerItem_BackgroundHovered}" />
                                                         <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource Border_Hovered}" />
-                                                        <!--<Setter Property="Background" TargetName="splitBorder" Value="{StaticResource Gadget_ForegroundHovered}"/>
-                                                        <Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource Gadget_ForegroundHovered}" />-->
                                                     </MultiDataTrigger>
                                                     <Trigger Property="IsPressed" Value="True">
                                                         <Setter Property="Fill" TargetName="Arrow" Value="{StaticResource Gadget_ForegroundSelected}" />
@@ -105,8 +101,6 @@
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ContainerItem_BackgroundHovered}" />
                                                         <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource Border_Selected}" />
-                                                        <!--<Setter Property="Background" TargetName="splitBorder" Value="{StaticResource Gadget_ForegroundSelected}"/>-->
-                                                        <!--<Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource Gadget_ForegroundSelected}" />-->
                                                     </MultiDataTrigger>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
@@ -116,8 +110,6 @@
                                                         </MultiDataTrigger.Conditions>
                                                         <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ContainerItem_BackgroundHovered}" />
                                                         <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource Border_Selected}" />
-                                                        <!--<Setter Property="Background" TargetName="splitBorder" Value="{StaticResource Gadget_ForegroundSelected}"/>-->
-                                                        <!--<Setter Property="BorderBrush" TargetName="splitBorder" Value="{StaticResource Gadget_ForegroundSelected}" />-->
                                                     </MultiDataTrigger>
                                                     <Trigger Property="IsEnabled" Value="False">
                                                         <Setter Property="Fill" TargetName="Arrow" Value="{StaticResource Gadget_ForegroundDisabled}" />
@@ -128,8 +120,8 @@
                                                             <Condition Binding="{Binding IsEditable, 
                                                                 RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ComboBox}}}" Value="false" />
                                                         </MultiDataTrigger.Conditions>
-                                                        <!--<Setter Property="Background" TargetName="templateRoot" Value="#FFF0F0F0" />
-                                                        <Setter Property="BorderBrush" TargetName="templateRoot" Value="#FFD9D9D9" />-->
+                                                        <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ContainerItem_BackgroundDisabled}" />
+                                                        <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource Border_Disabled}" />
                                                     </MultiDataTrigger>
                                                     <MultiDataTrigger>
                                                         <MultiDataTrigger.Conditions>
@@ -137,10 +129,8 @@
                                                             <Condition Binding="{Binding IsEditable,
                                                                 RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type ComboBox}}}" Value="true" />
                                                         </MultiDataTrigger.Conditions>
-                                                        <!--<Setter Property="Background" TargetName="templateRoot" Value="White" />
-                                                        <Setter Property="BorderBrush" TargetName="templateRoot" Value="#FFBFBFBF" />
-                                                        <Setter Property="Background" TargetName="splitBorder" Value="Transparent" />
-                                                        <Setter Property="BorderBrush" TargetName="splitBorder" Value="Transparent" />-->
+                                                        <Setter Property="Background" TargetName="templateRoot" Value="{StaticResource ContainerItem_BackgroundDisabled}" />
+                                                        <Setter Property="BorderBrush" TargetName="templateRoot" Value="{StaticResource Border_Disabled}" />
                                                     </MultiDataTrigger>
                                                 </ControlTemplate.Triggers>
                                             </ControlTemplate>

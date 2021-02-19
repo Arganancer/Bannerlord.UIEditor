@@ -56,25 +56,10 @@
 
     <Style x:Key="{x:Type TextBlock}" TargetType="{x:Type TextBlock}">
         <Setter Property="Foreground" Value="{StaticResource Text}" />
-    </Style>
-
-    <!--<Style x:Key="{x:Type TextBox}" TargetType="{x:Type TextBox}">
-        <Setter Property="Background" Value="{StaticResource ContainerItem_Background}"/>
-        <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
-        <Setter Property="Foreground" Value="{StaticResource Text}"/>
-        <Setter Property="CaretBrush" Value="{StaticResource Text_Selected}"/>
-        <Setter Property="BorderThickness" Value="1"/>
         <Style.Triggers>
-            <Trigger Property="IsMouseOver" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Text_Hovered}" />
-                <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundHovered}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource Border_Hovered}" />
-            </Trigger>
-            <Trigger Property="IsFocused" Value="True">
-                <Setter Property="Foreground" Value="{StaticResource Text_Selected}" />
-                <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundSelected}"/>
-                <Setter Property="BorderBrush" Value="{StaticResource Border_Selected}" />
+            <Trigger Property="IsEnabled" Value="False">
+                <Setter Property="Foreground" Value="{StaticResource Text_Disabled}"/>
             </Trigger>
         </Style.Triggers>
-    </Style>-->
+    </Style>
 </ResourceDictionary>

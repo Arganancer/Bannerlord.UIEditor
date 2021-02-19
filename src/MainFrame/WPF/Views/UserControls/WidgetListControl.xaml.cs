@@ -103,12 +103,7 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             SelectedWidgetTemplateChanged?.Invoke(this, _selectedWidgetTemplate);
         }
-
-        /// <summary>
-        /// TODO: Add Drag and Drop between this, SceneExplorer, and Canvas:
-        /// General: https://docs.microsoft.com/en-us/dotnet/desktop/wpf/advanced/drag-and-drop-overview?view=netframeworkdesktop-4.8
-        /// Walkthrough: https://docs.microsoft.com/en-us/dotnet/desktop/wpf/advanced/walkthrough-enabling-drag-and-drop-on-a-user-control?view=netframeworkdesktop-4.8
-        /// </summary>
+        
         private void Widget_OnMouseMove(object _sender, MouseEventArgs _e)
         {
             if (_e.LeftButton == MouseButtonState.Pressed)

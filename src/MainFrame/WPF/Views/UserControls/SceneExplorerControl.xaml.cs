@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.MainFrame.Gauntlet;
 using Bannerlord.UIEditor.WidgetLibrary;
@@ -36,6 +37,8 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private WidgetViewModel? m_RootWidget;
 
+        private WidgetViewModel? m_SelectedWidgetViewModel;
+
         public SceneExplorerControl()
         {
             InitializeComponent();
@@ -57,6 +60,25 @@ namespace Bannerlord.UIEditor.MainFrame
             m_CanvasEditorControl = PublicContainer.GetModule<ICanvasEditorControl>();
         }
 
+        protected override void OnGiveFeedback(GiveFeedbackEventArgs _e)
+        {
+            base.OnGiveFeedback(_e);
+
+            Cursor cursor = Cursors.No;
+            if (_e.Effects.HasFlag(DragDropEffects.Move))
+            {
+                cursor = Cursors.SizeWE;
+            }
+            else if (_e.Effects.HasFlag(DragDropEffects.Copy))
+            {
+                cursor = Cursors.Cross;
+            }
+
+            Mouse.SetCursor(cursor);
+
+            _e.Handled = true;
+        }
+
         private WidgetViewModel CreateWidget(IWidgetTemplate _widgetTemplate)
         {
             return new(_widgetTemplate.Name, m_WidgetManager!.CreateWidget(m_GauntletManager!.UIContext!, _widgetTemplate), m_CanvasEditorControl!) {IsReadonly = false};
@@ -64,7 +86,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void WidgetItem_OnDragOver(object _sender, DragEventArgs _e)
         {
-            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )))
+            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )) || _e.Data.GetDataPresent(nameof(WidgetViewModel)))
             {
                 StackPanel stackPanel = (StackPanel)_sender;
                 var point = _e.GetPosition(stackPanel);
@@ -96,13 +118,12 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void WidgetItem_OnDrop(object _sender, DragEventArgs _e)
         {
-            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )))
+            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )) || _e.Data.GetDataPresent(nameof(WidgetViewModel)))
             {
                 StackPanel stackPanel = (StackPanel)_sender;
                 var point = _e.GetPosition(stackPanel);
                 TreeViewItem target = ((StackPanel)_sender).GetVisualAncestorOfType<TreeViewItem>()!;
                 WidgetViewModel parent;
-                IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof( IWidgetTemplate ))!;
                 var targetIndex = int.MaxValue;
                 if (point.Y <= 3 || point.Y >= stackPanel.ActualHeight - 3)
                 {
@@ -128,7 +149,17 @@ namespace Bannerlord.UIEditor.MainFrame
                     parent = (target.DataContext as WidgetViewModel)!;
                 }
 
-                parent.AddChildren(targetIndex, CreateWidget(widgetTemplate));
+                WidgetViewModel? viewModel = _e.Data.GetData(nameof(WidgetViewModel)) as WidgetViewModel;
+                if (viewModel is null)
+                {
+                    IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof(IWidgetTemplate))!;
+                    viewModel = CreateWidget(widgetTemplate);
+                }
+                else
+                {
+                    RootWidget!.RemoveChildren(viewModel);
+                }
+                parent.AddChildren(targetIndex, viewModel);
                 _e.Handled = true;
             }
         }
@@ -160,12 +191,23 @@ namespace Bannerlord.UIEditor.MainFrame
         private void SceneTreeView_OnSelectedItemChanged(object _sender, RoutedPropertyChangedEventArgs<object> _e)
         {
             var widgetViewModel = _e.NewValue as WidgetViewModel;
+            m_SelectedWidgetViewModel = widgetViewModel;
             OnSelectedWidgetChanged(widgetViewModel);
         }
 
         private void OnSelectedWidgetChanged(WidgetViewModel? _e)
         {
             SelectedWidgetChanged?.Invoke(this, _e);
+        }
+
+        private void WidgetItem_OnMouseMove(object _sender, MouseEventArgs _e)
+        {
+            if (_e.LeftButton == MouseButtonState.Pressed && m_SelectedWidgetViewModel is not null)
+            {
+                DataObject data = new();
+                data.SetData(nameof(WidgetViewModel), m_SelectedWidgetViewModel);
+                DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
+            }
         }
     }
 }

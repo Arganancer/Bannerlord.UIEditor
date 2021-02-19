@@ -175,6 +175,8 @@ namespace Bannerlord.UIEditor.MainFrame
             AddToCanvas(_canvasEditorControl);
         }
 
+        public event PropertyChangedEventHandler? PropertyChanged;
+
         public void AddToCanvas(ICanvasEditorControl _canvasEditorControl)
         {
             if (m_CanvasEditorControl is null)
@@ -189,8 +191,6 @@ namespace Bannerlord.UIEditor.MainFrame
                 ZIndex = 0;
             }
         }
-
-        public event PropertyChangedEventHandler? PropertyChanged;
 
         public void AddChildren(int _index, params WidgetViewModel[] _children)
         {
@@ -231,9 +231,14 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public void RemoveChildren(params WidgetViewModel[] _children)
         {
-            foreach (WidgetViewModel child in _children)
+            foreach (WidgetViewModel childToRemove in _children)
             {
-                Children.Remove(child);
+                Children.Remove(childToRemove);
+            }
+
+            foreach (WidgetViewModel child in Children)
+            {
+                child.RemoveChildren(_children);
             }
         }
 

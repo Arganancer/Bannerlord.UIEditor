@@ -50,17 +50,17 @@
                         <Setter Property="CaretBrush" Value="{StaticResource Text_Selected}" />
                     </Trigger>
                     <Trigger Property="IsEnabled" Value="False">
-                        <Setter Property="Foreground" Value="{DynamicResource InputDisabledForegroundBrush}" />
-                        <Setter Property="Background" Value="{DynamicResource InputDisabledBackgroundBrush}" />
-                        <Setter Property="BorderBrush" Value="{DynamicResource InputDisabledBorderBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource Text_Disabled}" />
+                        <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundDisabled}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource Border_Disabled}" />
                     </Trigger>
                     <MultiTrigger>
                         <MultiTrigger.Conditions>
                             <Condition Property="IsReadOnly" Value="True" />
                         </MultiTrigger.Conditions>
-                        <Setter Property="Background" Value="{DynamicResource InputDisabledBackgroundBrush}" />
-                        <Setter Property="Foreground" Value="{DynamicResource InputDisabledForegroundBrush}" />
-                        <Setter Property="BorderBrush" Value="{DynamicResource InputDisabledBorderBrush}" />
+                        <Setter Property="Foreground" Value="{StaticResource Text_Disabled}" />
+                        <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundDisabled}" />
+                        <Setter Property="BorderBrush" Value="{StaticResource Border_Disabled}" />
                     </MultiTrigger>
                 </Style.Triggers>
             </Style>
