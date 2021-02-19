@@ -3,13 +3,18 @@
                     xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary"
                     xmlns:mainFrame="clr-namespace:Bannerlord.UIEditor.MainFrame"
                     xmlns:System="clr-namespace:System;assembly=mscorlib">
-
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary>
+            <mainFrame:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+        </ResourceDictionary>
+    </ResourceDictionary.MergedDictionaries>
     <DataTemplate x:Key="WidgetAttribute_CheckBox"
                   DataType="{x:Type widgetLibrary:UIEditorWidgetAttribute}">
         <DataTemplate.Resources>
             <ResourceDictionary Source="../Theme.xaml" />
         </DataTemplate.Resources>
         <CheckBox IsChecked="{Binding Value, Mode=TwoWay}"
+                  IsEnabled="{Binding IsReadonly, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
                   VerticalAlignment="Center" />
     </DataTemplate>
 
@@ -19,6 +24,7 @@
             <ResourceDictionary Source="../Theme.xaml" />
         </DataTemplate.Resources>
         <TextBox Text="{Binding Value, Mode=TwoWay}"
+                 IsEnabled="{Binding IsReadonly, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
                  VerticalAlignment="Center"
                  VerticalContentAlignment="Center"
                  HorizontalAlignment="Stretch" />
@@ -34,6 +40,7 @@
             </ResourceDictionary>
         </DataTemplate.Resources>
         <ComboBox ItemsSource="{Binding Collection }"
+                  IsEnabled="{Binding IsReadonly, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
                   SelectedItem="{Binding Value}"
                   VerticalAlignment="Center"
                   VerticalContentAlignment="Center"

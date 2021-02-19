@@ -24,7 +24,7 @@
                               Name="WidgetAttributeCategories"
                               HorizontalAlignment="Stretch"
                               HorizontalContentAlignment="Stretch"
-                              ItemsSource="{Binding SelectedWidget.AttributeCategories, UpdateSourceTrigger=PropertyChanged}">
+                              ItemsSource="{Binding SelectedWidget.Widget.AttributeCategories, UpdateSourceTrigger=PropertyChanged}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type widgetLibrary:AttributeCategory }">
                             <DataTemplate.Resources>
@@ -37,6 +37,9 @@
                             </DataTemplate.Resources>
                             <Border BorderThickness="0, 0, 0, 1">
                                 <Expander Header="{Binding Name}"
+                                          Expanded="Expander_OnExpanded"
+                                          Collapsed="Expander_OnCollapsed"
+                                          Loaded="Expander_OnLoaded"
                                           Padding="4">
                                     <ItemsControl ItemsSource="{Binding Attributes}"
                                                   ItemTemplate="{StaticResource WidgetAttributeDataTemplate}"

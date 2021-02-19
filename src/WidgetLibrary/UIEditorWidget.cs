@@ -7,9 +7,27 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 {
     public class UIEditorWidget
     {
+        private bool m_IsReadonly;
         public string Name { get; }
         public List<UIEditorWidgetAttribute> Attributes { get; }
         public List<AttributeCategory> AttributeCategories { get; }
+
+        public bool IsReadonly
+        {
+            get => m_IsReadonly;
+            set
+            {
+                if (m_IsReadonly != value)
+                {
+                    m_IsReadonly = value;
+
+                    foreach (AttributeCategory attributeCategory in AttributeCategories)
+                    {
+                        attributeCategory.IsReadonly = m_IsReadonly;
+                    }
+                }
+            }
+        }
 
         public UIEditorWidget(string _name, List<UIEditorWidgetAttribute> _attributes)
         {

@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System;
+using System.Windows;
 using System.Windows.Controls;
 using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.MainFrame.Gauntlet;
@@ -11,6 +12,8 @@ namespace Bannerlord.UIEditor.MainFrame
     /// Add multi select for items in the tree view.
     /// Add deleting items in the tree view.
     /// Allow reorganizing items in the tree view via drag and drop.
+    /// Allow selecting current widget from code.
+    /// Set new dropped widgets as selected.
     /// </summary>
     public partial class SceneExplorerControl : ConnectedUserControl, ISceneExplorerControl
     {
@@ -38,6 +41,8 @@ namespace Bannerlord.UIEditor.MainFrame
             InitializeComponent();
         }
 
+        public event EventHandler<WidgetViewModel?>? SelectedWidgetChanged;
+
         public override void Create(IPublicContainer _publicContainer)
         {
             base.Create(_publicContainer);
@@ -54,7 +59,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private WidgetViewModel CreateWidget(IWidgetTemplate _widgetTemplate)
         {
-            return new(_widgetTemplate.Name, m_WidgetManager!.CreateWidget(m_GauntletManager!.UIContext!, _widgetTemplate), m_CanvasEditorControl!);
+            return new(_widgetTemplate.Name, m_WidgetManager!.CreateWidget(m_GauntletManager!.UIContext!, _widgetTemplate), m_CanvasEditorControl!) {IsReadonly = false};
         }
 
         private void WidgetItem_OnDragOver(object _sender, DragEventArgs _e)
@@ -150,6 +155,17 @@ namespace Bannerlord.UIEditor.MainFrame
                 Dispatcher.Invoke(() => SceneTreeView.Items.Add(RootWidget));
                 _e.Handled = true;
             }
+        }
+
+        private void SceneTreeView_OnSelectedItemChanged(object _sender, RoutedPropertyChangedEventArgs<object> _e)
+        {
+            var widgetViewModel = _e.NewValue as WidgetViewModel;
+            OnSelectedWidgetChanged(widgetViewModel);
+        }
+
+        private void OnSelectedWidgetChanged(WidgetViewModel? _e)
+        {
+            SelectedWidgetChanged?.Invoke(this, _e);
         }
     }
 }

@@ -12,6 +12,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
         public string Name { get; }
         public object? Value { get; set; }
         public Type DeclaringType { get; }
+        public bool IsReadonly { get; set; }
 
         public UIEditorWidgetAttribute(Type _type, object? _defaultValue, string _name, object? _value, Type _declaringType)
         {

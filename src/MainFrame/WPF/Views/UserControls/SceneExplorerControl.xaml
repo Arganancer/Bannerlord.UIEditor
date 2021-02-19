@@ -16,7 +16,8 @@
                   ScrollViewer.CanContentScroll="False"
                   AllowDrop="True"
                   DragOver="SceneTreeView_OnDragOver"
-                  Drop="SceneTreeView_OnDrop">
+                  Drop="SceneTreeView_OnDrop"
+                  SelectedItemChanged="SceneTreeView_OnSelectedItemChanged">
             <!--<TreeView.ItemContainerStyle>
             <Style TargetType="{x:Type TreeViewItem}">
                 <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />

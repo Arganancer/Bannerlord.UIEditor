@@ -125,6 +125,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_IsReadonly != value)
                 {
                     m_IsReadonly = value;
+                    Widget.IsReadonly = m_IsReadonly;
                     OnPropertyChanged();
                 }
             }
@@ -148,7 +149,7 @@ namespace Bannerlord.UIEditor.MainFrame
             }
         }
 
-        private readonly ICanvasEditorControl m_CanvasEditorControl;
+        private ICanvasEditorControl? m_CanvasEditorControl;
 
         private int m_X;
         private int m_Y;
@@ -161,18 +162,32 @@ namespace Bannerlord.UIEditor.MainFrame
         private string m_Name;
         private bool m_IsReadonly;
 
-        public WidgetViewModel(string _name, UIEditorWidget _widget, ICanvasEditorControl _canvasEditorControl)
+        public WidgetViewModel(string _name, UIEditorWidget _widget, ICanvasEditorControl? _canvasEditorControl)
         {
-            Children = new ObservableCollection<WidgetViewModel>();
-            m_CanvasEditorControl = _canvasEditorControl;
-            m_CanvasEditorControl.Dispatcher.Invoke(() => { m_Rectangle = new Rectangle(); });
-
             Name = _name;
-            IsVisible = true;
-            ParentIsHidden = false;
-
             Widget = _widget;
-            ZIndex = 0;
+
+            if (_canvasEditorControl is null)
+            {
+                return;
+            }
+
+            AddToCanvas(_canvasEditorControl);
+        }
+
+        public void AddToCanvas(ICanvasEditorControl _canvasEditorControl)
+        {
+            if (m_CanvasEditorControl is null)
+            {
+                m_CanvasEditorControl = _canvasEditorControl;
+                Children = new ObservableCollection<WidgetViewModel>();
+                m_CanvasEditorControl.Dispatcher.Invoke(() => { m_Rectangle = new Rectangle(); });
+
+                IsVisible = true;
+                ParentIsHidden = false;
+
+                ZIndex = 0;
+            }
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;
@@ -181,7 +196,7 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             foreach (WidgetViewModel child in _children)
             {
-                m_CanvasEditorControl.Dispatcher.Invoke(() =>
+                m_CanvasEditorControl?.Dispatcher.Invoke(() =>
                 {
                     child.ParentIsHidden = !IsVisible || ParentIsHidden;
                     child.ZIndex = ZIndex + 1;
@@ -229,7 +244,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void UpdateVisibility()
         {
-            m_CanvasEditorControl.Dispatcher.Invoke(() =>
+            m_CanvasEditorControl?.Dispatcher.Invoke(() =>
             {
                 var rectangleInCanvas = m_CanvasEditorControl.Canvas.Children.Contains(m_Rectangle);
                 if ((ParentIsHidden || !IsVisible) && rectangleInCanvas)
@@ -245,7 +260,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void UpdateRectangle()
         {
-            m_CanvasEditorControl.Dispatcher.Invoke(() =>
+            m_CanvasEditorControl?.Dispatcher.Invoke(() =>
             {
                 m_Rectangle.Width = Width;
                 m_Rectangle.Height = Height;
