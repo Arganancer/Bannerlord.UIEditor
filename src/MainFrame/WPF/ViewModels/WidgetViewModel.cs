@@ -18,6 +18,13 @@ namespace Bannerlord.UIEditor.MainFrame
         public WidgetViewModel? Parent { get; protected set; }
         public ObservableCollection<WidgetViewModel> Children { get; set; } = new();
 
+        public bool IsDirty { get; private set; }
+
+        public void SetDirty()
+        {
+            IsDirty = true;
+        }
+
         public string? Name
         {
             get => m_Name;
@@ -57,7 +64,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_ZIndex != value)
                 {
                     m_ZIndex = value;
-                    UpdateRectangle();
+                    SetDirty();
                     foreach (WidgetViewModel child in Children)
                     {
                         child.ZIndex = m_ZIndex + 1;
@@ -74,7 +81,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_X != value)
                 {
                     m_X = value;
-                    UpdateRectangle();
+                    SetDirty();
                     OnPropertyChanged();
                 }
             }
@@ -88,7 +95,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_Y != value)
                 {
                     m_Y = value;
-                    UpdateRectangle();
+                    SetDirty();
                     OnPropertyChanged();
                 }
             }
@@ -102,7 +109,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_Width != value)
                 {
                     m_Width = value;
-                    UpdateRectangle();
+                    SetDirty();
                     OnPropertyChanged();
                 }
             }
@@ -116,7 +123,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_Height != value)
                 {
                     m_Height = value;
-                    UpdateRectangle();
+                    SetDirty();
                     OnPropertyChanged();
                 }
             }
@@ -172,7 +179,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_SuggestedWidth = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -182,7 +189,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_SuggestedHeight = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -235,7 +242,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_MarginTop = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -245,7 +252,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_MarginLeft = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -255,7 +262,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_MarginBottom = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -265,7 +272,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_MarginRight = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -275,7 +282,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_VerticalAlignment = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -285,7 +292,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_HorizontalAlignment = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -295,7 +302,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_WidthSizePolicy = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -305,7 +312,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_HeightSizePolicy = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -315,7 +322,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_MaxWidth = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -325,7 +332,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_MaxHeight = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -335,7 +342,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_MinWidth = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -345,7 +352,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_MinHeight = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -355,7 +362,7 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_PositionXOffset = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
@@ -365,11 +372,11 @@ namespace Bannerlord.UIEditor.MainFrame
             set
             {
                 m_PositionYOffset = value;
-                UpdateRectangle();
+                SetDirty();
             }
         }
 
-        private IPublicContainer PublicContainer { get; set; } = null!;
+        private IPublicContainer PublicContainer { get; }
 
         private ICanvasEditorControl? m_CanvasEditorControl;
 
@@ -403,6 +410,8 @@ namespace Bannerlord.UIEditor.MainFrame
         private bool m_IsExpanded;
         private IFocusManager m_FocusManager;
 
+        private bool m_IsMouseOver;
+
         public WidgetViewModel(string _name, UIEditorWidget _widget, ICanvasEditorControl? _canvasEditorControl, IPublicContainer _publicContainer)
         {
             PublicContainer = _publicContainer;
@@ -426,6 +435,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public void Dispose()
         {
+            CompositionTarget.Rendering -= OnTick;
             OnDisposing(this);
         }
 
@@ -441,7 +451,18 @@ namespace Bannerlord.UIEditor.MainFrame
 
                 ZIndex = 0;
 
+                CompositionTarget.Rendering += OnTick;
+
                 UpdateVisibility();
+                SetDirty();
+            }
+        }
+
+        private void OnTick(object _sender, EventArgs _e)
+        {
+            if(IsDirty)
+            {
+                IsDirty = false;
                 UpdateRectangle();
             }
         }
@@ -671,17 +692,15 @@ namespace Bannerlord.UIEditor.MainFrame
             UpdateVisualFocus();
         }
 
-        private bool m_IsMouseOver;
-
         private void UpdateVisualFocus()
         {
-            if(m_IsMouseOver && IsFocused)
+            if (m_IsMouseOver && IsFocused)
             {
                 m_CanvasEditorControl?.Dispatcher.Invoke(() =>
                 {
                     Rectangle!.StrokeThickness = 3;
                     Rectangle.Stroke = new SolidColorBrush(Color.FromRgb(125, 236, 250));
-                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 201, 227)) { Opacity = 0.5 };
+                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 201, 227)) {Opacity = 0.5};
                 });
             }
             else if (m_IsMouseOver)
@@ -690,7 +709,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 {
                     Rectangle!.StrokeThickness = 2;
                     Rectangle.Stroke = new SolidColorBrush(Color.FromRgb(53, 203, 222));
-                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 163, 184)) { Opacity = 0.3 };
+                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 163, 184)) {Opacity = 0.3};
                 });
             }
             else if (IsFocused)
@@ -699,7 +718,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 {
                     Rectangle!.StrokeThickness = 2;
                     Rectangle.Stroke = new SolidColorBrush(Color.FromRgb(92, 221, 237));
-                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 183, 207)) { Opacity = 0.4 };
+                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 183, 207)) {Opacity = 0.4};
                 });
             }
             else
@@ -793,15 +812,14 @@ namespace Bannerlord.UIEditor.MainFrame
             }
         }
 
-        private void UpdateRectangle()
+        private void UpdateRectangle(bool _updateChildren = true, bool _updateParent = true)
         {
             if (Rectangle is null)
             {
                 return;
             }
-
-            // TODO: update parent if child size changes.
-            if (WidthSizePolicy == SizePolicy.CoverChildren || HeightSizePolicy == SizePolicy.CoverChildren)
+            
+            if (_updateChildren && (WidthSizePolicy == SizePolicy.CoverChildren || HeightSizePolicy == SizePolicy.CoverChildren))
             {
                 foreach (WidgetViewModel child in Children)
                 {
@@ -810,6 +828,11 @@ namespace Bannerlord.UIEditor.MainFrame
             }
 
             RefreshWidget();
+            if (_updateParent && Parent is not null && (Parent.WidthSizePolicy == SizePolicy.CoverChildren || Parent.HeightSizePolicy == SizePolicy.CoverChildren))
+            {
+                Parent.UpdateRectangle(false, true);
+            }
+
             m_CanvasEditorControl?.Dispatcher.Invoke(() =>
             {
                 Canvas.SetLeft(Rectangle, ActualX);
@@ -819,9 +842,12 @@ namespace Bannerlord.UIEditor.MainFrame
                 Panel.SetZIndex(Rectangle, ZIndex);
             });
 
-            foreach (WidgetViewModel child in Children)
+            if (_updateChildren)
             {
-                child.UpdateRectangle();
+                foreach (WidgetViewModel child in Children)
+                {
+                    child.UpdateRectangle(_updateChildren, false);
+                }
             }
         }
     }
