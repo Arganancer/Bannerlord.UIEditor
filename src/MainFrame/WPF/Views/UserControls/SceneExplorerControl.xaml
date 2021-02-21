@@ -18,18 +18,18 @@
                   DragOver="SceneTreeView_OnDragOver"
                   Drop="SceneTreeView_OnDrop"
                   SelectedItemChanged="SceneTreeView_OnSelectedItemChanged">
-            <!--<TreeView.ItemContainerStyle>
-            <Style TargetType="{x:Type TreeViewItem}">
-                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                <Setter Property="KeyboardNavigation.AcceptsReturn" Value="True" />
-            </Style>
-        </TreeView.ItemContainerStyle>-->
             <TreeView.Resources>
                 <HierarchicalDataTemplate DataType="{x:Type mainFrame:WidgetViewModel}"
                                           ItemsSource="{Binding Children}">
                     <HierarchicalDataTemplate.Resources>
                         <ResourceDictionary Source="../../Resources/Theme.xaml" />
                     </HierarchicalDataTemplate.Resources>
+                    <HierarchicalDataTemplate.ItemContainerStyle>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="IsSelected" Value="{Binding IsFocused, Mode=TwoWay}" />
+                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                        </Style>
+                    </HierarchicalDataTemplate.ItemContainerStyle>
                     <StackPanel x:Name="WidgetItem"
                                 Orientation="Horizontal"
                                 AllowDrop="True"

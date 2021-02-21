@@ -14,7 +14,7 @@
             <TextBlock DockPanel.Dock="Top"
                        FontWeight="Bold"
                        Padding="4"
-                       Text="{Binding SelectedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
+                       Text="{Binding FocusedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
             <ScrollViewer VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
                           CanContentScroll="False"
@@ -24,7 +24,7 @@
                               Name="WidgetAttributeCategories"
                               HorizontalAlignment="Stretch"
                               HorizontalContentAlignment="Stretch"
-                              ItemsSource="{Binding SelectedWidget.Widget.AttributeCategories, UpdateSourceTrigger=PropertyChanged}">
+                              ItemsSource="{Binding FocusedWidget.Widget.AttributeCategories, UpdateSourceTrigger=PropertyChanged}">
                     <ItemsControl.ItemTemplate>
                         <DataTemplate DataType="{x:Type widgetLibrary:AttributeCategory }">
                             <DataTemplate.Resources>

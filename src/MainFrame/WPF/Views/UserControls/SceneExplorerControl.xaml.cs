@@ -16,7 +16,7 @@ namespace Bannerlord.UIEditor.MainFrame
     /// Allow selecting current widget from code.
     /// Set new dropped widgets as selected.
     /// </summary>
-    public partial class SceneExplorerControl : ConnectedUserControl, ISceneExplorerControl
+    public partial class SceneExplorerControl : ConnectedUserControl
     {
         public WidgetViewModel? RootWidget
         {
@@ -44,13 +44,7 @@ namespace Bannerlord.UIEditor.MainFrame
             InitializeComponent();
         }
 
-        public event EventHandler<WidgetViewModel?>? SelectedWidgetChanged;
-
-        public override void Create(IPublicContainer _publicContainer)
-        {
-            base.Create(_publicContainer);
-            PublicContainer.RegisterModule<ISceneExplorerControl>(this);
-        }
+        private IFocusManager? m_FocusManager;
 
         public override void Load()
         {
@@ -58,6 +52,22 @@ namespace Bannerlord.UIEditor.MainFrame
             m_WidgetManager = PublicContainer.GetModule<IWidgetManager>();
             m_GauntletManager = PublicContainer.GetModule<IGauntletManager>();
             m_CanvasEditorControl = PublicContainer.GetModule<ICanvasEditorControl>();
+            PublicContainer.ConnectToModule<IFocusManager>(this,
+                _focusManager =>
+                {
+                    m_FocusManager = _focusManager;
+                    m_FocusManager.FocusChanged += OnFocusChanged;
+                },
+                _ =>
+                {
+                    m_FocusManager!.FocusChanged -= OnFocusChanged;
+                    m_FocusManager = null;
+                });
+        }
+
+        private void OnFocusChanged(object _sender, IFocusable? _focusedItem)
+        {
+            //throw new NotImplementedException();
         }
 
         protected override void OnGiveFeedback(GiveFeedbackEventArgs _e)
@@ -81,12 +91,12 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private WidgetViewModel CreateWidget(IWidgetTemplate _widgetTemplate)
         {
-            return new(_widgetTemplate.Name, m_WidgetManager!.CreateWidget(m_GauntletManager!.UIContext!, _widgetTemplate), m_CanvasEditorControl!) {IsReadonly = false};
+            return new(_widgetTemplate.Name, m_WidgetManager!.CreateWidget(m_GauntletManager!.UIContext!, _widgetTemplate), m_CanvasEditorControl!, PublicContainer) {IsReadonly = false};
         }
 
         private void WidgetItem_OnDragOver(object _sender, DragEventArgs _e)
         {
-            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )) || _e.Data.GetDataPresent(nameof(WidgetViewModel)))
+            if (_e.Data.GetDataPresent(nameof(FocusableWidgetTemplate)) || _e.Data.GetDataPresent(nameof(WidgetViewModel)))
             {
                 StackPanel stackPanel = (StackPanel)_sender;
                 var point = _e.GetPosition(stackPanel);
@@ -124,7 +134,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void WidgetItem_OnDrop(object _sender, DragEventArgs _e)
         {
-            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )) || _e.Data.GetDataPresent(nameof(WidgetViewModel)))
+            if (_e.Data.GetDataPresent(nameof(FocusableWidgetTemplate)) || _e.Data.GetDataPresent(nameof(WidgetViewModel)))
             {
                 StackPanel stackPanel = (StackPanel)_sender;
                 var point = _e.GetPosition(stackPanel);
@@ -134,8 +144,8 @@ namespace Bannerlord.UIEditor.MainFrame
 
                 if (_e.Data.GetData(nameof(WidgetViewModel)) is not WidgetViewModel viewModel)
                 {
-                    IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof(IWidgetTemplate))!;
-                    viewModel = CreateWidget(widgetTemplate);
+                    FocusableWidgetTemplate focusableWidgetTemplate = (FocusableWidgetTemplate)_e.Data.GetData(nameof(FocusableWidgetTemplate))!;
+                    viewModel = CreateWidget(focusableWidgetTemplate.WidgetTemplate);
                 }
                 else
                 {
@@ -173,7 +183,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void SceneTreeView_OnDragOver(object _sender, DragEventArgs _e)
         {
-            if (_e.Data.GetDataPresent(nameof( IWidgetTemplate )))
+            if (_e.Data.GetDataPresent(nameof(FocusableWidgetTemplate)))
             {
                 _e.Effects = RootWidget is null ? DragDropEffects.Copy : DragDropEffects.None;
                 _e.Handled = true;
@@ -186,10 +196,10 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void SceneTreeView_OnDrop(object _sender, DragEventArgs _e)
         {
-            if (RootWidget is null && _e.Data.GetDataPresent(nameof( IWidgetTemplate )))
+            if (RootWidget is null && _e.Data.GetDataPresent(nameof(FocusableWidgetTemplate)))
             {
-                IWidgetTemplate widgetTemplate = (IWidgetTemplate)_e.Data.GetData(nameof( IWidgetTemplate ))!;
-                RootWidget = CreateWidget(widgetTemplate);
+                FocusableWidgetTemplate widgetTemplate = (FocusableWidgetTemplate)_e.Data.GetData(nameof(FocusableWidgetTemplate))!;
+                RootWidget = CreateWidget(widgetTemplate.WidgetTemplate);
                 Dispatcher.Invoke(() => SceneTreeView.Items.Add(RootWidget));
                 _e.Handled = true;
             }
@@ -199,12 +209,7 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             var widgetViewModel = _e.NewValue as WidgetViewModel;
             m_SelectedWidgetViewModel = widgetViewModel;
-            OnSelectedWidgetChanged(widgetViewModel);
-        }
-
-        private void OnSelectedWidgetChanged(WidgetViewModel? _e)
-        {
-            SelectedWidgetChanged?.Invoke(this, _e);
+            m_FocusManager?.SetFocus(m_SelectedWidgetViewModel);
         }
 
         private void WidgetItem_OnMouseMove(object _sender, MouseEventArgs _e)

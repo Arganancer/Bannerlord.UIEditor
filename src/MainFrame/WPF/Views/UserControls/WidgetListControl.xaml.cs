@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Windows;
 using System.Windows.Input;
 using Bannerlord.UIEditor.Core;
@@ -10,11 +9,11 @@ namespace Bannerlord.UIEditor.MainFrame
     /// <summary>
     /// Interaction logic for WidgetListControl.xaml
     /// </summary>
-    public partial class WidgetListControl : ConnectedUserControl, IWidgetListControl
+    public partial class WidgetListControl : ConnectedUserControl
     {
-        public ObservableCollection<IWidgetTemplate> WidgetTemplates { get; }
+        public ObservableCollection<FocusableWidgetTemplate> WidgetTemplates { get; }
 
-        public IWidgetTemplate? SelectedWidgetTemplate
+        public FocusableWidgetTemplate? SelectedWidgetTemplate
         {
             get => m_SelectedWidgetTemplate;
             set
@@ -22,8 +21,10 @@ namespace Bannerlord.UIEditor.MainFrame
                 if (m_SelectedWidgetTemplate != value)
                 {
                     m_SelectedWidgetTemplate = value;
-
-                    OnSelectedWidgetTemplateChanged(m_SelectedWidgetTemplate);
+                    if (m_SelectedWidgetTemplate != null)
+                    {
+                        FocusManager?.SetFocus(SelectedWidgetTemplate);
+                    }
                     OnPropertyChanged();
                 }
             }
@@ -45,30 +46,51 @@ namespace Bannerlord.UIEditor.MainFrame
                     {
                         foreach (IWidgetTemplate widgetTemplate in m_WidgetManager.WidgetTemplates)
                         {
-                            Dispatcher.Invoke(() => WidgetTemplates.Add(widgetTemplate));
+                            Dispatcher.Invoke(() => WidgetTemplates.Add(new FocusableWidgetTemplate(widgetTemplate)));
                         }
                     }
                 }
             }
         }
 
+        private IFocusManager? FocusManager
+        {
+            get => m_FocusManager;
+            set
+            {
+                if (m_FocusManager is not null)
+                {
+                    m_FocusManager.FocusChanged -= OnFocusChanged;
+                }
+                m_FocusManager = value;
+                if (m_FocusManager is not null)
+                {
+                    m_FocusManager.FocusChanged += OnFocusChanged;
+                }
+            }
+        }
+
+        private void OnFocusChanged(object _sender, IFocusable? _focusedItem)
+        {
+            if (_focusedItem is FocusableWidgetTemplate focusableWidgetTemplate)
+            {
+                SelectedWidgetTemplate = focusableWidgetTemplate;
+            }
+            else
+            {
+                SelectedWidgetTemplate = null;
+            }
+        }
+
         private IWidgetManager? m_WidgetManager;
-        private IWidgetTemplate? m_SelectedWidgetTemplate;
+        private FocusableWidgetTemplate? m_SelectedWidgetTemplate;
+        private IFocusManager? m_FocusManager;
 
         public WidgetListControl()
         {
-            WidgetTemplates = new ObservableCollection<IWidgetTemplate>();
+            WidgetTemplates = new ObservableCollection<FocusableWidgetTemplate>();
             DataContext = this;
             InitializeComponent();
-        }
-
-        public event EventHandler<IWidgetTemplate?>? SelectedWidgetTemplateChanged;
-
-        public override void Create(IPublicContainer _publicContainer)
-        {
-            base.Create(_publicContainer);
-
-            PublicContainer.RegisterModule<IWidgetListControl>(this);
         }
 
         public override void Load()
@@ -78,6 +100,10 @@ namespace Bannerlord.UIEditor.MainFrame
             PublicContainer.ConnectToModule<IWidgetManager>(this,
                 _widgetManager => WidgetManager = _widgetManager,
                 _ => WidgetManager = null);
+
+            PublicContainer.ConnectToModule<IFocusManager>(this,
+                _focusManager => FocusManager = _focusManager,
+                _ => FocusManager = null);
         }
 
         protected override void OnGiveFeedback(GiveFeedbackEventArgs _e)
@@ -98,18 +124,13 @@ namespace Bannerlord.UIEditor.MainFrame
 
             _e.Handled = true;
         }
-
-        private void OnSelectedWidgetTemplateChanged(IWidgetTemplate? _selectedWidgetTemplate)
-        {
-            SelectedWidgetTemplateChanged?.Invoke(this, _selectedWidgetTemplate);
-        }
         
         private void Widget_OnMouseMove(object _sender, MouseEventArgs _e)
         {
             if (_e.LeftButton == MouseButtonState.Pressed)
             {
                 DataObject data = new();
-                data.SetData(nameof( IWidgetTemplate ), SelectedWidgetTemplate!);
+                data.SetData(nameof( FocusableWidgetTemplate ), SelectedWidgetTemplate!);
                 DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
             }
         }

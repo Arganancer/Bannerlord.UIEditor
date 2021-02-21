@@ -7,7 +7,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 {
     public class UIEditorWidget
     {
-        private bool m_IsReadonly;
+        public event WidgetAttributeChangedEventHandler? PropertyChanged;
         public string Name { get; }
         public List<UIEditorWidgetAttribute> Attributes { get; }
         public List<AttributeCategory> AttributeCategories { get; }
@@ -29,14 +29,26 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             }
         }
 
+        private bool m_IsReadonly;
+
         public UIEditorWidget(string _name, List<UIEditorWidgetAttribute> _attributes)
         {
             Name = _name;
             Attributes = _attributes;
             AttributeCategories = SortAttributes(_attributes);
+
+            foreach (AttributeCategory attributeCategory in AttributeCategories)
+            {
+                attributeCategory.PropertyChanged += OnPropertyChanged;
+            }
         }
 
-        private static List<AttributeCategory> SortAttributes(List<UIEditorWidgetAttribute> _attributes)
+        protected virtual void OnPropertyChanged(UIEditorWidgetAttribute _sender, string _attributeName, object? _value)
+        {
+            PropertyChanged?.Invoke(_sender, _attributeName, _value);
+        }
+
+        private static List<AttributeCategory> SortAttributes(IReadOnlyCollection<UIEditorWidgetAttribute> _attributes)
         {
             List<AttributeCategory> categories = new()
             {

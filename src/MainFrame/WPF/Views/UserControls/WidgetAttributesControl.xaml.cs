@@ -9,14 +9,14 @@ namespace Bannerlord.UIEditor.MainFrame
 {
     public partial class WidgetAttributesControl : ConnectedUserControl
     {
-        public WidgetViewModel? SelectedWidget
+        public WidgetViewModel? FocusedWidget
         {
-            get => m_SelectedWidget;
+            get => m_FocusedWidget;
             private set
             {
-                if (m_SelectedWidget != value)
+                if (m_FocusedWidget != value)
                 {
-                    m_SelectedWidget = value;
+                    m_FocusedWidget = value;
                     OnPropertyChanged();
                 }
             }
@@ -28,7 +28,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private IWidgetManager? WidgetManager { get; set; }
 
-        private WidgetViewModel? m_SelectedWidget;
+        private WidgetViewModel? m_FocusedWidget;
 
         public WidgetAttributesControl()
         {
@@ -40,13 +40,9 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             base.Load();
 
-            PublicContainer.ConnectToModule<IWidgetListControl>(this,
-                OnWidgetListControlRegistered,
-                OnWidgetListControlUnregistering);
-
-            PublicContainer.ConnectToModule<ISceneExplorerControl>(this,
-                OnSceneExplorerControlRegistered,
-                OnSceneExplorerControlUnregistering);
+            PublicContainer.ConnectToModule<IFocusManager>(this,
+                OnFocusManagerRegistered,
+                OnFocusManagerUnregistering);
 
             PublicContainer.ConnectToModule<IGauntletManager>(this,
                 _gauntletManager => GauntletManager = _gauntletManager,
@@ -57,45 +53,37 @@ namespace Bannerlord.UIEditor.MainFrame
                 _ => WidgetManager = null);
         }
 
-        private void OnSelectedWidgetTemplateChanged(object _sender, IWidgetTemplate? _selectedWidgetTemplate)
+        private void OnFocusChanged(object _sender, IFocusable? _focusable)
         {
-            if (_selectedWidgetTemplate is not null)
+            if (_focusable is not null)
             {
-                if (GauntletManager?.UIContext is not null)
+                if (_focusable is FocusableWidgetTemplate focusableWidgetTemplate )
                 {
-                    UIEditorWidget widget = WidgetManager!.CreateWidget(GauntletManager.UIContext, _selectedWidgetTemplate);
-                    SelectedWidget = new WidgetViewModel(widget.Name, widget, null) {IsReadonly = true};
+                    if (GauntletManager?.UIContext is not null)
+                    {
+                        UIEditorWidget widget = WidgetManager!.CreateWidget(GauntletManager.UIContext, focusableWidgetTemplate.WidgetTemplate);
+                        FocusedWidget = new WidgetViewModel(widget.Name, widget, null, PublicContainer) { IsReadonly = true };
+                    }
+                }
+                else if(_focusable is WidgetViewModel widgetViewModel)
+                {
+                    FocusedWidget = widgetViewModel;
                 }
             }
             else
             {
-                SelectedWidget = null;
+                FocusedWidget = null;
             }
         }
 
-        private void OnSelectedWidgetChanged(object _sender, WidgetViewModel? _selectedWidget)
+        private void OnFocusManagerRegistered(IFocusManager _focusManager)
         {
-            SelectedWidget = _selectedWidget;
+            _focusManager.FocusChanged += OnFocusChanged;
         }
 
-        private void OnWidgetListControlRegistered(IWidgetListControl _widgetListControl)
+        private void OnFocusManagerUnregistering(IFocusManager _focusManager)
         {
-            _widgetListControl.SelectedWidgetTemplateChanged += OnSelectedWidgetTemplateChanged;
-        }
-
-        private void OnWidgetListControlUnregistering(IWidgetListControl _widgetListControl)
-        {
-            _widgetListControl.SelectedWidgetTemplateChanged -= OnSelectedWidgetTemplateChanged;
-        }
-
-        private void OnSceneExplorerControlRegistered(ISceneExplorerControl _sceneExplorerControl)
-        {
-            _sceneExplorerControl.SelectedWidgetChanged += OnSelectedWidgetChanged;
-        }
-
-        private void OnSceneExplorerControlUnregistering(ISceneExplorerControl _sceneExplorerControl)
-        {
-            _sceneExplorerControl.SelectedWidgetChanged -= OnSelectedWidgetChanged;
+            _focusManager.FocusChanged -= OnFocusChanged;
         }
 
         private void Expander_OnExpanded(object _sender, RoutedEventArgs _e)

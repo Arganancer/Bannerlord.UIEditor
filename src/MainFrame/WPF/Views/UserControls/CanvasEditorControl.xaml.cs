@@ -17,6 +17,8 @@ namespace Bannerlord.UIEditor.MainFrame
     public partial class CanvasEditorControl : ConnectedUserControl, ICanvasEditorControl
     {
         public Canvas Canvas => UIEditorCanvas;
+        public double ViewableAreaWidth => m_ViewableArea.Width;
+        public double ViewableAreaHeight => m_ViewableArea.Height;
 
         private Rectangle m_Background = null!;
         private Rectangle m_ViewableArea = null!;
@@ -77,6 +79,7 @@ namespace Bannerlord.UIEditor.MainFrame
             Canvas.SetLeft(m_Background, -500);
             Canvas.SetTop(m_Background, -500);
             UIEditorCanvas.Children.Add(m_Background);
+            Panel.SetZIndex(m_Background, -2);
 
             m_ViewableArea = new Rectangle
             {
@@ -90,6 +93,7 @@ namespace Bannerlord.UIEditor.MainFrame
             Canvas.SetLeft(m_ViewableArea, 0);
             Canvas.SetTop(m_ViewableArea, 0);
             UIEditorCanvas.Children.Add(m_ViewableArea);
+            Panel.SetZIndex(m_ViewableArea, -1);
         }
 
         private void UIEditorCanvas_OnMouseMove(object _sender, MouseEventArgs _mouseMoveEvent)

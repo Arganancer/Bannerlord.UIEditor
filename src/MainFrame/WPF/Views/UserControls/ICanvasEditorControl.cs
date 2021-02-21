@@ -7,5 +7,7 @@ namespace Bannerlord.UIEditor.MainFrame
     {
         Canvas Canvas { get; }
         Dispatcher Dispatcher { get; }
+        double ViewableAreaWidth { get; }
+        double ViewableAreaHeight { get; }
     }
 }
