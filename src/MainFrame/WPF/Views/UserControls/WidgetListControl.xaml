@@ -10,25 +10,32 @@
                            mc:Ignorable="d"
                            d:DesignHeight="500" d:DesignWidth="180">
     <Border>
-        <ListBox Name="WidgetListBox"
-                 HorizontalContentAlignment="Stretch"
-                 ScrollViewer.VerticalScrollBarVisibility="Auto"
-                 ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
-                 SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
-            <ListBox.ItemTemplate>
-                <DataTemplate DataType="{x:Type mainframe:FocusableWidgetTemplate }">
-                    <DataTemplate.Resources>
-                        <ResourceDictionary>
-                            <ResourceDictionary.MergedDictionaries>
-                                <ResourceDictionary Source="../../Resources/Theme.xaml" />
-                            </ResourceDictionary.MergedDictionaries>
-                        </ResourceDictionary>
-                    </DataTemplate.Resources>
-                    <TextBlock Text="{Binding Name}"
-                               MouseMove="Widget_OnMouseMove"
-                               MinWidth="50" />
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top"
+                       FontWeight="Bold"
+                       Padding="4"
+                       Text="Toolbox" />
+            <ListBox DockPanel.Dock="Bottom" 
+                     Name="WidgetListBox"
+                     HorizontalContentAlignment="Stretch"
+                     ScrollViewer.VerticalScrollBarVisibility="Auto"
+                     ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
+                     SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
+                <ListBox.ItemTemplate>
+                    <DataTemplate DataType="{x:Type mainframe:FocusableWidgetTemplate }">
+                        <DataTemplate.Resources>
+                            <ResourceDictionary>
+                                <ResourceDictionary.MergedDictionaries>
+                                    <ResourceDictionary Source="../../Resources/Theme.xaml" />
+                                </ResourceDictionary.MergedDictionaries>
+                            </ResourceDictionary>
+                        </DataTemplate.Resources>
+                        <TextBlock Text="{Binding Name}"
+                                   MouseMove="Widget_OnMouseMove"
+                                   MinWidth="50" />
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
     </Border>
 </core:ConnectedUserControl>

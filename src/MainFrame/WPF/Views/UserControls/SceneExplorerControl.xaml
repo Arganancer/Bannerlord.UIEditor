@@ -10,37 +10,90 @@
     mc:Ignorable="d"
     d:DesignHeight="600" d:DesignWidth="300">
     <Border>
-        <TreeView x:Name="SceneTreeView"
-                  HorizontalContentAlignment="Stretch"
-                  ScrollViewer.VerticalScrollBarVisibility="Auto"
-                  ScrollViewer.CanContentScroll="False"
-                  AllowDrop="True"
-                  DragOver="SceneTreeView_OnDragOver"
-                  Drop="SceneTreeView_OnDrop"
-                  SelectedItemChanged="SceneTreeView_OnSelectedItemChanged">
-            <TreeView.Resources>
-                <HierarchicalDataTemplate DataType="{x:Type mainFrame:WidgetViewModel}"
-                                          ItemsSource="{Binding Children}">
-                    <HierarchicalDataTemplate.Resources>
-                        <ResourceDictionary Source="../../Resources/Theme.xaml" />
-                    </HierarchicalDataTemplate.Resources>
-                    <HierarchicalDataTemplate.ItemContainerStyle>
-                        <Style TargetType="{x:Type TreeViewItem}">
-                            <Setter Property="IsSelected" Value="{Binding IsFocused, Mode=TwoWay}" />
-                            <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                        </Style>
-                    </HierarchicalDataTemplate.ItemContainerStyle>
-                    <StackPanel x:Name="WidgetItem"
-                                Orientation="Horizontal"
-                                AllowDrop="True"
-                                DragOver="WidgetItem_OnDragOver"
-                                Drop="WidgetItem_OnDrop"
-                                MouseMove="WidgetItem_OnMouseMove">
-                        <!--<Image Source="{Binding ImageSource, UpdateSourceTrigger=PropertyChanged}" Margin="0,1,8,1"/>-->
-                        <TextBlock Text="{Binding Name}" />
-                    </StackPanel>
-                </HierarchicalDataTemplate>
-            </TreeView.Resources>
-        </TreeView>
+        <DockPanel>
+            <TextBlock DockPanel.Dock="Top"
+                       FontWeight="Bold"
+                       Padding="4"
+                       Text="Scene Explorer" />
+            <TreeView x:Name="SceneTreeView"
+                      HorizontalContentAlignment="Stretch"
+                      ScrollViewer.VerticalScrollBarVisibility="Auto"
+                      ScrollViewer.CanContentScroll="False"
+                      AllowDrop="True"
+                      DragOver="SceneTreeView_OnDragOver"
+                      Drop="SceneTreeView_OnDrop"
+                      SelectedItemChanged="SceneTreeView_OnSelectedItemChanged">
+                <TreeView.Resources>
+                    <HierarchicalDataTemplate DataType="{x:Type mainFrame:WidgetViewModel}"
+                                              ItemsSource="{Binding Children}">
+                        <HierarchicalDataTemplate.Resources>
+                            <ResourceDictionary>
+                                <ResourceDictionary.MergedDictionaries>
+                                    <ResourceDictionary Source="../../Resources/Theme.xaml" />
+                                    <ResourceDictionary>
+                                        <Style x:Key="TreeItemTopBorder" TargetType="Border">
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="BorderBrush" Value="{StaticResource Gadget_ForegroundHovered}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=TopBorderHighlight, 
+                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type mainFrame:TreeItemGrid}}}" Value="True">
+                                                    <Setter Property="BorderThickness" Value="0, 0, 0, 2" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                        <Style x:Key="TreeItemBottomBorder" TargetType="Border">
+                                            <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="BorderBrush" Value="{StaticResource Gadget_ForegroundHovered}"/>
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Path=BottomBorderHighlight, 
+                                                    RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type mainFrame:TreeItemGrid}}}" Value="True">
+                                                    <Setter Property="BorderThickness" Value="0, 2, 0, 0" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </ResourceDictionary>
+                                </ResourceDictionary.MergedDictionaries>
+                            </ResourceDictionary>
+                        </HierarchicalDataTemplate.Resources>
+                        <HierarchicalDataTemplate.ItemContainerStyle>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsSelected" Value="{Binding IsFocused, Mode=TwoWay}" />
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                <Setter Property="HorizontalAlignment" Value="Stretch"/>
+                            </Style>
+                        </HierarchicalDataTemplate.ItemContainerStyle>
+                        <mainFrame:TreeItemGrid x:Name="SceneItemContainer"
+                                                AllowDrop="True"
+                                                DragOver="WidgetItem_OnDragOver"
+                                                Drop="WidgetItem_OnDrop"
+                                                MouseMove="WidgetItem_OnMouseMove"
+                                                HorizontalAlignment="Stretch"
+                                                InsertDistanceTolerance="4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <Border Grid.Row="0" 
+                                    x:Name="TreeItemTopBorder"
+                                    BorderBrush="{StaticResource Gadget_ForegroundHovered}"
+                                    Style="{StaticResource TreeItemTopBorder}" />
+                            <StackPanel Grid.Row="1" x:Name="WidgetItem"
+                                        Orientation="Horizontal">
+                                <!--<Image Source="{Binding ImageSource, UpdateSourceTrigger=PropertyChanged}" Margin="0,1,8,1"/>-->
+                                <TextBlock Text="{Binding Name}" />
+                            </StackPanel>
+                            <Border Grid.Row="2" 
+                                    x:Name="TreeItemBottomBorder"
+                                    BorderBrush="{StaticResource Gadget_ForegroundHovered}"
+                                    Style="{StaticResource TreeItemBottomBorder}" />
+                        </mainFrame:TreeItemGrid>
+                    </HierarchicalDataTemplate>
+                </TreeView.Resources>
+            </TreeView>
+        </DockPanel>
     </Border>
 </core:ConnectedUserControl>

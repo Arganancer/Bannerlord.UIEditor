@@ -10,12 +10,23 @@ namespace Bannerlord.UIEditor.MainFrame
     /// </summary>
     public class Resizer : Thumb
     {
+        public static DependencyProperty CursorIconProperty = DependencyProperty.Register("CursorIcon", typeof(CursorIcon), typeof(ResizableControl));
         public static DependencyProperty ThumbDirectionProperty = DependencyProperty.Register("ThumbDirection", typeof( ResizeDirection ), typeof( Resizer ));
 
         public ResizeDirection ThumbDirection
         {
             get => (ResizeDirection)GetValue(ThumbDirectionProperty);
             set => SetValue(ThumbDirectionProperty, value);
+        }
+
+        public CursorIcon CursorIcon
+        {
+            get => (CursorIcon)GetValue(CursorIconProperty);
+            set
+            {
+                SetValue(CursorIconProperty, value);
+                Cursor = CursorManager.Instance!.GetCursor(value);
+            }
         }
 
         static Resizer()

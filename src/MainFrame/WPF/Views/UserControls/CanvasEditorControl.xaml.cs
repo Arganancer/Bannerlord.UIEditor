@@ -12,7 +12,7 @@ namespace Bannerlord.UIEditor.MainFrame
     /// <summary>
     /// TODO: UIEditor Canvas Elements: https://stackoverflow.com/questions/21635892/how-to-set-x-y-coordinates-of-wpf-canvas-children-through-code/21637725
     /// TODO: Remove magic numbers and allow changing resolution/aspect ratio.
-    /// TODO: Add left/top pixel rulers.
+    /// TODO: AddIcon left/top pixel rulers.
     /// </summary>
     public partial class CanvasEditorControl : ConnectedUserControl, ICanvasEditorControl
     {
@@ -67,11 +67,11 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void InitializeCanvas()
         {
+            SolidColorBrush backgroundColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#121212"))!;
             m_Background = new Rectangle
             {
-                Stroke = new SolidColorBrush(new Color {A = 255, R = 200, G = 200, B = 200}),
-                StrokeThickness = 2,
-                Fill = new SolidColorBrush(new Color {A = 255, R = 200, G = 200, B = 200}),
+                StrokeThickness = 0,
+                Fill = backgroundColor,
                 Width = 2920,
                 Height = 2080
             };
@@ -83,9 +83,9 @@ namespace Bannerlord.UIEditor.MainFrame
 
             m_ViewableArea = new Rectangle
             {
-                Stroke = new SolidColorBrush(new Color {A = 255, R = 180, G = 180, B = 180}),
-                StrokeThickness = 2,
-                Fill = new SolidColorBrush(new Color {A = 255, R = 195, G = 195, B = 195}),
+                Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#1a1a1a"))!,
+                StrokeThickness = 1,
+                Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#141414"))!,
                 Width = 1920,
                 Height = 1080
             };

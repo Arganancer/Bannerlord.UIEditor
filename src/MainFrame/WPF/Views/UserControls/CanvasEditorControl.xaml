@@ -8,28 +8,35 @@
                            d:DataContext="{d:DesignInstance Type=mainframe:CanvasEditorControl}"
                            mc:Ignorable="d"
                            d:DesignHeight="450" d:DesignWidth="800">
-    <Border Name="CanvasBorder"
-            BorderThickness="2"
-            BorderBrush="DarkGray"
+    <UserControl.Resources>
+        <ResourceDictionary Source="../../Resources/Theme.xaml"/>
+    </UserControl.Resources>
+    <Border BorderThickness="1"
+            BorderBrush="{StaticResource Border}"
             Width="Auto"
-            Height="Auto"
-            ClipToBounds="true">
-        <Canvas Name="UIEditorCanvas"
-                MouseMove="UIEditorCanvas_OnMouseMove"
-                MouseDown="UIEditorCanvas_OnMouseDown"
-                MouseUp="UIEditorCanvas_OnMouseUp"
-                MouseWheel="UIEditorCanvas_OnMouseWheel"
-                SizeChanged="UIEditorCanvas_OnSizeChanged"
-                DragOver="UIEditorCanvas_OnDragOver"
-                Drop="UIEditorCanvas_OnDrop"
-                AllowDrop="True">
-            <Canvas.RenderTransform>
-                <TransformGroup>
-                    <ScaleTransform x:Name="CanvasScaleTransform" />
-                    <TranslateTransform x:Name="CanvasTranslateTransform" />
-                </TransformGroup>
-            </Canvas.RenderTransform>
-        </Canvas>
+            Height="Auto">
+        <Border Name="CanvasBorder"
+                BorderThickness="0"
+                Width="Auto"
+                Height="Auto"
+                ClipToBounds="true">
+            <Canvas Name="UIEditorCanvas"
+                    MouseMove="UIEditorCanvas_OnMouseMove"
+                    MouseDown="UIEditorCanvas_OnMouseDown"
+                    MouseUp="UIEditorCanvas_OnMouseUp"
+                    MouseWheel="UIEditorCanvas_OnMouseWheel"
+                    SizeChanged="UIEditorCanvas_OnSizeChanged"
+                    DragOver="UIEditorCanvas_OnDragOver"
+                    Drop="UIEditorCanvas_OnDrop"
+                    AllowDrop="True">
+                <Canvas.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform x:Name="CanvasScaleTransform" />
+                        <TranslateTransform x:Name="CanvasTranslateTransform" />
+                    </TransformGroup>
+                </Canvas.RenderTransform>
+            </Canvas>
+        </Border>
     </Border>
 
 </core:ConnectedUserControl>

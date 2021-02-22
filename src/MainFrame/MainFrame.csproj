@@ -13,4 +13,10 @@
 	  <ProjectReference Include="..\WidgetLibrary\WidgetLibrary.csproj" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Page Update="WPF\Resources\Themes\Cursors.xaml">
+	    <CopyToOutputDirectory></CopyToOutputDirectory>
+	  </Page>
+	</ItemGroup>
+
 </Project>

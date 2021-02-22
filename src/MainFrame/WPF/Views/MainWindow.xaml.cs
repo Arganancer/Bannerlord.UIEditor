@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Input;
 using System.Windows.Interop;
 using Bannerlord.UIEditor.Core;
 
 namespace Bannerlord.UIEditor.MainFrame
 {
     /// <summary>
-    /// TODO: Allow elements to be resized/moved at runtime: https://www.codeproject.com/Questions/639806/WPF-Resizable-usercontrols-inside-a-window
     /// Reference for interop window management: https://engy.us/blog/2020/01/01/implementing-a-custom-window-title-bar-in-wpf/
     /// </summary>
     public partial class MainWindow : ConnectedWindow
@@ -49,12 +49,18 @@ namespace Bannerlord.UIEditor.MainFrame
         }
 
         private const int WmGetMinMaxInfo = 0x0024;
-
         private const uint MonitorDefaultToNearest = 0x00000002;
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public override void Load()
+        {
+            base.Load();
+
+            PublicContainer.GetModule<ICursorManager>().Initialize(this);
         }
 
         protected override void OnSourceInitialized(EventArgs _e)

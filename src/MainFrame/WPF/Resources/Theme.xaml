@@ -8,5 +8,6 @@
         <ResourceDictionary Source="Themes/ComboBoxTemplate.xaml" />
         <ResourceDictionary Source="Themes/CheckBoxTemplate.xaml" />
         <ResourceDictionary Source="Themes/TextBoxTemplate.xaml" />
+        <ResourceDictionary Source="Themes/Cursors.xaml" />
     </ResourceDictionary.MergedDictionaries>
 </ResourceDictionary>

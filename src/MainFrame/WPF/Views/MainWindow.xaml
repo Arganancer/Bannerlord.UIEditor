@@ -15,7 +15,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resources/ResizerControl/ResizerTheme.xaml" />
+                <ResourceDictionary Source="../Resources/UIElements/ResizerControl/ResizerTheme.xaml" />
                 <ResourceDictionary Source="../Resources/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
@@ -33,8 +33,8 @@
     <Window.Background>
         <StaticResource ResourceKey="App_Background" />
     </Window.Background>
-
-    <Border Style="{StaticResource WindowMainPanelStyle}">
+    <Border Name="RootBorder" 
+            Style="{StaticResource WindowMainPanelStyle}">
         <Grid Margin="4, 0, 4, 4">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*" />
@@ -83,6 +83,5 @@
                 <mainFrame:CanvasEditorControl x:Name="CanvasEditorControl" />
             </DockPanel>
         </Grid>
-
     </Border>
 </core:ConnectedWindow>

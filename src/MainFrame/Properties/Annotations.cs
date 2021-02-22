@@ -1168,7 +1168,7 @@ namespace Bannerlord.UIEditor.MainFrame.Properties
     /// void Foo(IEnumerable&lt;string&gt; values)
     /// {
     ///   ThrowIfNull(values, nameof(values));
-    ///   var x = values.ToList(); // No warnings about multiple enumeration
+    ///   var x = values.ToList(); // NoIcon warnings about multiple enumeration
     /// }
     /// </code></example>
     [AttributeUsage(AttributeTargets.Parameter)]

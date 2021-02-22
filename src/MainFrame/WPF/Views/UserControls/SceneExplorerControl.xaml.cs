@@ -1,5 +1,4 @@
-﻿using System;
-using System.Windows;
+﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Bannerlord.UIEditor.Core;
@@ -10,8 +9,8 @@ namespace Bannerlord.UIEditor.MainFrame
 {
     /// <summary>
     /// TODO:
-    /// Add multi select for items in the tree view.
-    /// Add deleting items in the tree view.
+    /// AddIcon multi select for items in the tree view.
+    /// AddIcon deleting items in the tree view.
     /// Allow reorganizing items in the tree view via drag and drop.
     /// Allow selecting current widget from code.
     /// Set new dropped widgets as selected.
@@ -39,12 +38,13 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private WidgetViewModel? m_SelectedWidgetViewModel;
 
+        private IFocusManager? m_FocusManager;
+        private ICursorManager m_CursorManager;
+
         public SceneExplorerControl()
         {
             InitializeComponent();
         }
-
-        private IFocusManager? m_FocusManager;
 
         public override void Load()
         {
@@ -63,30 +63,33 @@ namespace Bannerlord.UIEditor.MainFrame
                     m_FocusManager!.FocusChanged -= OnFocusChanged;
                     m_FocusManager = null;
                 });
-        }
 
-        private void OnFocusChanged(object _sender, IFocusable? _focusedItem)
-        {
-            //throw new NotImplementedException();
+            m_CursorManager = PublicContainer.GetModule<ICursorManager>();
         }
 
         protected override void OnGiveFeedback(GiveFeedbackEventArgs _e)
         {
             base.OnGiveFeedback(_e);
 
-            Cursor cursor = Cursors.No;
             if (_e.Effects.HasFlag(DragDropEffects.Move))
             {
-                cursor = Cursors.SizeWE;
+                m_CursorManager.SetCursor(CursorIcon.InsertIcon);
             }
             else if (_e.Effects.HasFlag(DragDropEffects.Copy))
             {
-                cursor = Cursors.Cross;
+                m_CursorManager.SetCursor(CursorIcon.AddIcon);
+            }
+            else
+            {
+                m_CursorManager.SetCursor(CursorIcon.NoIcon);
             }
 
-            Mouse.SetCursor(cursor);
-
             _e.Handled = true;
+        }
+
+        private void OnFocusChanged(object _sender, IFocusable? _focusedItem)
+        {
+            //throw new NotImplementedException();
         }
 
         private WidgetViewModel CreateWidget(IWidgetTemplate _widgetTemplate)
@@ -96,31 +99,44 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void WidgetItem_OnDragOver(object _sender, DragEventArgs _e)
         {
-            if (_e.Data.GetDataPresent(nameof(FocusableWidgetTemplate)) || _e.Data.GetDataPresent(nameof(WidgetViewModel)))
+            if (_e.Data.GetDataPresent(nameof( FocusableWidgetTemplate )) || _e.Data.GetDataPresent(nameof( WidgetViewModel )))
             {
-                StackPanel stackPanel = (StackPanel)_sender;
-                var point = _e.GetPosition(stackPanel);
-                TreeViewItem target = ((StackPanel)_sender).GetVisualAncestorOfType<TreeViewItem>()!;
+                TreeItemGrid grid = (TreeItemGrid)_sender;
+                var point = _e.GetPosition(grid);
+                TreeViewItem target = grid.GetVisualAncestorOfType<TreeViewItem>()!;
                 WidgetViewModel targetWidget = (target.DataContext as WidgetViewModel)!;
 
                 if (_e.Data.GetData(nameof( WidgetViewModel )) is WidgetViewModel newWidget &&
                     (targetWidget.Equals(newWidget) || targetWidget.WidgetExistsInParents(newWidget)))
                 {
+                    grid.SetNoBorderHighlights();
                     _e.Effects = DragDropEffects.None;
                 }
-                else if (point.Y <= 3 || point.Y >= stackPanel.ActualHeight - 3)
+                else if (point.Y <= grid.InsertDistanceTolerance + (grid.TopBorderHighlight ? 2 : 0) ||
+                         point.Y >= grid.ActualHeight - grid.InsertDistanceTolerance - (grid.BottomBorderHighlight ? 2 : 0))
                 {
-                    if (targetWidget == RootWidget || point.Y > stackPanel.ActualHeight)
+                    if (targetWidget == RootWidget || point.Y > grid.ActualHeight)
                     {
+                        grid.SetNoBorderHighlights();
                         _e.Effects = DragDropEffects.None;
                     }
                     else
                     {
+                        if (point.Y <= grid.InsertDistanceTolerance + (grid.TopBorderHighlight ? 2 : 0))
+                        {
+                            grid.TopBorderHighlight = true;
+                        }
+                        else
+                        {
+                            grid.BottomBorderHighlight = true;
+                        }
+
                         _e.Effects = DragDropEffects.Move;
                     }
                 }
                 else
                 {
+                    grid.SetNoBorderHighlights();
                     _e.Effects = DragDropEffects.Copy;
                 }
 
@@ -134,17 +150,17 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void WidgetItem_OnDrop(object _sender, DragEventArgs _e)
         {
-            if (_e.Data.GetDataPresent(nameof(FocusableWidgetTemplate)) || _e.Data.GetDataPresent(nameof(WidgetViewModel)))
+            if (_e.Data.GetDataPresent(nameof( FocusableWidgetTemplate )) || _e.Data.GetDataPresent(nameof( WidgetViewModel )))
             {
-                StackPanel stackPanel = (StackPanel)_sender;
-                var point = _e.GetPosition(stackPanel);
-                TreeViewItem target = ((StackPanel)_sender).GetVisualAncestorOfType<TreeViewItem>()!;
+                TreeItemGrid grid = (TreeItemGrid)_sender;
+                var point = _e.GetPosition(grid);
+                TreeViewItem target = grid.GetVisualAncestorOfType<TreeViewItem>()!;
                 WidgetViewModel parent;
                 var targetIndex = int.MaxValue;
 
-                if (_e.Data.GetData(nameof(WidgetViewModel)) is not WidgetViewModel viewModel)
+                if (_e.Data.GetData(nameof( WidgetViewModel )) is not WidgetViewModel viewModel)
                 {
-                    FocusableWidgetTemplate focusableWidgetTemplate = (FocusableWidgetTemplate)_e.Data.GetData(nameof(FocusableWidgetTemplate))!;
+                    FocusableWidgetTemplate focusableWidgetTemplate = (FocusableWidgetTemplate)_e.Data.GetData(nameof( FocusableWidgetTemplate ))!;
                     viewModel = CreateWidget(focusableWidgetTemplate.WidgetTemplate);
                 }
                 else
@@ -152,7 +168,8 @@ namespace Bannerlord.UIEditor.MainFrame
                     RootWidget!.RemoveChildren(viewModel);
                 }
 
-                if (point.Y <= 3 || point.Y >= stackPanel.ActualHeight - 3)
+                if (point.Y <= grid.InsertDistanceTolerance + (grid.TopBorderHighlight ? 2 : 0) ||
+                    point.Y >= grid.ActualHeight - grid.InsertDistanceTolerance - (grid.BottomBorderHighlight ? 2 : 0))
                 {
                     WidgetViewModel sibling = (target.DataContext as WidgetViewModel)!;
                     if (sibling == RootWidget)
@@ -165,7 +182,7 @@ namespace Bannerlord.UIEditor.MainFrame
                     parent = (parentTarget.DataContext as WidgetViewModel)!;
 
                     targetIndex = parent.GetIndexOfChild(sibling);
-                    if (point.Y >= stackPanel.ActualHeight - 3)
+                    if (point.Y >= grid.ActualHeight - grid.InsertDistanceTolerance)
                     {
                         targetIndex++;
                     }
@@ -183,7 +200,7 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void SceneTreeView_OnDragOver(object _sender, DragEventArgs _e)
         {
-            if (_e.Data.GetDataPresent(nameof(FocusableWidgetTemplate)))
+            if (_e.Data.GetDataPresent(nameof( FocusableWidgetTemplate )))
             {
                 _e.Effects = RootWidget is null ? DragDropEffects.Copy : DragDropEffects.None;
                 _e.Handled = true;
@@ -196,9 +213,9 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void SceneTreeView_OnDrop(object _sender, DragEventArgs _e)
         {
-            if (RootWidget is null && _e.Data.GetDataPresent(nameof(FocusableWidgetTemplate)))
+            if (RootWidget is null && _e.Data.GetDataPresent(nameof( FocusableWidgetTemplate )))
             {
-                FocusableWidgetTemplate widgetTemplate = (FocusableWidgetTemplate)_e.Data.GetData(nameof(FocusableWidgetTemplate))!;
+                FocusableWidgetTemplate widgetTemplate = (FocusableWidgetTemplate)_e.Data.GetData(nameof( FocusableWidgetTemplate ))!;
                 RootWidget = CreateWidget(widgetTemplate.WidgetTemplate);
                 Dispatcher.Invoke(() => SceneTreeView.Items.Add(RootWidget));
                 _e.Handled = true;
@@ -217,7 +234,7 @@ namespace Bannerlord.UIEditor.MainFrame
             if (_e.LeftButton == MouseButtonState.Pressed && m_SelectedWidgetViewModel is not null)
             {
                 DataObject data = new();
-                data.SetData(nameof(WidgetViewModel), m_SelectedWidgetViewModel);
+                data.SetData(nameof( WidgetViewModel ), m_SelectedWidgetViewModel);
                 DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
             }
         }

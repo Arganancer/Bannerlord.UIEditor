@@ -85,6 +85,7 @@ namespace Bannerlord.UIEditor.MainFrame
         private IWidgetManager? m_WidgetManager;
         private FocusableWidgetTemplate? m_SelectedWidgetTemplate;
         private IFocusManager? m_FocusManager;
+        private ICursorManager m_CursorManager;
 
         public WidgetListControl()
         {
@@ -104,23 +105,26 @@ namespace Bannerlord.UIEditor.MainFrame
             PublicContainer.ConnectToModule<IFocusManager>(this,
                 _focusManager => FocusManager = _focusManager,
                 _ => FocusManager = null);
+
+            m_CursorManager = PublicContainer.GetModule<ICursorManager>();
         }
 
         protected override void OnGiveFeedback(GiveFeedbackEventArgs _e)
         {
             base.OnGiveFeedback(_e);
 
-            Cursor cursor = Cursors.No;
             if (_e.Effects.HasFlag(DragDropEffects.Move))
             {
-                cursor = Cursors.SizeWE;
+                m_CursorManager.SetCursor(CursorIcon.InsertIcon);
             }
             else if (_e.Effects.HasFlag(DragDropEffects.Copy))
             {
-                cursor = Cursors.Cross;
+                m_CursorManager.SetCursor(CursorIcon.AddIcon);
             }
-
-            Mouse.SetCursor(cursor);
+            else
+            {
+                m_CursorManager.SetCursor(CursorIcon.NoIcon);
+            }
 
             _e.Handled = true;
         }

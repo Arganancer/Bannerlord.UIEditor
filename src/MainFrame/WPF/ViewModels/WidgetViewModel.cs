@@ -699,8 +699,9 @@ namespace Bannerlord.UIEditor.MainFrame
                 m_CanvasEditorControl?.Dispatcher.Invoke(() =>
                 {
                     Rectangle!.StrokeThickness = 3;
-                    Rectangle.Stroke = new SolidColorBrush(Color.FromRgb(125, 236, 250));
-                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 201, 227)) {Opacity = 0.5};
+                    Rectangle.Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#007acc"))!;
+                    Rectangle.Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3f3f46"))!;
+                    Rectangle.Fill.Opacity = 0.2;
                 });
             }
             else if (m_IsMouseOver)
@@ -708,8 +709,9 @@ namespace Bannerlord.UIEditor.MainFrame
                 m_CanvasEditorControl?.Dispatcher.Invoke(() =>
                 {
                     Rectangle!.StrokeThickness = 2;
-                    Rectangle.Stroke = new SolidColorBrush(Color.FromRgb(53, 203, 222));
-                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 163, 184)) {Opacity = 0.3};
+                    Rectangle.Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#9e9e9e"))!;
+                    Rectangle.Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#333337"))!;
+                    Rectangle.Fill.Opacity = 0.1;
                 });
             }
             else if (IsFocused)
@@ -717,8 +719,9 @@ namespace Bannerlord.UIEditor.MainFrame
                 m_CanvasEditorControl?.Dispatcher.Invoke(() =>
                 {
                     Rectangle!.StrokeThickness = 2;
-                    Rectangle.Stroke = new SolidColorBrush(Color.FromRgb(92, 221, 237));
-                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 183, 207)) {Opacity = 0.4};
+                    Rectangle.Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#007acc"))!;
+                    Rectangle.Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3f3f46"))!;
+                    Rectangle.Fill.Opacity = 0.1;
                 });
             }
             else
@@ -726,8 +729,9 @@ namespace Bannerlord.UIEditor.MainFrame
                 m_CanvasEditorControl?.Dispatcher.Invoke(() =>
                 {
                     Rectangle!.StrokeThickness = 1;
-                    Rectangle.Stroke = new SolidColorBrush(Color.FromRgb(24, 184, 204));
-                    Rectangle.Fill = new SolidColorBrush(Color.FromRgb(0, 147, 166)) {Opacity = 0.2};
+                    Rectangle.Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#3f3f46"))!;
+                    Rectangle.Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#2d2d30"))!;
+                    Rectangle.Fill.Opacity = 0.1;
                 });
             }
         }

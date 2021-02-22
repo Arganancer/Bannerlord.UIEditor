@@ -29,21 +29,21 @@
                             <RowDefinition Height="*" />
                             <RowDefinition Height="0" />
                         </Grid.RowDefinitions>
-                        <local:Resizer x:Name="TopLeft" Cursor="SizeNWSE" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                        <local:Resizer x:Name="TopLeft" CursorIcon="SizeNWSEIcon" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
                                        Height="{TemplateBinding BorderSize}" Grid.Row="0" Grid.Column="0" ThumbDirection="TopLeft" />
-                        <local:Resizer x:Name="Left" Cursor="SizeWE" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                        <local:Resizer x:Name="Left" CursorIcon="SizeWEIcon" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
                                        Grid.Row="1" Grid.Column="0" ThumbDirection="Left" />
-                        <local:Resizer x:Name="BottomLeft" Cursor="SizeNESW" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                        <local:Resizer x:Name="BottomLeft" CursorIcon="SizeNESWIcon" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
                                        Height="{TemplateBinding BorderSize}" Grid.Row="2" Grid.Column="0" ThumbDirection="BottomLeft" />
-                        <local:Resizer x:Name="Bottom" Cursor="SizeNS" Background="{TemplateBinding BorderColor}" Height="{TemplateBinding BorderSize}"
+                        <local:Resizer x:Name="Bottom" CursorIcon="SizeNSIcon" Background="{TemplateBinding BorderColor}" Height="{TemplateBinding BorderSize}"
                                        Grid.Row="2" Grid.Column="1" ThumbDirection="Bottom" />
-                        <local:Resizer x:Name="BottomRight" Cursor="SizeNWSE" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                        <local:Resizer x:Name="BottomRight" CursorIcon="SizeNWSEIcon" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
                                        Height="{TemplateBinding BorderSize}" Grid.Row="2" Grid.Column="2" ThumbDirection="BottomRight" />
-                        <local:Resizer x:Name="Right" Cursor="SizeWE" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                        <local:Resizer x:Name="Right" CursorIcon="SizeWEIcon" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
                                        Grid.Row="1" Grid.Column="2" ThumbDirection="Right" />
-                        <local:Resizer x:Name="TopRight" Cursor="SizeNESW" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
+                        <local:Resizer x:Name="TopRight" CursorIcon="SizeNESWIcon" Background="{TemplateBinding BorderColor}" Width="{TemplateBinding BorderSize}"
                                        Height="{TemplateBinding BorderSize}" Grid.Row="0" Grid.Column="2" ThumbDirection="TopRight" />
-                        <local:Resizer x:Name="Top" Cursor="SizeNS" Background="{TemplateBinding BorderColor}" Height="{TemplateBinding BorderSize}"
+                        <local:Resizer x:Name="Top" CursorIcon="SizeNSIcon" Background="{TemplateBinding BorderColor}" Height="{TemplateBinding BorderSize}"
                                        Grid.Row="0" Grid.Column="1" ThumbDirection="Top" />
 
                         <ContentPresenter Grid.Row="1" Grid.Column="1" Content="{TemplateBinding Content}" Margin="{TemplateBinding Padding}" />

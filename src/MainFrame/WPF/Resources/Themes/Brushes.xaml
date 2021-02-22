@@ -13,8 +13,16 @@
     <Color x:Key="OffWhite">#c8c8c8</Color>
     <Color x:Key="LighterOffWhite">#e7e7e7</Color>
 
-    <SolidColorBrush x:Key="tmpRed" Color="Red" />
+    <Color x:Key="LightGreen">#00eb0c</Color>
+    <Color x:Key="Red">#e00000</Color>
+
+    <SolidColorBrush x:Key="tmpRed" Color="{StaticResource Red}" />
     <SolidColorBrush x:Key="tmpGreen" Color="GreenYellow" />
+
+    <SolidColorBrush x:Key="Cursor" Color="White" />
+    <SolidColorBrush x:Key="Cursor_Highlight" Color="{StaticResource LightGreen}" />
+    <SolidColorBrush x:Key="Cursor_Error" Color="{StaticResource Red}" />
+
 
     <SolidColorBrush x:Key="App_Background" Color="{StaticResource MediumGrey}" />
 
