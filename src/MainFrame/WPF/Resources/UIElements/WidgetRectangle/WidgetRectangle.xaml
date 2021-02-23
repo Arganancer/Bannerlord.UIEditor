@@ -1,0 +1,52 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:mainFrame="clr-namespace:Bannerlord.UIEditor.MainFrame">
+    <ResourceDictionary.MergedDictionaries>
+        <ResourceDictionary Source="../../Themes/Brushes.xaml" />
+    </ResourceDictionary.MergedDictionaries>
+    <Style TargetType="{x:Type mainFrame:WidgetRectangle}">
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate x:Name="Container"
+                                 TargetType="{x:Type mainFrame:WidgetRectangle}">
+                    <Rectangle x:Name="WidgetRectangle"
+                               Stroke="{StaticResource Widget_Foreground}"
+                               Fill="{StaticResource Widget_Background}"
+                               StrokeThickness="1">
+                    </Rectangle>
+                    <ControlTemplate.Triggers>
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsWidgetFocused" Value="True" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="WidgetRectangle" Property="Stroke" Value="{StaticResource Widget_ForegroundHoveredSelected}" />
+                            <Setter TargetName="WidgetRectangle" Property="Fill" Value="{StaticResource Widget_BackgroundHoveredSelected}" />
+                            <Setter TargetName="WidgetRectangle" Property="StrokeThickness" Value="2" />
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsWidgetFocused" Value="True" />
+                                <Condition Property="IsMouseOver" Value="False" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="WidgetRectangle" Property="Stroke" Value="{StaticResource Widget_ForegroundSelected}" />
+                            <Setter TargetName="WidgetRectangle" Property="Fill" Value="{StaticResource Widget_BackgroundSelected}" />
+                            <Setter TargetName="WidgetRectangle" Property="StrokeThickness" Value="1" />
+                        </MultiTrigger>
+
+                        <MultiTrigger>
+                            <MultiTrigger.Conditions>
+                                <Condition Property="IsWidgetFocused" Value="False" />
+                                <Condition Property="IsMouseOver" Value="True" />
+                            </MultiTrigger.Conditions>
+                            <Setter TargetName="WidgetRectangle" Property="Stroke" Value="{StaticResource Widget_ForegroundHovered}" />
+                            <Setter TargetName="WidgetRectangle" Property="Fill" Value="{StaticResource Widget_BackgroundHovered}" />
+                            <Setter TargetName="WidgetRectangle" Property="StrokeThickness" Value="1" />
+                        </MultiTrigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

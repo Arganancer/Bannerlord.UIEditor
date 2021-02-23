@@ -1,8 +1,7 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary"
-                    xmlns:mainFrame="clr-namespace:Bannerlord.UIEditor.MainFrame"
-                    xmlns:System="clr-namespace:System;assembly=mscorlib">
+                    xmlns:mainFrame="clr-namespace:Bannerlord.UIEditor.MainFrame">
     <ResourceDictionary.MergedDictionaries>
         <ResourceDictionary>
             <mainFrame:InverseBooleanConverter x:Key="InverseBooleanConverter" />
@@ -13,7 +12,7 @@
         <DataTemplate.Resources>
             <ResourceDictionary Source="../Theme.xaml" />
         </DataTemplate.Resources>
-        <CheckBox IsChecked="{Binding Value, Mode=TwoWay}"
+        <CheckBox IsChecked="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   IsEnabled="{Binding IsReadonly, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
                   VerticalAlignment="Center" />
     </DataTemplate>
@@ -23,7 +22,7 @@
         <DataTemplate.Resources>
             <ResourceDictionary Source="../Theme.xaml" />
         </DataTemplate.Resources>
-        <TextBox Text="{Binding Value, Mode=TwoWay}"
+        <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                  IsEnabled="{Binding IsReadonly, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
                  VerticalAlignment="Center"
                  VerticalContentAlignment="Center"
@@ -39,9 +38,9 @@
                 </ResourceDictionary.MergedDictionaries>
             </ResourceDictionary>
         </DataTemplate.Resources>
-        <ComboBox ItemsSource="{Binding Collection }"
+        <ComboBox ItemsSource="{Binding Collection, Mode=OneWay, UpdateSourceTrigger=PropertyChanged }"
                   IsEnabled="{Binding IsReadonly, Mode=OneWay, Converter={StaticResource InverseBooleanConverter}}"
-                  SelectedItem="{Binding Value}"
+                  SelectedItem="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                   VerticalAlignment="Center"
                   VerticalContentAlignment="Center"
                   HorizontalAlignment="Stretch" />

@@ -35,11 +35,11 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             Attributes = _attributes;
             foreach (UIEditorWidgetAttribute attribute in _attributes)
             {
-                attribute.PropertyChanged += OnPropertyChanged;
+                attribute.PropertyChangedWithValue += OnPropertyChangedWithValue;
             }
         }
 
-        protected virtual void OnPropertyChanged(UIEditorWidgetAttribute _sender, string _attributeName, object? _value)
+        protected virtual void OnPropertyChangedWithValue(UIEditorWidgetAttribute _sender, string _attributeName, object? _value)
         {
             PropertyChanged?.Invoke(_sender, _attributeName, _value);
         }

@@ -1,4 +1,6 @@
-﻿using System.Windows.Controls;
+﻿using System;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Threading;
 
 namespace Bannerlord.UIEditor.MainFrame
@@ -9,5 +11,8 @@ namespace Bannerlord.UIEditor.MainFrame
         Dispatcher Dispatcher { get; }
         double ViewableAreaWidth { get; }
         double ViewableAreaHeight { get; }
+        double CurrentZoomScale { get; }
+        event EventHandler<MouseEventArgs>? CanvasEditorMouseMove;
+        event EventHandler<MouseButtonEventArgs>? CanvasEditorMouseUp;
     }
 }

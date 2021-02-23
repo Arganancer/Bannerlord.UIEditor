@@ -16,13 +16,9 @@
     <Color x:Key="LightGreen">#00eb0c</Color>
     <Color x:Key="Red">#e00000</Color>
 
-    <SolidColorBrush x:Key="tmpRed" Color="{StaticResource Red}" />
-    <SolidColorBrush x:Key="tmpGreen" Color="GreenYellow" />
-
     <SolidColorBrush x:Key="Cursor" Color="White" />
     <SolidColorBrush x:Key="Cursor_Highlight" Color="{StaticResource LightGreen}" />
     <SolidColorBrush x:Key="Cursor_Error" Color="{StaticResource Red}" />
-
 
     <SolidColorBrush x:Key="App_Background" Color="{StaticResource MediumGrey}" />
 
@@ -48,4 +44,14 @@
     <SolidColorBrush x:Key="Gadget_ForegroundHovered" Color="{StaticResource LightestGrey}" />
     <SolidColorBrush x:Key="Gadget_ForegroundSelected" Color="{StaticResource HighlightBlue}" />
     <SolidColorBrush x:Key="Gadget_ForegroundDisabled" Color="{StaticResource LightGrey}" />
+
+    <SolidColorBrush x:Key="Widget_Background" Color="{StaticResource MediumGrey}" Opacity="0.15" />
+    <SolidColorBrush x:Key="Widget_BackgroundHovered" Color="{StaticResource Grey}" Opacity="0.15" />
+    <SolidColorBrush x:Key="Widget_BackgroundSelected" Color="{StaticResource LightGrey}" Opacity="0.15" />
+    <SolidColorBrush x:Key="Widget_BackgroundHoveredSelected" Color="{StaticResource LightGrey}" Opacity="0.25" />
+
+    <SolidColorBrush x:Key="Widget_Foreground" Color="{StaticResource LightGrey}" Opacity="0.6"/>
+    <SolidColorBrush x:Key="Widget_ForegroundHovered" Color="{StaticResource LighterGrey}" Opacity="0.6" />
+    <SolidColorBrush x:Key="Widget_ForegroundSelected" Color="{StaticResource HighlightBlue}" Opacity="0.75" />
+    <SolidColorBrush x:Key="Widget_ForegroundHoveredSelected" Color="{StaticResource HighlightBlue}" Opacity="1" />
 </ResourceDictionary>

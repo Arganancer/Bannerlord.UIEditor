@@ -41,7 +41,7 @@
                                           Collapsed="Expander_OnCollapsed"
                                           Loaded="Expander_OnLoaded"
                                           Padding="4">
-                                    <ItemsControl ItemsSource="{Binding Attributes}"
+                                    <ItemsControl ItemsSource="{Binding Attributes, UpdateSourceTrigger=PropertyChanged}"
                                                   ItemTemplate="{StaticResource WidgetAttributeDataTemplate}"
                                                   HorizontalContentAlignment="Stretch"
                                                   HorizontalAlignment="Stretch"

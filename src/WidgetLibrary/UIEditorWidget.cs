@@ -29,6 +29,20 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             }
         }
 
+        public UIEditorWidgetAttribute SubscribeToAttribute( string _attributeName, Action<object?> _onPropertyChanged )
+        {
+            UIEditorWidgetAttribute? attribute = Attributes.FirstOrDefault(_attribute => _attribute.Name.Equals(_attributeName));
+            if(attribute is null)
+            {
+                throw new ArgumentOutOfRangeException($"Attribute with name {_attributeName} could not be found in widget {Name}.");
+            }
+
+            attribute.PropertyChangedWithValue += ( _, _, _value ) => _onPropertyChanged(_value);
+            _onPropertyChanged(attribute.Value);
+
+            return attribute;
+        }
+
         private bool m_IsReadonly;
 
         public UIEditorWidget(string _name, List<UIEditorWidgetAttribute> _attributes)

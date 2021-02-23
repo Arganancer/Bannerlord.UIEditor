@@ -12,7 +12,7 @@ namespace Bannerlord.UIEditor.MainFrame
     /// <summary>
     /// TODO: UIEditor Canvas Elements: https://stackoverflow.com/questions/21635892/how-to-set-x-y-coordinates-of-wpf-canvas-children-through-code/21637725
     /// TODO: Remove magic numbers and allow changing resolution/aspect ratio.
-    /// TODO: AddIcon left/top pixel rulers.
+    /// TODO: Add left/top pixel guides.
     /// </summary>
     public partial class CanvasEditorControl : ConnectedUserControl, ICanvasEditorControl
     {
@@ -20,13 +20,16 @@ namespace Bannerlord.UIEditor.MainFrame
         public double ViewableAreaWidth => m_ViewableArea.Width;
         public double ViewableAreaHeight => m_ViewableArea.Height;
 
+        public event EventHandler<MouseEventArgs>? CanvasEditorMouseMove;
+        public event EventHandler<MouseButtonEventArgs>? CanvasEditorMouseUp; 
+
+        public double CurrentZoomScale { get; private set; } = 1.0;
+
         private Rectangle m_Background = null!;
         private Rectangle m_ViewableArea = null!;
 
         private Point m_LastMousePos;
         private bool m_IsPanning;
-
-        private double m_CurrentZoomScale = 1.0;
 
         public CanvasEditorControl()
         {
@@ -67,14 +70,8 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void InitializeCanvas()
         {
-            SolidColorBrush backgroundColor = (SolidColorBrush)(new BrushConverter().ConvertFrom("#121212"))!;
-            m_Background = new Rectangle
-            {
-                StrokeThickness = 0,
-                Fill = backgroundColor,
-                Width = 2920,
-                Height = 2080
-            };
+            SolidColorBrush backgroundColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#121212")!;
+            m_Background = new Rectangle {StrokeThickness = 0, Fill = backgroundColor, Width = 2920, Height = 2080};
 
             Canvas.SetLeft(m_Background, -500);
             Canvas.SetTop(m_Background, -500);
@@ -83,9 +80,9 @@ namespace Bannerlord.UIEditor.MainFrame
 
             m_ViewableArea = new Rectangle
             {
-                Stroke = (SolidColorBrush)(new BrushConverter().ConvertFrom("#1a1a1a"))!,
+                Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom("#1a1a1a")!,
                 StrokeThickness = 1,
-                Fill = (SolidColorBrush)(new BrushConverter().ConvertFrom("#141414"))!,
+                Fill = (SolidColorBrush)new BrushConverter().ConvertFrom("#141414")!,
                 Width = 1920,
                 Height = 1080
             };
@@ -99,7 +96,9 @@ namespace Bannerlord.UIEditor.MainFrame
         private void UIEditorCanvas_OnMouseMove(object _sender, MouseEventArgs _mouseMoveEvent)
         {
             base.OnMouseMove(_mouseMoveEvent);
-            if (m_IsPanning)
+            OnCanvasEditorMouseMove(_mouseMoveEvent);
+
+            if ( !_mouseMoveEvent.Handled && m_IsPanning)
             {
                 var position = _mouseMoveEvent.GetPosition(this);
                 CanvasTranslateTransform.X += position.X - m_LastMousePos.X;
@@ -130,6 +129,13 @@ namespace Bannerlord.UIEditor.MainFrame
         private void UIEditorCanvas_OnMouseUp(object _sender, MouseButtonEventArgs _mouseUpEvent)
         {
             base.OnMouseUp(_mouseUpEvent);
+            OnCanvasEditorMouseUp(_mouseUpEvent);
+
+            if (_mouseUpEvent.Handled)
+            {
+                return;
+            }
+
             switch (_mouseUpEvent.ChangedButton)
             {
                 case MouseButton.Left:
@@ -152,15 +158,15 @@ namespace Bannerlord.UIEditor.MainFrame
         private void UIEditorCanvas_OnMouseWheel(object _sender, MouseWheelEventArgs _mouseWheelEvent)
         {
             const double scaleStep = 1.1;
-            m_CurrentZoomScale = _mouseWheelEvent.Delta > 0 ? m_CurrentZoomScale * scaleStep : m_CurrentZoomScale / scaleStep;
+            CurrentZoomScale = _mouseWheelEvent.Delta > 0 ? CurrentZoomScale * scaleStep : CurrentZoomScale / scaleStep;
 
             var borderPosition = _mouseWheelEvent.GetPosition(CanvasBorder);
             var canvasPosition = _mouseWheelEvent.GetPosition(UIEditorCanvas);
 
             ClampZoomScale();
 
-            CanvasTranslateTransform.X = (-canvasPosition.X + ((borderPosition.X - CanvasBorder.BorderThickness.Left) / m_CurrentZoomScale)) * m_CurrentZoomScale;
-            CanvasTranslateTransform.Y = (-canvasPosition.Y + ((borderPosition.Y - CanvasBorder.BorderThickness.Left) / m_CurrentZoomScale)) * m_CurrentZoomScale;
+            CanvasTranslateTransform.X = (-canvasPosition.X + ((borderPosition.X - CanvasBorder.BorderThickness.Left) / CurrentZoomScale)) * CurrentZoomScale;
+            CanvasTranslateTransform.Y = (-canvasPosition.Y + ((borderPosition.Y - CanvasBorder.BorderThickness.Left) / CurrentZoomScale)) * CurrentZoomScale;
 
             ClampPosition();
         }
@@ -169,40 +175,50 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             var canvasSize = UIEditorCanvas.RenderSize;
             var minZoomScale = Math.Max(1d / (2920d / canvasSize.Height), 1d / (2080d / canvasSize.Width));
-            if (m_CurrentZoomScale < minZoomScale)
+            if (CurrentZoomScale < minZoomScale)
             {
-                m_CurrentZoomScale = minZoomScale;
+                CurrentZoomScale = minZoomScale;
             }
 
-            if (Math.Abs(CanvasScaleTransform.ScaleX - m_CurrentZoomScale) > 0.00000001)
+            if (Math.Abs(CanvasScaleTransform.ScaleX - CurrentZoomScale) > 0.00000001)
             {
-                CanvasScaleTransform.ScaleX = m_CurrentZoomScale;
-                CanvasScaleTransform.ScaleY = m_CurrentZoomScale;
+                CanvasScaleTransform.ScaleX = CurrentZoomScale;
+                CanvasScaleTransform.ScaleY = CurrentZoomScale;
             }
         }
 
         private void ClampPosition()
         {
             var canvasSize = UIEditorCanvas.RenderSize;
-            var currentX = CanvasTranslateTransform.X / m_CurrentZoomScale;
-            var currentY = CanvasTranslateTransform.Y / m_CurrentZoomScale;
+            var currentX = CanvasTranslateTransform.X / CurrentZoomScale;
+            var currentY = CanvasTranslateTransform.Y / CurrentZoomScale;
             if (currentX > 500)
             {
-                CanvasTranslateTransform.X = 500 * m_CurrentZoomScale;
+                CanvasTranslateTransform.X = 500 * CurrentZoomScale;
             }
-            else if (-currentX + (canvasSize.Width / m_CurrentZoomScale) > 2420)
+            else if (-currentX + (canvasSize.Width / CurrentZoomScale) > 2420)
             {
-                CanvasTranslateTransform.X = -((2420 * m_CurrentZoomScale) - canvasSize.Width);
+                CanvasTranslateTransform.X = -((2420 * CurrentZoomScale) - canvasSize.Width);
             }
 
             if (currentY > 500)
             {
-                CanvasTranslateTransform.Y = 500 * m_CurrentZoomScale;
+                CanvasTranslateTransform.Y = 500 * CurrentZoomScale;
             }
-            else if (-currentY + (canvasSize.Height / m_CurrentZoomScale) > 1580)
+            else if (-currentY + (canvasSize.Height / CurrentZoomScale) > 1580)
             {
-                CanvasTranslateTransform.Y = -((1580 * m_CurrentZoomScale) - canvasSize.Height);
+                CanvasTranslateTransform.Y = -((1580 * CurrentZoomScale) - canvasSize.Height);
             }
+        }
+
+        private void OnCanvasEditorMouseMove(MouseEventArgs _e)
+        {
+            CanvasEditorMouseMove?.Invoke(this, _e);
+        }
+
+        private void OnCanvasEditorMouseUp(MouseButtonEventArgs _e)
+        {
+            CanvasEditorMouseUp?.Invoke(this, _e);
         }
     }
 }

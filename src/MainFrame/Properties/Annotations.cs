@@ -278,7 +278,7 @@ namespace Bannerlord.UIEditor.MainFrame.Properties
     /// </remarks>
     /// <example><code>
     /// public class Foo : INotifyPropertyChanged {
-    ///   public event PropertyChangedEventHandler PropertyChanged;
+    ///   public event PropertyChangedEventHandler PropertyChangedWithValue;
     /// 
     ///   [NotifyPropertyChangedInvocator]
     ///   protected virtual void NotifyChanged(string propertyName) { ... }

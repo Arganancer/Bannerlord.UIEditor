@@ -75,8 +75,8 @@
 
     <mainFrame:CursorViewbox x:Key="SizeNSIcon"
                              Stretch="Uniform"
-                             Width="24"
-                             Height="24"
+                             Width="28"
+                             Height="28"
                              VerticalHotspotAlignment="Center"
                              HorizontalHotspotAlignment="Center">
         <Grid>
@@ -114,8 +114,8 @@
     </mainFrame:CursorViewbox>
     <mainFrame:CursorViewbox x:Key="SizeWEIcon"
                              Stretch="Uniform"
-                             Width="24"
-                             Height="24"
+                             Width="28"
+                             Height="28"
                              VerticalHotspotAlignment="Center"
                              HorizontalHotspotAlignment="Center">
         <Grid>

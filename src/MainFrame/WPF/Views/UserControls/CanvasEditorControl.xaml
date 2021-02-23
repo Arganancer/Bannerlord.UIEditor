@@ -9,8 +9,14 @@
                            mc:Ignorable="d"
                            d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
-        <ResourceDictionary Source="../../Resources/Theme.xaml"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Resources/Theme.xaml"/>
+                <ResourceDictionary Source="../../Resources/UIElements/WidgetRectangle/WidgetRectangle.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
+
     <Border BorderThickness="1"
             BorderBrush="{StaticResource Border}"
             Width="Auto"

@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
 
 namespace Bannerlord.UIEditor.WidgetLibrary
 {
     public delegate void WidgetAttributeChangedEventHandler(UIEditorWidgetAttribute _sender, string _attributeName, object? _value);
 
-    public class UIEditorWidgetAttribute
+    public class UIEditorWidgetAttribute : INotifyPropertyChanged
     {
-        public event WidgetAttributeChangedEventHandler? PropertyChanged;
+        public event WidgetAttributeChangedEventHandler? PropertyChangedWithValue;
         public Type Type { get; }
         public string TypeName => Type.ToString();
         public object? DefaultValue { get; }
@@ -40,9 +42,12 @@ namespace Bannerlord.UIEditor.WidgetLibrary
             DeclaringType = _declaringType;
         }
 
-        private void OnPropertyChanged()
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        private void OnPropertyChanged([CallerMemberName] string? _propertyName = null)
         {
-            PropertyChanged?.Invoke(this, Name, Value);
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_propertyName));
+            PropertyChangedWithValue?.Invoke(this, Name, Value);
         }
     }
 
