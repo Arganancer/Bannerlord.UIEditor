@@ -33,7 +33,7 @@
     <Window.Background>
         <StaticResource ResourceKey="App_Background" />
     </Window.Background>
-    <Border Name="RootBorder" 
+    <Border Name="RootBorder"
             Style="{StaticResource WindowMainPanelStyle}">
         <Grid Margin="4, 0, 4, 4">
             <Grid.ColumnDefinitions>
@@ -58,9 +58,23 @@
                         <mainFrame:ResizableControl DockPanel.Dock="Left"
                                                     MinWidth="50"
                                                     Width="180">
-                            <mainFrame:WidgetListControl x:Name="WidgetListControl"
-                                                         HorizontalContentAlignment="Stretch"
-                                                         VerticalContentAlignment="Stretch" />
+                            <DockPanel>
+                                <Button Name="ExportButton" DockPanel.Dock="Top"
+                                        Height="24"
+                                        Background="{StaticResource ContainerItem_Background}"
+                                        Foreground="{StaticResource Text}"
+                                        BorderBrush="{StaticResource Border}"
+                                        HorizontalAlignment="Left"
+                                        Click="ExportButton_OnClick"
+                                        Margin="0, 0, 0, 2">
+                                    <TextBlock Text="Export" 
+                                               Margin="5, 0, 5, 0"/>
+                                </Button>
+                                <mainFrame:WidgetListControl DockPanel.Dock="Bottom"
+                                                             x:Name="WidgetListControl"
+                                                             HorizontalContentAlignment="Stretch"
+                                                             VerticalContentAlignment="Stretch" />
+                            </DockPanel>
                         </mainFrame:ResizableControl>
                         <mainFrame:ResizableControl DockPanel.Dock="Right"
                                                     MinWidth="50">

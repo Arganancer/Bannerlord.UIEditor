@@ -1,6 +1,6 @@
 ﻿<Module>
-    <Name value="UIEditor" />
-    <Id value="UIEditor" />
+    <Name value="Bannerlord.UIEditor" />
+    <Id value="Bannerlord.UIEditor" />
     <Version value="v0.0.1" />
     <SingleplayerModule value="true" />
     <MultiplayerModule value="false" />
@@ -9,7 +9,7 @@
     </DependedModules>
     <SubModules>
         <SubModule>
-            <Name value="UIEditor" />
+            <Name value="Bannerlord.UIEditor" />
             <DLLName value="Bannerlord.UIEditor.Main.dll" />
             <SubModuleClassType value="Bannerlord.UIEditor.Main.UIEditorSubModule" />
             <Tags>

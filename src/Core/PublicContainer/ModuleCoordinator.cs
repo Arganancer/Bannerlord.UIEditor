@@ -171,7 +171,15 @@ namespace Bannerlord.UIEditor.Core
             {
                 if (!m_CachedInstantiators.TryGetValue(assembly, out Func<IEnumerable<IModule>> moduleInstantiator))
                 {
-                    Type[] types = assembly.GetTypes().Where(_type => !_type.IsAbstract && !_type.IsInterface && typeof( IModule ).IsAssignableFrom(_type)).ToArray();
+                    Type[]? types;
+                    try
+                    {
+                        types = assembly.GetTypes().Where(_type => !_type.IsAbstract && !_type.IsInterface && typeof(IModule).IsAssignableFrom(_type)).ToArray();
+                    }
+                    catch (ReflectionTypeLoadException e)
+                    {
+                        types = e.Types.Where(_type => _type is not null && !_type.IsAbstract && !_type.IsInterface && typeof(IModule).IsAssignableFrom(_type)).ToArray();
+                    }
                     moduleInstantiator = CreateModulesInstantiator(types.Where(_type => typeof( Module ).IsAssignableFrom(_type)));
                     m_CachedInstantiators.Add(assembly, moduleInstantiator);
                 }

@@ -15,6 +15,8 @@ namespace Bannerlord.UIEditor.WidgetLibrary
         public string TypeName => Type.ToString();
         public object? DefaultValue { get; }
         public string Name { get; }
+        public bool IsDefaultValue => Value?.Equals(DefaultValue) ?? DefaultValue is null;
+        public string ValueAsString => Value?.ToString() ?? "";
 
         public object? Value
         {

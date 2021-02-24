@@ -23,6 +23,11 @@ namespace Bannerlord.UIEditor.MainFrame
         public event EventHandler<MouseEventArgs>? CanvasEditorMouseMove;
         public event EventHandler<MouseButtonEventArgs>? CanvasEditorMouseUp; 
 
+        public int CanvasWidth { get; set; }
+        public int CanvasHeight { get; set; }
+
+        public int BackgroundBuffer { get; set; }
+
         public double CurrentZoomScale { get; private set; } = 1.0;
 
         private Rectangle m_Background = null!;
@@ -40,8 +45,11 @@ namespace Bannerlord.UIEditor.MainFrame
         public override void Create(IPublicContainer _publicContainer)
         {
             base.Create(_publicContainer);
-            InitializeCanvas();
+            CanvasWidth = 1920;
+            CanvasHeight = 1080;
+            BackgroundBuffer = 2000;
 
+            InitializeCanvas();
             PublicContainer.RegisterModule<ICanvasEditorControl>(this);
         }
 
@@ -71,10 +79,10 @@ namespace Bannerlord.UIEditor.MainFrame
         private void InitializeCanvas()
         {
             SolidColorBrush backgroundColor = (SolidColorBrush)new BrushConverter().ConvertFrom("#121212")!;
-            m_Background = new Rectangle {StrokeThickness = 0, Fill = backgroundColor, Width = 2920, Height = 2080};
+            m_Background = new Rectangle {StrokeThickness = 0, Fill = backgroundColor, Width = CanvasWidth + BackgroundBuffer * 2, Height = CanvasHeight + BackgroundBuffer * 2 };
 
-            Canvas.SetLeft(m_Background, -500);
-            Canvas.SetTop(m_Background, -500);
+            Canvas.SetLeft(m_Background, -BackgroundBuffer);
+            Canvas.SetTop(m_Background, -BackgroundBuffer);
             UIEditorCanvas.Children.Add(m_Background);
             Panel.SetZIndex(m_Background, -2);
 
@@ -83,8 +91,8 @@ namespace Bannerlord.UIEditor.MainFrame
                 Stroke = (SolidColorBrush)new BrushConverter().ConvertFrom("#1a1a1a")!,
                 StrokeThickness = 1,
                 Fill = (SolidColorBrush)new BrushConverter().ConvertFrom("#141414")!,
-                Width = 1920,
-                Height = 1080
+                Width = CanvasWidth,
+                Height = CanvasHeight
             };
 
             Canvas.SetLeft(m_ViewableArea, 0);
@@ -174,7 +182,7 @@ namespace Bannerlord.UIEditor.MainFrame
         private void ClampZoomScale()
         {
             var canvasSize = UIEditorCanvas.RenderSize;
-            var minZoomScale = Math.Max(1d / (2920d / canvasSize.Height), 1d / (2080d / canvasSize.Width));
+            var minZoomScale = Math.Max(1d / ((CanvasWidth + BackgroundBuffer * 2) / canvasSize.Height), 1d / ((CanvasHeight + BackgroundBuffer * 2) / canvasSize.Width));
             if (CurrentZoomScale < minZoomScale)
             {
                 CurrentZoomScale = minZoomScale;
@@ -192,22 +200,22 @@ namespace Bannerlord.UIEditor.MainFrame
             var canvasSize = UIEditorCanvas.RenderSize;
             var currentX = CanvasTranslateTransform.X / CurrentZoomScale;
             var currentY = CanvasTranslateTransform.Y / CurrentZoomScale;
-            if (currentX > 500)
+            if (currentX > BackgroundBuffer)
             {
-                CanvasTranslateTransform.X = 500 * CurrentZoomScale;
+                CanvasTranslateTransform.X = BackgroundBuffer * CurrentZoomScale;
             }
-            else if (-currentX + (canvasSize.Width / CurrentZoomScale) > 2420)
+            else if (-currentX + (canvasSize.Width / CurrentZoomScale) > (CanvasWidth + BackgroundBuffer))
             {
-                CanvasTranslateTransform.X = -((2420 * CurrentZoomScale) - canvasSize.Width);
+                CanvasTranslateTransform.X = -(((CanvasWidth + BackgroundBuffer) * CurrentZoomScale) - canvasSize.Width);
             }
 
-            if (currentY > 500)
+            if (currentY > BackgroundBuffer)
             {
-                CanvasTranslateTransform.Y = 500 * CurrentZoomScale;
+                CanvasTranslateTransform.Y = BackgroundBuffer * CurrentZoomScale;
             }
-            else if (-currentY + (canvasSize.Height / CurrentZoomScale) > 1580)
+            else if (-currentY + (canvasSize.Height / CurrentZoomScale) > (CanvasHeight + BackgroundBuffer))
             {
-                CanvasTranslateTransform.Y = -((1580 * CurrentZoomScale) - canvasSize.Height);
+                CanvasTranslateTransform.Y = -(((CanvasHeight + BackgroundBuffer) * CurrentZoomScale) - canvasSize.Height);
             }
         }
 

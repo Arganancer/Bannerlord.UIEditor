@@ -71,32 +71,33 @@ namespace Bannerlord.UIEditor.WidgetLibrary
                     _attributes.First(_a => _a.Name == "Id"),
                     _attributes.First(_a => _a.Name == "IsEnabled"),
                     _attributes.First(_a => _a.Name == "IsDisabled"),
-                    _attributes.First(_a => _a.Name == "IsFocusable"),
                     _attributes.First(_a => _a.Name == "IsHidden"),
                     _attributes.First(_a => _a.Name == "IsVisible"),
+                    _attributes.First(_a => _a.Name == "IsFocusable"),
                     _attributes.First(_a => _a.Name == "UpdateChildrenStates")
                 }),
-                new AttributeCategory("Position", typeof( Widget ), new List<UIEditorWidgetAttribute> {_attributes.First(_a => _a.Name == "PositionXOffset"), _attributes.First(_a => _a.Name == "PositionYOffset")}),
-                new AttributeCategory("Alignment", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                new AttributeCategory("Constraints", typeof( Widget ), new List<UIEditorWidgetAttribute>
                 {
-                    _attributes.First(_a => _a.Name == "MarginTop"),
-                    _attributes.First(_a => _a.Name == "MarginLeft"),
-                    _attributes.First(_a => _a.Name == "MarginBottom"),
-                    _attributes.First(_a => _a.Name == "MarginRight"),
                     _attributes.First(_a => _a.Name == "VerticalAlignment"),
-                    _attributes.First(_a => _a.Name == "HorizontalAlignment")
-                }),
-                new AttributeCategory("Size", typeof( Widget ), new List<UIEditorWidgetAttribute>
-                {
-                    _attributes.First(_a => _a.Name == "SuggestedWidth"),
-                    _attributes.First(_a => _a.Name == "SuggestedHeight"),
+                    _attributes.First(_a => _a.Name == "HorizontalAlignment"),
                     _attributes.First(_a => _a.Name == "WidthSizePolicy"),
                     _attributes.First(_a => _a.Name == "HeightSizePolicy"),
                     _attributes.First(_a => _a.Name == "MaxWidth"),
                     _attributes.First(_a => _a.Name == "MaxHeight"),
                     _attributes.First(_a => _a.Name == "MinWidth"),
                     _attributes.First(_a => _a.Name == "MinHeight"),
-                    _attributes.First(_a => _a.Name == "DoNotUseCustomScaleAndChildren")
+                }),
+                new AttributeCategory("Layout", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "SuggestedWidth"),
+                    _attributes.First(_a => _a.Name == "SuggestedHeight"),
+                    _attributes.First(_a => _a.Name == "PositionXOffset"),
+                    _attributes.First(_a => _a.Name == "PositionYOffset"),
+                    _attributes.First(_a => _a.Name == "MarginTop"),
+                    _attributes.First(_a => _a.Name == "MarginLeft"),
+                    _attributes.First(_a => _a.Name == "MarginBottom"),
+                    _attributes.First(_a => _a.Name == "MarginRight"),
+                    _attributes.First(_a => _a.Name == "DoNotUseCustomScaleAndChildren"),
                 }),
                 new AttributeCategory("Events", typeof( Widget ), new List<UIEditorWidgetAttribute>
                 {
@@ -111,7 +112,11 @@ namespace Bannerlord.UIEditor.WidgetLibrary
                     _attributes.First(_a => _a.Name == "HideOnDrag"),
                     _attributes.First(_a => _a.Name == "DragWidget")
                 }),
-                new AttributeCategory("Animations", typeof( Widget ), new List<UIEditorWidgetAttribute> {_attributes.First(_a => _a.Name == "TweenPosition"), _attributes.First(_a => _a.Name == "RestartAnimationFirstFrame")}),
+                new AttributeCategory("Animations", typeof( Widget ), new List<UIEditorWidgetAttribute>
+                {
+                    _attributes.First(_a => _a.Name == "TweenPosition"), 
+                    _attributes.First(_a => _a.Name == "RestartAnimationFirstFrame")
+                }),
                 new AttributeCategory("Rendering", typeof( Widget ), new List<UIEditorWidgetAttribute>
                 {
                     _attributes.First(_a => _a.Name == "VisualDefinition"),

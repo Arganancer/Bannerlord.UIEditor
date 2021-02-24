@@ -46,9 +46,6 @@
             <Path Fill="{StaticResource Cursor_Highlight}" StrokeThickness="0" StrokeMiterLimit="4" StrokeLineJoin="Round" StrokeStartLineCap="Round" 
                   StrokeEndLineCap="Round" Opacity="0.999"
                   Data="m 180 720 v 360 h 900 V 720 Z m 90 90 H 990 V 990 H 270 Z M 180 0 v 360 h 900 V 0 Z m 90 90 H 990 V 270 H 270 Z M 179.97441 540.02542 -0.05102362 719.99998 0 360.00001 179.97456 540.02542">
-                <!--<Path.RenderTransform>
-                    <ScaleTransform ScaleX="0.26458334" ScaleY="0.26458334"/>
-                </Path.RenderTransform>-->
             </Path>
         </Grid>
     </mainFrame:CursorViewbox>

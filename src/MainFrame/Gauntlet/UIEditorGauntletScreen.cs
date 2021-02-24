@@ -12,7 +12,7 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
 
         private GauntletMovie? m_UIEditorMovie;
 
-        private BackdropOverlayVM m_BackgroundOverlayVM = null!;
+        private BackdropOverlayVM m_BackdropOverlayVM = null!;
         private GauntletLayer? m_BackdropOverlayGauntletLayer;
         private GauntletMovie? m_BackdropOverlayMovie;
 
@@ -20,7 +20,7 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
         {
             base.Create(_publicContainer);
 
-            m_BackgroundOverlayVM = new BackdropOverlayVM();
+            m_BackdropOverlayVM = new BackdropOverlayVM();
             UIEditorVM = new UIEditorVM();
             UIEditorVM.Create(PublicContainer);
         }
@@ -48,14 +48,34 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
             base.OnInitialize();
 
             m_BackdropOverlayGauntletLayer = new GauntletLayer(9990);
-            m_BackdropOverlayMovie = m_BackdropOverlayGauntletLayer.LoadMovie("BackdropOverlayScreen", m_BackgroundOverlayVM);
+            m_BackdropOverlayMovie = m_BackdropOverlayGauntletLayer.LoadMovie("BackdropOverlayScreen", m_BackdropOverlayVM);
             m_BackdropOverlayGauntletLayer.InputRestrictions.SetInputRestrictions();
             AddLayer(m_BackdropOverlayGauntletLayer);
 
-            UIEditorGauntletLayer = new GauntletLayer(9991) {IsFocusLayer = true};
+            CreateLiveEditingGauntletLayer();
+        }
+
+        private void CreateLiveEditingGauntletLayer()
+        {
+            UIEditorGauntletLayer = new GauntletLayer(9991) { IsFocusLayer = true };
             m_UIEditorMovie = UIEditorGauntletLayer.LoadMovie("LiveEditingScreen", UIEditorVM);
             UIEditorGauntletLayer.InputRestrictions.SetInputRestrictions();
             AddLayer(UIEditorGauntletLayer);
+        }
+
+        private void DestroyLiveEditingGauntletLayer()
+        {
+            m_UIEditorMovie?.Release();
+            UIEditorGauntletLayer?.ReleaseMovie(m_UIEditorMovie);
+            RemoveLayer(UIEditorGauntletLayer);
+            UIEditorGauntletLayer = null;
+        }
+
+        public void RefreshLiveEditingScreen()
+        {
+            DestroyLiveEditingGauntletLayer();
+
+            CreateLiveEditingGauntletLayer();
         }
 
         protected override void OnActivate()
@@ -79,13 +99,14 @@ namespace Bannerlord.UIEditor.MainFrame.Gauntlet
         {
             base.OnFinalize();
 
-            UIEditorGauntletLayer?.ReleaseMovie(m_UIEditorMovie);
             UIEditorVM.OnFinalize();
-            RemoveLayer(UIEditorGauntletLayer);
+            DestroyLiveEditingGauntletLayer();
 
+            m_BackdropOverlayVM.OnFinalize();
+            m_BackdropOverlayMovie?.Release();
             m_BackdropOverlayGauntletLayer?.ReleaseMovie(m_BackdropOverlayMovie);
-            m_BackgroundOverlayVM.OnFinalize();
             RemoveLayer(m_BackdropOverlayGauntletLayer);
+            m_BackdropOverlayGauntletLayer = null;
         }
     }
 }

@@ -24,7 +24,7 @@
                       Drop="SceneTreeView_OnDrop"
                       SelectedItemChanged="SceneTreeView_OnSelectedItemChanged">
                 <TreeView.Resources>
-                    <HierarchicalDataTemplate DataType="{x:Type mainFrame:WidgetViewModel}"
+                    <HierarchicalDataTemplate DataType="{x:Type mainFrame:DrawableWidgetViewModel}"
                                               ItemsSource="{Binding Children}">
                         <HierarchicalDataTemplate.Resources>
                             <ResourceDictionary>
@@ -79,7 +79,6 @@
                             </Grid.RowDefinitions>
                             <Border Grid.Row="0" 
                                     x:Name="TreeItemTopBorder"
-                                    BorderBrush="{StaticResource Gadget_ForegroundHovered}"
                                     Style="{StaticResource TreeItemTopBorder}" />
                             <StackPanel Grid.Row="1" x:Name="WidgetItem"
                                         Orientation="Horizontal">
@@ -88,7 +87,6 @@
                             </StackPanel>
                             <Border Grid.Row="2" 
                                     x:Name="TreeItemBottomBorder"
-                                    BorderBrush="{StaticResource Gadget_ForegroundHovered}"
                                     Style="{StaticResource TreeItemBottomBorder}" />
                         </mainFrame:TreeItemGrid>
                     </HierarchicalDataTemplate>

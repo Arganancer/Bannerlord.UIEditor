@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Runtime.InteropServices;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Interop;
 using Bannerlord.UIEditor.Core;
 
@@ -50,6 +49,9 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private const int WmGetMinMaxInfo = 0x0024;
         private const uint MonitorDefaultToNearest = 0x00000002;
+        private ISceneManager m_SceneManager = null!;
+        private IGlobalEventManager m_GlobalEventManager;
+        private InvokeGlobalEvent m_OnRefreshLiveEditingScreen;
 
         public MainWindow()
         {
@@ -60,13 +62,23 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             base.Load();
 
+            m_GlobalEventManager = PublicContainer.GetModule<IGlobalEventManager>();
+            m_OnRefreshLiveEditingScreen = m_GlobalEventManager.GetEventInvoker("OnRefreshLiveEditingScreen", this, true);
+
             PublicContainer.GetModule<ICursorManager>().Initialize(this);
+            m_SceneManager = PublicContainer.GetModule<ISceneManager>();
         }
 
         protected override void OnSourceInitialized(EventArgs _e)
         {
             base.OnSourceInitialized(_e);
             ((HwndSource)PresentationSource.FromVisual(this))!.AddHook(HookProc);
+        }
+
+        private void ExportButton_OnClick(object _sender, RoutedEventArgs _e)
+        {
+            m_OnRefreshLiveEditingScreen(m_SceneManager.ToXml());
+            //m_SceneManager.ToXml().Save("C:\\Users\\Streetlamp\\Documents\\UIEditorTestOutput\\UIEditorTextFile.xml");
         }
 
         [Serializable, StructLayout(LayoutKind.Sequential)]

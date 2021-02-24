@@ -62,7 +62,7 @@ namespace Bannerlord.UIEditor.MainFrame
                     if (GauntletManager?.UIContext is not null)
                     {
                         UIEditorWidget widget = WidgetManager!.CreateWidget(GauntletManager.UIContext, focusableWidgetTemplate.WidgetTemplate);
-                        FocusedWidget = new WidgetViewModel(widget.Name, widget, null, PublicContainer) { IsReadonly = true };
+                        FocusedWidget = new WidgetViewModel(widget.Name, widget, PublicContainer);
                     }
                 }
                 else if(_focusable is WidgetViewModel widgetViewModel)
