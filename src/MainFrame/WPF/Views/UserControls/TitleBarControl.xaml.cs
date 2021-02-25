@@ -21,6 +21,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 RefreshMaximizeRestoreButton();
                 Window.StateChanged += OnWindowStateChanged;
             };
+            DataContext = this;
         }
 
         private void OnWindowStateChanged(object _sender, EventArgs _e)

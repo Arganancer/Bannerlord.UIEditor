@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Bannerlord.UIEditor.Core;
 
 namespace Bannerlord.UIEditor.MainFrame
 {
@@ -10,7 +11,7 @@ namespace Bannerlord.UIEditor.MainFrame
     /// </summary>
     public class Resizer : Thumb
     {
-        public static DependencyProperty CursorIconProperty = DependencyProperty.Register("CursorIcon", typeof(CursorIcon), typeof(ResizableControl));
+        public static DependencyProperty CursorIconProperty = DependencyProperty.Register("CursorIcon", typeof( CursorIcon ), typeof( ResizableControl ));
         public static DependencyProperty ThumbDirectionProperty = DependencyProperty.Register("ThumbDirection", typeof( ResizeDirection ), typeof( Resizer ));
 
         public ResizeDirection ThumbDirection
@@ -29,6 +30,9 @@ namespace Bannerlord.UIEditor.MainFrame
             }
         }
 
+        private string m_SettingsNamePrefix = null!;
+        private SettingsManager m_SettingsManager;
+
         static Resizer()
         {
             DefaultStyleKeyProperty.OverrideMetadata(typeof( Resizer ), new FrameworkPropertyMetadata(typeof( Resizer )));
@@ -36,23 +40,35 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public Resizer()
         {
+            m_SettingsManager = SettingsManager.Instance!;
             DragDelta += Resizer_DragDelta;
+        }
+
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            m_SettingsNamePrefix = this.GetVisualAncestorOfType<ResizableControl>()!.Name;
+
+            if (DataContext is Control designerItem)
+            {
+                var width = m_SettingsManager.GetSetting<double?>($"{m_SettingsNamePrefix}_Width");
+                if (width is not null)
+                {
+                    designerItem.Width = (double)width;
+                }
+
+                var height = m_SettingsManager.GetSetting<double?>($"{m_SettingsNamePrefix}_Height");
+                if (height is not null)
+                {
+                    designerItem.Height = (double)height;
+                }
+            }
         }
 
         private void Resizer_DragDelta(object _sender, DragDeltaEventArgs _dragDeltaEvent)
         {
             if (DataContext is Control designerItem)
             {
-                //if (double.IsNaN(designerItem.Width))
-                //{
-                //    designerItem.Width = designerItem.ActualWidth;
-                //}
-
-                //if (double.IsNaN(designerItem.Height))
-                //{
-                //    designerItem.Height = designerItem.ActualHeight;
-                //}
-
                 switch (ThumbDirection)
                 {
                     case ResizeDirection.TopLeft:
@@ -89,28 +105,32 @@ namespace Bannerlord.UIEditor.MainFrame
             _dragDeltaEvent.Handled = true;
         }
 
-        private static void ResizeRight(DragDeltaEventArgs _dragDeltaEvent, Control _designerItem)
+        private void ResizeRight(DragDeltaEventArgs _dragDeltaEvent, Control _designerItem)
         {
             var deltaHorizontal = Math.Min(-_dragDeltaEvent.HorizontalChange, _designerItem.ActualWidth - _designerItem.MinWidth);
             _designerItem.Width -= deltaHorizontal;
+            m_SettingsManager.SetSetting($"{m_SettingsNamePrefix}_Width", _designerItem.Width);
         }
 
-        private static void ResizeTop(DragDeltaEventArgs _dragDeltaEvent, Control _designerItem)
+        private void ResizeTop(DragDeltaEventArgs _dragDeltaEvent, Control _designerItem)
         {
             var deltaHorizontal = Math.Min(_dragDeltaEvent.VerticalChange, _designerItem.ActualHeight - _designerItem.MinHeight);
             _designerItem.Height -= deltaHorizontal;
+            m_SettingsManager.SetSetting($"{m_SettingsNamePrefix}_Height", _designerItem.Height);
         }
 
-        private static void ResizeLeft(DragDeltaEventArgs _dragDeltaEvent, Control _designerItem)
+        private void ResizeLeft(DragDeltaEventArgs _dragDeltaEvent, Control _designerItem)
         {
             var deltaHorizontal = Math.Min(_dragDeltaEvent.HorizontalChange, _designerItem.ActualWidth - _designerItem.MinWidth);
             _designerItem.Width -= deltaHorizontal;
+            m_SettingsManager.SetSetting($"{m_SettingsNamePrefix}_Width", _designerItem.Width);
         }
 
-        private static void ResizeBottom(DragDeltaEventArgs _dragDeltaEvent, Control _designerItem)
+        private void ResizeBottom(DragDeltaEventArgs _dragDeltaEvent, Control _designerItem)
         {
             var deltaHorizontal = Math.Min(-_dragDeltaEvent.VerticalChange, _designerItem.ActualHeight - _designerItem.MinHeight);
             _designerItem.Height -= deltaHorizontal;
+            m_SettingsManager.SetSetting($"{m_SettingsNamePrefix}_Height", _designerItem.Height);
         }
     }
 

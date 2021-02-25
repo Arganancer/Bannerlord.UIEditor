@@ -32,8 +32,8 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public WidgetAttributesControl()
         {
-            DataContext = this;
             InitializeComponent();
+            DataContext = this;
         }
 
         public override void Load()
@@ -57,7 +57,7 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             if (_focusable is not null)
             {
-                if (_focusable is FocusableWidgetTemplate focusableWidgetTemplate )
+                if (_focusable is FocusableWidgetTemplate focusableWidgetTemplate)
                 {
                     if (GauntletManager?.UIContext is not null)
                     {
@@ -65,7 +65,7 @@ namespace Bannerlord.UIEditor.MainFrame
                         FocusedWidget = new WidgetViewModel(widget.Name, widget, PublicContainer);
                     }
                 }
-                else if(_focusable is WidgetViewModel widgetViewModel)
+                else if (_focusable is WidgetViewModel widgetViewModel)
                 {
                     FocusedWidget = widgetViewModel;
                 }

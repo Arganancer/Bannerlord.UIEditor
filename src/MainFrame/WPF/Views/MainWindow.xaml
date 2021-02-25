@@ -8,7 +8,9 @@
                       d:DataContext="{d:DesignInstance Type=mainFrame:MainWindow}"
                       mc:Ignorable="d"
                       WindowStyle="None"
-                      Title="MainWindow" Height="600" Width="1200">
+                      Title="MainWindow" Height="600" Width="1200"
+                      DataContext="{Binding RelativeSource={RelativeSource Self}}"
+                      WindowStartupLocation="CenterScreen">
     <WindowChrome.WindowChrome>
         <WindowChrome CaptionHeight="32" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
     </WindowChrome.WindowChrome>
@@ -51,32 +53,21 @@
             <!--TODO: Load layout dynamically in code-behind.-->
             <DockPanel Grid.Row="1"
                        LastChildFill="true">
-                <mainFrame:ResizableControl DockPanel.Dock="Left"
+                <mainFrame:ResizableControl x:Name="LeftPanelResizer" 
+                                            DockPanel.Dock="Left"
                                             MinWidth="50"
                                             Width="400">
                     <DockPanel LastChildFill="true">
-                        <mainFrame:ResizableControl DockPanel.Dock="Left"
+                        <mainFrame:ResizableControl x:Name="WidgetListResizer" 
+                                                    DockPanel.Dock="Left"
                                                     MinWidth="50"
                                                     Width="180">
-                            <DockPanel>
-                                <Button Name="ExportButton" DockPanel.Dock="Top"
-                                        Height="24"
-                                        Background="{StaticResource ContainerItem_Background}"
-                                        Foreground="{StaticResource Text}"
-                                        BorderBrush="{StaticResource Border}"
-                                        HorizontalAlignment="Left"
-                                        Click="ExportButton_OnClick"
-                                        Margin="0, 0, 0, 2">
-                                    <TextBlock Text="Export" 
-                                               Margin="5, 0, 5, 0"/>
-                                </Button>
-                                <mainFrame:WidgetListControl DockPanel.Dock="Bottom"
-                                                             x:Name="WidgetListControl"
-                                                             HorizontalContentAlignment="Stretch"
-                                                             VerticalContentAlignment="Stretch" />
-                            </DockPanel>
+                            <mainFrame:WidgetListControl x:Name="WidgetListControl"
+                                                         HorizontalContentAlignment="Stretch"
+                                                         VerticalContentAlignment="Stretch" />
                         </mainFrame:ResizableControl>
-                        <mainFrame:ResizableControl DockPanel.Dock="Right"
+                        <mainFrame:ResizableControl x:Name="SceneExplorerResizer" 
+                                                    DockPanel.Dock="Right"
                                                     MinWidth="50">
                             <mainFrame:SceneExplorerControl x:Name="SceneExplorerControl"
                                                             HorizontalContentAlignment="Stretch"
@@ -85,7 +76,8 @@
                     </DockPanel>
                 </mainFrame:ResizableControl>
 
-                <mainFrame:ResizableControl DockPanel.Dock="Right"
+                <mainFrame:ResizableControl x:Name="WidgetAttributesResizer" 
+                                            DockPanel.Dock="Right"
                                             MinWidth="50"
                                             Width="300">
                     <mainFrame:WidgetAttributesControl x:Name="WidgetAttributesControl"

@@ -2,6 +2,7 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
+using System.Windows.Threading;
 using Bannerlord.UIEditor.Core;
 
 namespace Bannerlord.UIEditor.MainFrame
@@ -50,8 +51,7 @@ namespace Bannerlord.UIEditor.MainFrame
         private const int WmGetMinMaxInfo = 0x0024;
         private const uint MonitorDefaultToNearest = 0x00000002;
         private ISceneManager m_SceneManager = null!;
-        private IGlobalEventManager m_GlobalEventManager;
-        private InvokeGlobalEvent m_OnRefreshLiveEditingScreen;
+        private ISettingsManager m_SettingsManager = null!;
 
         public MainWindow()
         {
@@ -62,11 +62,20 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             base.Load();
 
-            m_GlobalEventManager = PublicContainer.GetModule<IGlobalEventManager>();
-            m_OnRefreshLiveEditingScreen = m_GlobalEventManager.GetEventInvoker("OnRefreshLiveEditingScreen", this, true);
-
             PublicContainer.GetModule<ICursorManager>().Initialize(this);
             m_SceneManager = PublicContainer.GetModule<ISceneManager>();
+
+            // Load settings
+            m_SettingsManager = PublicContainer.GetModule<ISettingsManager>();
+            Dispatcher.Invoke(() =>
+            {
+                Width = m_SettingsManager.GetSetting("MainWindow_Width", Width);
+                Height = m_SettingsManager.GetSetting("MainWindow_Height", Height);
+                WindowState = m_SettingsManager.GetSetting("MainWindow_WindowState", WindowState);
+            });
+
+            StateChanged += OnStateChanged;
+            SizeChanged += OnSizeChanged;
         }
 
         protected override void OnSourceInitialized(EventArgs _e)
@@ -75,10 +84,15 @@ namespace Bannerlord.UIEditor.MainFrame
             ((HwndSource)PresentationSource.FromVisual(this))!.AddHook(HookProc);
         }
 
-        private void ExportButton_OnClick(object _sender, RoutedEventArgs _e)
+        private void OnSizeChanged(object _sender, SizeChangedEventArgs _e)
         {
-            m_OnRefreshLiveEditingScreen(m_SceneManager.ToXml());
-            //m_SceneManager.ToXml().Save("C:\\Users\\Streetlamp\\Documents\\UIEditorTestOutput\\UIEditorTextFile.xml");
+            m_SettingsManager.SetSetting("MainWindow_Width", Width);
+            m_SettingsManager.SetSetting("MainWindow_Height", Height);
+        }
+
+        private void OnStateChanged(object _sender, EventArgs _e)
+        {
+            m_SettingsManager.SetSetting("MainWindow_WindowState", WindowState);
         }
 
         [Serializable, StructLayout(LayoutKind.Sequential)]

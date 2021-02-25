@@ -4,38 +4,82 @@
                            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
                            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
                            xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
-                           xmlns:widgetLibrary="clr-namespace:Bannerlord.UIEditor.WidgetLibrary;assembly=Bannerlord.UIEditor.WidgetLibrary"
                            xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame"
                            d:DataContext="{d:DesignInstance Type=mainframe:WidgetListControl}"
                            mc:Ignorable="d"
-                           d:DesignHeight="500" d:DesignWidth="180">
+                           d:DesignHeight="500" d:DesignWidth="180"
+                           DataContext="{Binding RelativeSource={RelativeSource Self}}">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../Resources/Theme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <Border>
         <DockPanel>
-            <TextBlock DockPanel.Dock="Top"
-                       FontWeight="Bold"
-                       Padding="4"
-                       Text="Toolbox" />
-            <ListBox DockPanel.Dock="Bottom" 
-                     Name="WidgetListBox"
-                     HorizontalContentAlignment="Stretch"
-                     ScrollViewer.VerticalScrollBarVisibility="Auto"
-                     ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
-                     SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
-                <ListBox.ItemTemplate>
-                    <DataTemplate DataType="{x:Type mainframe:FocusableWidgetTemplate }">
-                        <DataTemplate.Resources>
-                            <ResourceDictionary>
-                                <ResourceDictionary.MergedDictionaries>
-                                    <ResourceDictionary Source="../../Resources/Theme.xaml" />
-                                </ResourceDictionary.MergedDictionaries>
-                            </ResourceDictionary>
-                        </DataTemplate.Resources>
-                        <TextBlock Text="{Binding Name}"
-                                   MouseMove="Widget_OnMouseMove"
-                                   MinWidth="50" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+            <DockPanel DockPanel.Dock="Top"
+                       LastChildFill="False">
+                <TextBlock DockPanel.Dock="Left"
+                    FontWeight="Bold"
+                    Padding="4"
+                    Text="Toolbox" />
+                <mainframe:LoadingControl DockPanel.Dock="Right" 
+                                          x:Name="LoadingSpinner"
+                                          IsLoading="{Binding IsLoading, UpdateSourceTrigger=PropertyChanged}"
+                                          Width="18"
+                                          Height="18"
+                                          Margin="4, 0, 4, 0"/>
+            </DockPanel>
+            <ScrollViewer DockPanel.Dock="Bottom"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled"
+                          CanContentScroll="False"
+                          HorizontalContentAlignment="Stretch"
+                          HorizontalAlignment="Stretch">
+                <ItemsControl Name="WidgetTemplateCategoriesControl"
+                              HorizontalAlignment="Stretch"
+                              HorizontalContentAlignment="Stretch"
+                              ItemsSource="{Binding WidgetTemplateCategories, UpdateSourceTrigger=PropertyChanged}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate DataType="mainframe:WidgetCategoryViewModel">
+                            <DataTemplate.Resources>
+                                <ResourceDictionary>
+                                    <ResourceDictionary.MergedDictionaries>
+                                        <ResourceDictionary Source="../../Resources/Theme.xaml" />
+                                    </ResourceDictionary.MergedDictionaries>
+                                </ResourceDictionary>
+                            </DataTemplate.Resources>
+                            <Border BorderThickness="0, 0, 0, 1">
+                                <Expander Header="{Binding Name}"
+                                          Padding="4">
+                                    <mainframe:ListBoxBubbleScroll x:Name="WidgetCategoryListBox"
+                                                                   HorizontalContentAlignment="Stretch"
+                                                                   ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                                                                   ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                                                   ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
+                                                                   SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate DataType="{x:Type mainframe:FocusableWidgetTemplate }">
+                                                <DataTemplate.Resources>
+                                                    <ResourceDictionary>
+                                                        <ResourceDictionary.MergedDictionaries>
+                                                            <ResourceDictionary Source="../../Resources/Theme.xaml" />
+                                                        </ResourceDictionary.MergedDictionaries>
+                                                    </ResourceDictionary>
+                                                </DataTemplate.Resources>
+                                                <TextBlock Text="{Binding Name}"
+                                                           MouseMove="Widget_OnMouseMove"
+                                                           MinWidth="50" />
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </mainframe:ListBoxBubbleScroll>
+                                </Expander>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
         </DockPanel>
     </Border>
 </core:ConnectedUserControl>

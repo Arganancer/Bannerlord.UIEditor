@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Bannerlord.UIEditor.Core;
 using TaleWorlds.GauntletUI;
 using TaleWorlds.GauntletUI.PrefabSystem;
 
@@ -12,7 +13,7 @@ namespace Bannerlord.UIEditor.WidgetLibrary
     {
         internal static IEnumerable<WidgetTemplate> ScrapeAssembly(Assembly _assembly)
         {
-            IEnumerable<Type> widgetTypes = _assembly.GetTypes().Where(_type => !_type.IsAbstract && typeof( Widget ).IsAssignableFrom(_type));
+            IEnumerable<Type> widgetTypes = _assembly.SafeGetTypes(_type => !_type.IsAbstract && typeof( Widget ).IsAssignableFrom(_type));
             return widgetTypes.Select(CreateWidgetTemplateFromType);
         }
 

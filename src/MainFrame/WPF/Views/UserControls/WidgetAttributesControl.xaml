@@ -15,13 +15,13 @@
                        FontWeight="Bold"
                        Padding="4"
                        Text="{Binding FocusedWidget.Name, UpdateSourceTrigger=PropertyChanged}" />
-            <ScrollViewer VerticalScrollBarVisibility="Auto"
+            <ScrollViewer DockPanel.Dock="Bottom"
+                          VerticalScrollBarVisibility="Auto"
                           HorizontalScrollBarVisibility="Disabled"
                           CanContentScroll="False"
                           HorizontalContentAlignment="Stretch"
                           HorizontalAlignment="Stretch">
-                <ItemsControl DockPanel.Dock="Bottom"
-                              Name="WidgetAttributeCategories"
+                <ItemsControl Name="WidgetAttributeCategories"
                               HorizontalAlignment="Stretch"
                               HorizontalContentAlignment="Stretch"
                               ItemsSource="{Binding FocusedWidget.Widget.AttributeCategories, UpdateSourceTrigger=PropertyChanged}">

@@ -1,21 +1,51 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Threading;
 using Bannerlord.UIEditor.Core;
 using TaleWorlds.Engine.GauntletUI;
 using TaleWorlds.GauntletUI;
+using TaleWorlds.GauntletUI.ExtraWidgets;
 using TaleWorlds.GauntletUI.PrefabSystem;
+using TaleWorlds.MountAndBlade.GauntletUI.Widgets.Party;
 using Module = Bannerlord.UIEditor.Core.Module;
 
 namespace Bannerlord.UIEditor.WidgetLibrary
 {
+    public interface IWidgetCategory
+    {
+        string Name { get; }
+        IReadOnlyList<IWidgetTemplate> WidgetTemplates { get; }
+    }
+
     public class WidgetManager : Module, IWidgetManager
     {
-        public IReadOnlyList<IWidgetTemplate> WidgetTemplates => m_WidgetTemplates.SelectMany(_x => _x.Value).ToList();
+        public bool IsWorking
+        {
+            get => m_IsWorking;
+            set
+            {
+                if (m_IsWorking != value)
+                {
+                    m_IsWorking = value;
+                    OnIsWorkingChanged(m_IsWorking);
+                }
+            }
+        }
+
+        public IReadOnlyList<IWidgetCategory> WidgetTemplateCategories => m_WidgetTemplates.Select(_x => _x.Value).ToList();
 
         internal WidgetFactory WidgetFactory => UIResourceManager.WidgetFactory;
 
-        private Dictionary<Assembly, List<WidgetTemplate>> m_WidgetTemplates = null!;
+        private Dictionary<Assembly, WidgetCategory> m_WidgetTemplates = null!;
+        private bool m_IsWorking;
+
+        private readonly BlockingCollection<Assembly> m_QueuedAssemblies = new(new ConcurrentQueue<Assembly>());
+        private readonly object m_Lock = new();
+        private Thread? m_AssemblyLoaderThread;
+        public event EventHandler<bool>? IsWorkingChanged;
 
         public UIEditorWidget CreateWidget(UIContext _context, IWidgetTemplate _widgetTemplate)
         {
@@ -26,17 +56,71 @@ namespace Bannerlord.UIEditor.WidgetLibrary
         {
             if (!m_WidgetTemplates.ContainsKey(_assembly))
             {
-                List<WidgetTemplate> widgetTemplates = WidgetScraper.ScrapeAssembly(_assembly).ToList();
-                m_WidgetTemplates.Add(_assembly, widgetTemplates);
+                m_QueuedAssemblies.Add(_assembly);
+                lock (m_Lock)
+                {
+                    if (m_AssemblyLoaderThread is null)
+                    {
+                        m_AssemblyLoaderThread = new Thread(ProcessQueuedAssemblies);
+                        m_AssemblyLoaderThread.Start();
+                    }
+                }
             }
         }
 
         public override void Create(IPublicContainer _publicContainer)
         {
             base.Create(_publicContainer);
-            m_WidgetTemplates = new Dictionary<Assembly, List<WidgetTemplate>>();
+            m_WidgetTemplates = new Dictionary<Assembly, WidgetCategory>();
+
             LoadAssembly(typeof( Widget ).Assembly);
+            LoadAssembly(typeof( FillBar ).Assembly);
+            LoadAssembly(typeof( HintWidget ).Assembly);
+
             RegisterModule<IWidgetManager>();
+        }
+
+        protected virtual void OnIsWorkingChanged(bool _e)
+        {
+            IsWorkingChanged?.Invoke(this, _e);
+        }
+
+        private void ProcessQueuedAssemblies()
+        {
+            IsWorking = true;
+            var nextAssemblyExists = m_QueuedAssemblies.TryTake(out Assembly assembly);
+            while (nextAssemblyExists)
+            {
+                List<WidgetTemplate> widgetTemplates = WidgetScraper.ScrapeAssembly(assembly).ToList();
+                if (widgetTemplates.Any())
+                {
+                    m_WidgetTemplates.Add(assembly, new WidgetCategory(widgetTemplates, assembly));
+                }
+
+                lock (m_Lock)
+                {
+                    nextAssemblyExists = m_QueuedAssemblies.TryTake(out assembly);
+                    if (!nextAssemblyExists)
+                    {
+                        IsWorking = false;
+                        return;
+                    }
+                }
+            }
+        }
+
+        private class WidgetCategory : IWidgetCategory
+        {
+            public string Name => ParentAssembly.GetName().Name;
+            public IReadOnlyList<IWidgetTemplate> WidgetTemplates => MutableWidgetTemplates;
+            public List<WidgetTemplate> MutableWidgetTemplates { get; }
+            public Assembly ParentAssembly { get; }
+
+            public WidgetCategory(List<WidgetTemplate> _mutableWidgetTemplates, Assembly _parentAssembly)
+            {
+                MutableWidgetTemplates = _mutableWidgetTemplates;
+                ParentAssembly = _parentAssembly;
+            }
         }
     }
 }

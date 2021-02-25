@@ -9,6 +9,7 @@
     <Color x:Key="UltraDarkGrey">#1e1e1e</Color>
 
     <Color x:Key="HighlightBlue">#007acc</Color>
+    <Color x:Key="PaleHighlightBlue">#29b4ff</Color>
 
     <Color x:Key="OffWhite">#c8c8c8</Color>
     <Color x:Key="LighterOffWhite">#e7e7e7</Color>

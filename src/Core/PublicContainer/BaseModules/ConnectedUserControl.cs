@@ -43,7 +43,7 @@ namespace Bannerlord.UIEditor.Core
             Disposing?.Invoke(this, this);
         }
 
-        protected void OnPropertyChanged([CallerMemberName] string _propertyName = null)
+        protected void OnPropertyChanged([CallerMemberName] string? _propertyName = null)
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(_propertyName));
         }
