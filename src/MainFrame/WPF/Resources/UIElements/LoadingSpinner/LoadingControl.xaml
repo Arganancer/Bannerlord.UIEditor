@@ -1,62 +1,89 @@
 ﻿<UserControl x:Class="Bannerlord.UIEditor.MainFrame.LoadingControl"
-             x:Name="loadingControl"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:mainframe="clr-namespace:Bannerlord.UIEditor.MainFrame"
-             d:DataContext="{d:DesignInstance Type=mainframe:LoadingControl}"
              mc:Ignorable="d"
-             d:DesignHeight="50" d:DesignWidth="50">
+             d:DesignHeight="100" d:DesignWidth="100"
+             DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="../../Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
+            <Storyboard x:Key="SpinnerAnimation">
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(Shape.StrokeDashOffset)" 
+                                               Storyboard.TargetName="Foreground"
+                                               RepeatBehavior="Forever">
+                    <EasingDoubleKeyFrame KeyTime="0" Value="-17.5"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="-15"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="-9"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="-12"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="-17"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1.2" Value="-14"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="0"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1.8" Value="-5"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:2.1" Value="-17.5"/>
+                </DoubleAnimationUsingKeyFrames>
+                <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)" 
+                                               Storyboard.TargetName="SpinnerGrid"
+                                               RepeatBehavior="Forever">
+                    <EasingDoubleKeyFrame KeyTime="0" Value="-180"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.2" Value="-100"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.4" Value="90"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.6" Value="145"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="180"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:0.9" Value="-180"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1" Value="-145"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1.2" Value="0"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1.3" Value="120"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1.4" Value="240"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1.5" Value="360"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:1.8" Value="450"/>
+                    <EasingDoubleKeyFrame KeyTime="0:0:2.1" Value="540"/>
+                </DoubleAnimationUsingKeyFrames>
+            </Storyboard>
         </ResourceDictionary>
     </UserControl.Resources>
-    <Grid>
-        <Path x:Name="SpinnerIcon" Stroke="Transparent"
-              StrokeThickness=".1"
-              RenderTransformOrigin=".5,.5"
-              Stretch="Fill"
-              HorizontalAlignment="Center"
-              VerticalAlignment="Center"
-              Visibility="{Binding ElementName=loadingControl, Path=PathVisibility}"
-              Data="M18,5.0000002 C10.820298,5 5,10.820298 5.0000002,18 5,25.179701 10.820298,31 18,31 25.179701,31 31,25.179701 31,18 31,10.820298 25.179701,5 18,5.0000002 z M18,0 C27.941126,0 36,8.0588746 36,18 36,27.941126 27.941126,36 18,36 8.0588746,36 0,27.941126 0,18 0,8.0588746 8.0588746,0 18,0 z">
-            <Path.Fill>
-                <LinearGradientBrush EndPoint="0.5,1" StartPoint="0.5,0">
-                    <GradientStop Color="{StaticResource HighlightBlue}" />
-                    <GradientStop Color="{StaticResource PaleHighlightBlue}" Offset="0.5" />
-                    <GradientStop Offset="1" Color="Transparent" />
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="FrameworkElement.Loaded">
+            <BeginStoryboard Storyboard="{StaticResource SpinnerAnimation}"/>
+        </EventTrigger>
+    </UserControl.Triggers>
+    <Viewbox Stretch="Fill">
+        <Grid x:Name="SpinnerGrid"
+              RenderTransformOrigin=".5, .5"
+              Visibility="{Binding PathVisibility}">
+            <Grid.Resources>
+                <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource UltraDarkGrey}"/>
+                <LinearGradientBrush x:Key="ForegroundGradient" MappingMode="RelativeToBoundingBox" EndPoint="0,0.5" StartPoint="1,0.5">
+                    <LinearGradientBrush.GradientStops>
+                        <GradientStopCollection>
+                            <GradientStop Color="{StaticResource HighlightBlue}" Offset="0" />
+                            <GradientStop Color="{StaticResource PaleHighlightBlue}" Offset="1" />
+                        </GradientStopCollection>
+                    </LinearGradientBrush.GradientStops>
                 </LinearGradientBrush>
-            </Path.Fill>
-            <Path.RenderTransform>
+            </Grid.Resources>
+            <Grid.RenderTransform>
                 <TransformGroup>
                     <ScaleTransform />
                     <SkewTransform />
                     <RotateTransform Angle="-180" />
                     <TranslateTransform />
                 </TransformGroup>
-            </Path.RenderTransform>
-            <Path.Triggers>
-                <EventTrigger RoutedEvent="FrameworkElement.Loaded">
-                    <BeginStoryboard x:Name="LoadingAnimation">
-                        <Storyboard RepeatBehavior="Forever">
-                            <DoubleAnimationUsingKeyFrames  Storyboard.TargetName="SpinnerIcon"
-                                                            BeginTime="00:00:00"
-                                                            Storyboard.TargetProperty="(UIElement.RenderTransform).(TransformGroup.Children)[2].(RotateTransform.Angle)">
-                                <SplineDoubleKeyFrame KeyTime="00:00:01" Value="180"/>
-                            </DoubleAnimationUsingKeyFrames>
-                            <DoubleAnimationUsingKeyFrames  Storyboard.TargetName="SpinnerIcon" 
-                                                            BeginTime="00:00:00"
-                                                            Storyboard.TargetProperty="Opacity">
-                                <SplineDoubleKeyFrame KeyTime="0" Value="1"/>
-                            </DoubleAnimationUsingKeyFrames>
-                        </Storyboard>
+            </Grid.RenderTransform>
+            <Ellipse Name="Background" Width="100" Height="100" StrokeThickness="15" Stroke="{StaticResource BackgroundBrush}"
+                     StrokeMiterLimit="4" Opacity="0.6" />
+            <Ellipse Name="Foreground" Width="100" Height="100" StrokeThickness="15" Stroke="{StaticResource ForegroundGradient}"
+                     StrokeMiterLimit="4" StrokeDashArray="18, 18" StrokeDashOffset="-18" StrokeLineJoin="Round" 
+                     StrokeStartLineCap="Round" StrokeEndLineCap="Round" Opacity="1" />
+            <Grid.Triggers>
+                <EventTrigger x:Name="eventTrigger" RoutedEvent="FrameworkElement.Loaded">
+                    <BeginStoryboard x:Name="ForegroundLengthAnimation" Storyboard="{StaticResource SpinnerAnimation}">
                     </BeginStoryboard>
                 </EventTrigger>
-            </Path.Triggers>
-        </Path>
-    </Grid>
+            </Grid.Triggers>
+        </Grid>
+    </Viewbox>
 </UserControl>

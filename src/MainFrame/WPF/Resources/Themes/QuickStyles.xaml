@@ -68,4 +68,19 @@
             </Trigger>
         </Style.Triggers>
     </Style>
+
+    <Style x:Key="{x:Type Button}" TargetType="{x:Type Button}">
+        <Setter Property="Background" Value="{StaticResource ContainerItem_Background}"/>
+        <Setter Property="BorderBrush" Value="{StaticResource Border}"/>
+        <Style.Triggers>
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundSelected}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Border_Selected}"/>
+            </Trigger>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="{StaticResource ContainerItem_BackgroundHovered}"/>
+                <Setter Property="BorderBrush" Value="{StaticResource Border_Hovered}"/>
+            </Trigger>
+        </Style.Triggers>
+    </Style>
 </ResourceDictionary>

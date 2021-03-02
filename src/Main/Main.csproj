@@ -1,13 +1,16 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+﻿<!--EXTERNAL_PROPERTIES: GameFolder-->
+<Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
+        <Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release;StandaloneEditor_Debug</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\AppContext\AppContext.csproj" />
         <ProjectReference Include="..\Core\Core.csproj" />
+        <ProjectReference Include="..\Gauntlet\Gauntlet.csproj" />
         <ProjectReference Include="..\MainFrame\MainFrame.csproj" />
         <ProjectReference Include="..\WidgetLibrary\WidgetLibrary.csproj" />
     </ItemGroup>
@@ -16,5 +19,21 @@
     <Target Name="CopyModuleDataToOutput" AfterTargets="PostBuildEvent">
         <Exec Command="xcopy %22$(ProjectDir)ModuleData%22 %22$(TargetDir)..\..%22 /y /s /i" />
     </Target>
+
+    <PropertyGroup>
+        <GameModArguments>/singleplayer _MODULES_*Bannerlord.Harmony*Bannerlord.ButterLib*Bannerlord.UIExtenderEx*Bannerlord.MBOptionScreen*Bannerlord.MBOptionScreen.MCMv3*Bannerlord.MBOptionScreen.ModLib*Bannerlord.UIEditor*Native*SandBoxCore*CustomBattle*Sandbox*StoryMode*_MODULES_</GameModArguments>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'=='StandaloneEditor_Debug'">
+        <OutputType>WinExe</OutputType>
+        <StartupObject>Bannerlord.UIEditor.Main.UIEditorStandalone</StartupObject>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(Configuration)'!='StandaloneEditor_Debug'">
+        <StartAction>Program</StartAction>
+        <StartProgram>$(GameFolder)\bin\Win64_Shipping_Client\Bannerlord.exe</StartProgram>
+        <StartArguments>$(GameModArguments)</StartArguments>
+        <StartWorkingDirectory>$(GameFolder)\bin\Win64_Shipping_Client</StartWorkingDirectory>
+    </PropertyGroup>
 
 </Project>

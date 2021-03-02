@@ -8,12 +8,12 @@
         <HarmonyVersion>2.0.2</HarmonyVersion>
         <BuildResourcesVersion>1.0.0.32</BuildResourcesVersion>
         <BUTRSharedVersion>1.6.1.22</BUTRSharedVersion>
-        <Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release</Configurations>
+        <Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release;StandaloneEditor_Debug</Configurations>
     </PropertyGroup>
 
     <PropertyGroup>
         <!--Bannerlord's Root Folder. Leave empty if you want to try to let it be autoresolved.-->
-        <GameFolder Condition="$(Configuration) == 'Stable_Debug' OR $(Configuration) == 'Stable_Release'">$(BANNERLORD_STABLE_DIR)</GameFolder>
+        <GameFolder Condition="$(Configuration) == 'Stable_Debug' OR $(Configuration) == 'Stable_Release' OR $(Configuration) == 'StandaloneEditor_Debug'">$(BANNERLORD_STABLE_DIR)</GameFolder>
         <GameFolder Condition="$(Configuration) == 'Beta_Debug' OR $(Configuration) == 'Beta_Release'">$(BANNERLORD_BETA_DIR)</GameFolder>
         <GameFolder Condition="$(BANNERLORD_STABLE_DIR) == '' AND $(BANNERLORD_BETA_DIR) == ''">$(BANNERLORD_GAME_DIR)</GameFolder>
         <!--Automatic Path Resolution-->
@@ -27,27 +27,24 @@
         <GameFolder Condition="!Exists($(GameFolder)) AND $(OS) == 'Unix'">~/.steam/root/steamapps/common/Mount &amp; Blade II Bannerlord</GameFolder>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <GameModArguments>/singleplayer _MODULES_*Bannerlord.Harmony*Bannerlord.ButterLib*Bannerlord.UIExtenderEx*Bannerlord.MBOptionScreen*Bannerlord.MBOptionScreen.MCMv3*Bannerlord.MBOptionScreen.ModLib*Bannerlord.UIEditor*Native*SandBoxCore*CustomBattle*Sandbox*StoryMode*_MODULES_</GameModArguments>
-    </PropertyGroup>
-
-    <PropertyGroup>
-        <StartAction>Program</StartAction>
-        <StartProgram>$(GameFolder)\bin\Win64_Shipping_Client\Bannerlord.exe</StartProgram>
-        <StartArguments>$(GameModArguments)</StartArguments>
-        <StartWorkingDirectory>$(GameFolder)\bin\Win64_Shipping_Client</StartWorkingDirectory>
-        <Version>0.0.1</Version>
-    </PropertyGroup>
-
-    <ItemGroup>
+    <ItemGroup Condition="'$(Configuration)'!='StandaloneEditor_Debug'">
         <PackageReference Include="Lib.Harmony" Version="2.0.4" IncludeAssets="compile" />
         <PackageReference Include="Bannerlord.ButterLib" Version="1.*" IncludeAssets="compile" />
         <PackageReference Include="Bannerlord.UIExtenderEx" Version="2.*" IncludeAssets="compile" />
+    </ItemGroup>
+
+    <ItemGroup Condition="'$(Configuration)'=='StandaloneEditor_Debug'">
+        <PackageReference Include="Lib.Harmony" Version="2.0.4" IncludeAssets="all" />
+        <PackageReference Include="Bannerlord.ButterLib" Version="1.*" IncludeAssets="all" />
+        <PackageReference Include="Bannerlord.UIExtenderEx" Version="2.*" IncludeAssets="all" />
+    </ItemGroup>
+
+    <ItemGroup>
         <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="5.0.0" IncludeAssets="compile" />
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="5.0.1" IncludeAssets="compile" />
     </ItemGroup>
 
-    <ItemGroup Condition="Exists($(GameFolder))">
+    <ItemGroup Condition="Exists($(GameFolder)) And '$(Configuration)'!='StandaloneEditor_Debug'">
         <Reference Include="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.*.dll">
             <HintPath>%(Identity)</HintPath>
             <Private>False</Private>
@@ -63,6 +60,25 @@
         <Reference Include="$(GameFolder)\Modules\StoryMode\bin\Win64_Shipping_Client\*.dll">
             <HintPath>%(Identity)</HintPath>
             <Private>False</Private>
+        </Reference>
+    </ItemGroup>
+
+    <ItemGroup Condition="Exists($(GameFolder)) And '$(Configuration)'=='StandaloneEditor_Debug'">
+        <Reference Include="$(GameFolder)\bin\Win64_Shipping_Client\TaleWorlds.*.dll">
+            <HintPath>%(Identity)</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="$(GameFolder)\Modules\Native\bin\Win64_Shipping_Client\*.dll">
+            <HintPath>%(Identity)</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="$(GameFolder)\Modules\SandBox\bin\Win64_Shipping_Client\*.dll">
+            <HintPath>%(Identity)</HintPath>
+            <Private>True</Private>
+        </Reference>
+        <Reference Include="$(GameFolder)\Modules\StoryMode\bin\Win64_Shipping_Client\*.dll">
+            <HintPath>%(Identity)</HintPath>
+            <Private>True</Private>
         </Reference>
     </ItemGroup>
 

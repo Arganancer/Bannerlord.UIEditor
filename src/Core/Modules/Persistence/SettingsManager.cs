@@ -1,92 +1,104 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.ComponentModel;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Xml;
-using System.Xml.Serialization;
 using Bannerlord.ButterLib.Common.Extensions;
 using HarmonyLib;
-using TaleWorlds.Engine;
 using Path = System.IO.Path;
 
 namespace Bannerlord.UIEditor.Core
 {
     public class SettingsManager : Module, ISettingsManager
     {
-        public static SettingsManager? Instance { get; private set; }
+        public static ISettingsManager? Instance { get; private set; }
 
-        public static readonly string ModDirectory = Path.Combine(Utilities.GetConfigsPath(), "UIEditor");
-        public static readonly string UIEditorSettingsFileName = "UIEditor.settings";
+#if STANDALONE_EDITOR
+        public static string ModDirectory = Path.Combine(Environment.SpecialFolder.MyDocuments.ToString(), 
+            "Mount and Blade II Bannerlord", "Configs", "UIEditor");
+#else
+        public static string ModDirectory = Path.Combine(Utilities.GetConfigsPath(), "UIEditor");
+#endif
 
-        private readonly ConcurrentDictionary<string, Setting> m_Settings = new();
+        public static string UIEditorSettingsFileName = "UIEditor.settings";
 
-        /// <summary>
-        /// Returns the value of the setting that corresponds to the given <paramref name="_name"/>.<br/>
-        /// If the setting is not set, creates the setting and sets its value to <paramref name="_defaultValue"/>, then returns <paramref name="_defaultValue"/>.<br/>
-        /// <exception cref="InvalidCastException"> <see cref="InvalidCastException"/>: Thrown if the setting exists and can't cast the value to <typeparam name="T">T</typeparam></exception>
-        /// </summary>
-        public T? GetSetting<T>(string _name, T? _defaultValue)
+        private readonly ConcurrentDictionary<string, SettingCategory> m_SettingCategory = new();
+        private bool m_ChangesPending;
+        private bool m_IsDisposing;
+
+        private readonly object m_Lock = new();
+        private Thread? m_WorkerThread;
+
+        private readonly Stopwatch m_SaveSettingsDelay = new();
+        private ISubModuleEventNotifier m_SubModuleEventNotifier = null!;
+
+        /// <inheritdoc/>
+        public T? GetSetting<T>(string _categoryName, string _name, T? _defaultValue)
         {
-            if (!m_Settings.TryGetValue(_name, out Setting setting))
-            {
-                if (_defaultValue is null)
-                {
-                    return default;
-                }
-
-                setting = new Setting(_name, _defaultValue);
-                m_Settings.TryAdd(_name, setting);
-                SaveSettings();
-            }
-
-            return ConvertToType<T>(setting);
+            SettingCategory settingCategory = GetSettingCategoryInternal(_categoryName)!;
+            return settingCategory.GetSetting(_name, _defaultValue);
         }
 
-        /// <summary>
-        /// Returns the value of the setting that corresponds to the given <paramref name="_name"/>.<br/>
-        /// Returns null if the setting is not set.<br/>
-        /// <exception cref="InvalidCastException"> <see cref="InvalidCastException"/>: Thrown if the setting exists and can't cast the value to <typeparam name="T">T</typeparam></exception>
-        /// </summary>
-        public T? GetSetting<T>(string _name)
+        /// <inheritdoc/>
+        public T? GetSetting<T>(string _categoryName, string _name)
         {
-            if (!m_Settings.TryGetValue(_name, out var setting) || setting?.Value is null)
-            {
-                return default;
-            }
-
-            return ConvertToType<T>(setting);
+            var settingCategory = GetSettingCategoryInternal(_categoryName, false);
+            return settingCategory is null ? default : settingCategory.GetSetting<T>(_name);
         }
 
-        /// <summary>
-        /// If the setting exists, updates its value, else creates the setting and sets its value.<br/>
-        /// <exception cref="InvalidCastException"> <see cref="InvalidCastException"/>: Thrown if the setting exists and can't cast the value to <typeparam name="T">T</typeparam></exception>
-        /// </summary>
-        public void SetSetting<T>(string _name, T? _setting)
+        /// <inheritdoc/>
+        public void SetSetting<T>(string _categoryName, string _name, T? _setting)
         {
-            if (m_Settings.TryGetValue(_name, out var setting))
+            SettingCategory settingCategory = GetSettingCategoryInternal(_categoryName)!;
+
+            settingCategory.SetSetting(_name, _setting);
+        }
+
+        /// <inheritdoc/>
+        public ISettingCategory GetSettingCategory(string _categoryName)
+        {
+            return GetSettingCategoryInternal(_categoryName)!;
+        }
+
+        public bool SettingCategoryExists(string _categoryName)
+        {
+            return m_SettingCategory.TryGetValue(_categoryName, out _);
+        }
+
+        public override void Load()
+        {
+            base.Load();
+
+            m_SubModuleEventNotifier = PublicContainer.GetModule<ISubModuleEventNotifier>();
+            m_SubModuleEventNotifier.ApplicationTick += OnTick;
+        }
+
+        public override void Unload()
+        {
+            m_SubModuleEventNotifier.ApplicationTick -= OnTick;
+            foreach (var (_, settingCategory) in m_SettingCategory)
             {
-                if (setting?.Value is not null)
+                settingCategory.ChangesPending -= OnSettingCategoryChangesPending;
+            }
+
+            base.Unload();
+        }
+
+        protected override void Dispose(bool _disposing)
+        {
+            m_IsDisposing = true;
+            lock (m_Lock)
+            {
+                if (m_ChangesPending && (!m_WorkerThread?.IsAlive ?? true))
                 {
-                    CanConvert(typeof( T ), setting.SettingType, true);
+                    SaveSettings();
                 }
             }
 
-            if (_setting is null)
-            {
-                m_Settings.TryRemove(_name, out Setting _);
-            }
-            else
-            {
-                m_Settings.AddOrUpdate(_name, new Setting(_name, _setting), (_, _existingSettings) =>
-                {
-                    _existingSettings.Value = _setting;
-                    return _existingSettings;
-                });
-
-                SaveSettings();
-            }
+            base.Dispose(_disposing);
         }
 
         public override void Create(IPublicContainer _publicContainer)
@@ -99,7 +111,7 @@ namespace Bannerlord.UIEditor.Core
             RegisterModule<ISettingsManager>();
         }
 
-        private void SaveSettings()
+        public void SaveSettings()
         {
             try
             {
@@ -109,18 +121,19 @@ namespace Bannerlord.UIEditor.Core
 
                 XmlDeclaration xmlDeclaration = xmlDocument.CreateXmlDeclaration("1.0", "UTF-8", null);
                 xmlDocument.InsertBefore(xmlDeclaration, xmlDocument.DocumentElement);
-                XmlElement uiEditorConfig = xmlDocument.CreateElement("UIEditorConfig");
-                xmlDocument.AppendChild(uiEditorConfig);
+                XmlElement uiEditorConfigNode = xmlDocument.CreateElement("UIEditorConfig");
+                xmlDocument.AppendChild(uiEditorConfigNode);
+                XmlElement settingsNode = xmlDocument.CreateElement("Settings");
+                uiEditorConfigNode.AppendChild(settingsNode);
 
-                foreach (var (_, setting) in m_Settings)
+                TypeDictionary typeDictionary = new();
+
+                foreach (var (_, settingCategory) in m_SettingCategory)
                 {
-                    if (setting is null)
-                    {
-                        continue;
-                    }
-
-                    SerializeObjectAndAppendAsChildOfNode(uiEditorConfig, setting);
+                    settingCategory?.Serialize(settingsNode, typeDictionary);
                 }
+
+                typeDictionary.Serialize(uiEditorConfigNode);
 
                 xmlDocument.Save(Path.Combine(ModDirectory, UIEditorSettingsFileName));
             }
@@ -131,7 +144,7 @@ namespace Bannerlord.UIEditor.Core
             }
         }
 
-        private void LoadSettings()
+        public void LoadSettings()
         {
             string fullPath = Path.Combine(ModDirectory, UIEditorSettingsFileName);
             if (!File.Exists(fullPath))
@@ -141,7 +154,7 @@ namespace Bannerlord.UIEditor.Core
 
             try
             {
-                m_Settings.Clear();
+                m_SettingCategory.Clear();
 
                 XmlDocument xmlDocument = new();
                 xmlDocument.Load(fullPath);
@@ -151,14 +164,24 @@ namespace Bannerlord.UIEditor.Core
                     return;
                 }
 
-                foreach (XmlNode childNode in xmlDocument.DocumentElement.ChildNodes.OfType<XmlNode>())
+                List<XmlNode> documentChildren = xmlDocument.DocumentElement.ChildNodes.OfType<XmlNode>().ToList();
+
+                var typeDictionaryNode = documentChildren.FirstOrDefault(_node => _node.Name.Equals(TypeDictionary.NodeName));
+                TypeDictionary typeDictionary = typeDictionaryNode is not null ? TypeDictionary.Deserialize(typeDictionaryNode) : new TypeDictionary();
+
+                var settingsNode = documentChildren.FirstOrDefault(_node => _node.Name.Equals("Settings"));
+                if (settingsNode is not null)
                 {
-                    Setting? setting = Setting.Deserialize(childNode);
-                    if(setting is null)
+                    foreach (XmlNode childNode in settingsNode.ChildNodes.OfType<XmlNode>())
                     {
-                        continue;
+                        var settingCategory = SettingCategory.Deserialize(childNode, typeDictionary);
+                        if (settingCategory is null)
+                        {
+                            continue;
+                        }
+
+                        m_SettingCategory.TryAdd(settingCategory.Id, settingCategory);
                     }
-                    m_Settings.TryAdd(setting.Id, setting);
                 }
             }
             catch (Exception e)
@@ -168,41 +191,52 @@ namespace Bannerlord.UIEditor.Core
             }
         }
 
-        private static void SerializeObjectAndAppendAsChildOfNode(XmlNode _node, Setting _setting)
+        private SettingCategory? GetSettingCategoryInternal(string _categoryName, bool _createIfNotExist = true)
         {
-            XmlSerializer serializer = new(typeof( Setting ));
-            using XmlWriter writer = _node.CreateNavigator().AppendChild();
-            writer.WriteWhitespace("");
-            XmlSerializerNamespaces nameSpaces = new();
-            nameSpaces.Add(_node.GetNamespaceOfPrefix(_node.NamespaceURI), _node.NamespaceURI);
-            serializer.Serialize(writer, _setting, nameSpaces);
-        }
-
-        private static T ConvertToType<T>(Setting _setting)
-        {
-            Type desiredType = typeof( T );
-
-            CanConvert(desiredType, _setting.SettingType, true);
-
-            return (T)_setting.Value!;
-        }
-
-        private static bool CanConvert(Type _from, Type _to, bool _throwIfFalse = false)
-        {
-            if (!_to.IsAssignableFrom(_from))
+            if (!m_SettingCategory.TryGetValue(_categoryName, out var settingCategory) && _createIfNotExist)
             {
-                if (!TypeDescriptor.GetConverter(_from).CanConvertTo(_to))
-                {
-                    if (_throwIfFalse)
-                    {
-                        throw new InvalidCastException($"Type {_from} cannot be implicitly cast to type {_to}");
-                    }
-
-                    return false;
-                }
+                settingCategory = new SettingCategory(_categoryName);
+                m_SettingCategory.TryAdd(_categoryName, settingCategory);
             }
 
-            return true;
+            if (settingCategory is not null)
+            {
+                settingCategory.ChangesPending += OnSettingCategoryChangesPending;
+            }
+
+            return settingCategory;
+        }
+
+        private void OnSettingCategoryChangesPending(object _sender, EventArgs _e)
+        {
+            lock (m_Lock)
+            {
+                m_ChangesPending = true;
+            }
+        }
+
+        private void OnTick(object _sender, float _e)
+        {
+            lock (m_Lock)
+            {
+                if (m_IsDisposing)
+                {
+                    return;
+                }
+
+                if (m_SaveSettingsDelay.IsRunning && m_SaveSettingsDelay.ElapsedMilliseconds > 5000)
+                {
+                    m_ChangesPending = false;
+                    m_SaveSettingsDelay.Reset();
+                    m_SaveSettingsDelay.Stop();
+                    m_WorkerThread = new Thread(SaveSettings);
+                    m_WorkerThread.Start();
+                }
+                else if (m_ChangesPending && (!m_WorkerThread?.IsAlive ?? true))
+                {
+                    m_SaveSettingsDelay.Start();
+                }
+            }
         }
     }
 }

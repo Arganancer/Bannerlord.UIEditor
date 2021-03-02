@@ -11,7 +11,7 @@ namespace Bannerlord.UIEditor.Core
     {
         public bool Disposed { get; private set; }
 
-        protected IPublicContainer PublicContainer { get; private set; } = null!;
+        public IPublicContainer PublicContainer { get; private set; } = null!;
 
         //private ManualResetEvent m_WaitForInitialized;
 

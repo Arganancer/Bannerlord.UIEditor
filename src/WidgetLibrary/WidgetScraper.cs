@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using System.Threading;
 using Bannerlord.UIEditor.Core;
 using TaleWorlds.GauntletUI;
 using TaleWorlds.GauntletUI.PrefabSystem;
@@ -11,10 +12,18 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 {
     internal static class WidgetScraper
     {
-        internal static IEnumerable<WidgetTemplate> ScrapeAssembly(Assembly _assembly)
+        internal static IEnumerable<WidgetTemplate> ScrapeAssembly(Assembly _assembly, CancellationToken _cancellationToken)
         {
             IEnumerable<Type> widgetTypes = _assembly.SafeGetTypes(_type => !_type.IsAbstract && typeof( Widget ).IsAssignableFrom(_type));
-            return widgetTypes.Select(CreateWidgetTemplateFromType);
+            foreach (Type widgetType in widgetTypes)
+            {
+                if (_cancellationToken.IsCancellationRequested)
+                {
+                    yield break;
+                }
+
+                yield return CreateWidgetTemplateFromType(widgetType);
+            }
         }
 
         internal static WidgetTemplate CreateWidgetTemplateFromType(Type _type)
@@ -28,7 +37,11 @@ namespace Bannerlord.UIEditor.WidgetLibrary
 
             UIEditorWidget CreateWidget(WidgetFactory _widgetFactory, UIContext _context)
             {
+#if !STANDALONE_EDITOR
                 Widget instance = _widgetFactory.CreateBuiltinWidget(_context, _type.Name);
+#else
+                Widget instance = new(null);
+#endif
                 return new UIEditorWidget(_type.Name, (from createAttribute in attributeInstantiators select createAttribute(instance)).ToList());
             }
 

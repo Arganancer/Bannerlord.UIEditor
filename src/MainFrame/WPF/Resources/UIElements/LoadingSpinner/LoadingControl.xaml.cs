@@ -1,11 +1,10 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace Bannerlord.UIEditor.MainFrame
 {
-    public partial class LoadingControl : UserControl, INotifyPropertyChanged
+    public partial class LoadingControl : INotifyPropertyChanged
     {
         public static readonly DependencyProperty IsLoadingProperty =
             DependencyProperty.Register("IsLoading", typeof( bool ), typeof( LoadingControl ), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
@@ -38,7 +37,6 @@ namespace Bannerlord.UIEditor.MainFrame
         public LoadingControl()
         {
             InitializeComponent();
-            DataContext = this;
         }
 
         public event PropertyChangedEventHandler? PropertyChanged;

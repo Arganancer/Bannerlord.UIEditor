@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+      <LangVersion>9.0</LangVersion>
+      <Nullable>enable</Nullable>
+      <TargetFrameworks>net472</TargetFrameworks>
+      <Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release;StandaloneEditor_Debug</Configurations>
+  </PropertyGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Core\Core.csproj" />
+    </ItemGroup>
+
+</Project>

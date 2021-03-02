@@ -2,7 +2,6 @@
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Interop;
-using System.Windows.Threading;
 using Bannerlord.UIEditor.Core;
 
 namespace Bannerlord.UIEditor.MainFrame
@@ -10,7 +9,7 @@ namespace Bannerlord.UIEditor.MainFrame
     /// <summary>
     /// Reference for interop window management: https://engy.us/blog/2020/01/01/implementing-a-custom-window-title-bar-in-wpf/
     /// </summary>
-    public partial class MainWindow : ConnectedWindow
+    public partial class MainWindow : ConnectedWindow, IMainWindow
     {
         [DllImport("user32.dll")]
         private static extern IntPtr MonitorFromWindow(IntPtr _handle, uint _flags);
@@ -50,12 +49,21 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private const int WmGetMinMaxInfo = 0x0024;
         private const uint MonitorDefaultToNearest = 0x00000002;
+
+        public MainWindow Window => this;
         private ISceneManager m_SceneManager = null!;
-        private ISettingsManager m_SettingsManager = null!;
+        private ISettingCategory m_SettingsCategory = null!;
 
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        public override void Create(IPublicContainer _publicContainer)
+        {
+            base.Create(_publicContainer);
+
+            PublicContainer.RegisterModule<IMainWindow>(this);
         }
 
         public override void Load()
@@ -66,12 +74,12 @@ namespace Bannerlord.UIEditor.MainFrame
             m_SceneManager = PublicContainer.GetModule<ISceneManager>();
 
             // Load settings
-            m_SettingsManager = PublicContainer.GetModule<ISettingsManager>();
+            m_SettingsCategory = PublicContainer.GetModule<ISettingsManager>().GetSettingCategory("MainWindowSettings");
             Dispatcher.Invoke(() =>
             {
-                Width = m_SettingsManager.GetSetting("MainWindow_Width", Width);
-                Height = m_SettingsManager.GetSetting("MainWindow_Height", Height);
-                WindowState = m_SettingsManager.GetSetting("MainWindow_WindowState", WindowState);
+                Width = m_SettingsCategory.GetSetting("Width", Width);
+                Height = m_SettingsCategory.GetSetting("Height", Height);
+                WindowState = m_SettingsCategory.GetSetting("WindowState", WindowState);
             });
 
             StateChanged += OnStateChanged;
@@ -86,13 +94,13 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void OnSizeChanged(object _sender, SizeChangedEventArgs _e)
         {
-            m_SettingsManager.SetSetting("MainWindow_Width", Width);
-            m_SettingsManager.SetSetting("MainWindow_Height", Height);
+            m_SettingsCategory.SetSetting("Width", Width);
+            m_SettingsCategory.SetSetting("Height", Height);
         }
 
         private void OnStateChanged(object _sender, EventArgs _e)
         {
-            m_SettingsManager.SetSetting("MainWindow_WindowState", WindowState);
+            m_SettingsCategory.SetSetting("WindowState", WindowState);
         }
 
         [Serializable, StructLayout(LayoutKind.Sequential)]
@@ -143,5 +151,10 @@ namespace Bannerlord.UIEditor.MainFrame
             public Point ptMinTrackSize;
             public Point ptMaxTrackSize;
         }
+    }
+
+    public interface IMainWindow
+    {
+        MainWindow Window { get; }
     }
 }

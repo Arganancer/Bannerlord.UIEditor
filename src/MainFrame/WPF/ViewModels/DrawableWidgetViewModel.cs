@@ -7,6 +7,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Xml;
 using Bannerlord.UIEditor.Core;
+using Bannerlord.UIEditor.MainFrame.Resizer;
 using Bannerlord.UIEditor.WidgetLibrary;
 using TaleWorlds.GauntletUI;
 using Canvas = System.Windows.Controls.Canvas;

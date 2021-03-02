@@ -17,7 +17,7 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="../Resources/UIElements/ResizerControl/ResizerTheme.xaml" />
+                <ResourceDictionary Source="../Resources/UIElements/Layout/Resizer/ResizerTheme.xaml" />
                 <ResourceDictionary Source="../Resources/Theme.xaml" />
             </ResourceDictionary.MergedDictionaries>
             <Style x:Key="WindowMainPanelStyle" TargetType="{x:Type Border}">
@@ -50,41 +50,13 @@
             <mainFrame:TitleBarControl />
 
             <!--App Content-->
-            <!--TODO: Load layout dynamically in code-behind.-->
-            <DockPanel Grid.Row="1"
+            <DockPanel x:Name="MainContentDock" 
+                       Grid.Row="1"
                        LastChildFill="true">
-                <mainFrame:ResizableControl x:Name="LeftPanelResizer" 
-                                            DockPanel.Dock="Left"
-                                            MinWidth="50"
-                                            Width="400">
-                    <DockPanel LastChildFill="true">
-                        <mainFrame:ResizableControl x:Name="WidgetListResizer" 
-                                                    DockPanel.Dock="Left"
-                                                    MinWidth="50"
-                                                    Width="180">
-                            <mainFrame:WidgetListControl x:Name="WidgetListControl"
-                                                         HorizontalContentAlignment="Stretch"
-                                                         VerticalContentAlignment="Stretch" />
-                        </mainFrame:ResizableControl>
-                        <mainFrame:ResizableControl x:Name="SceneExplorerResizer" 
-                                                    DockPanel.Dock="Right"
-                                                    MinWidth="50">
-                            <mainFrame:SceneExplorerControl x:Name="SceneExplorerControl"
-                                                            HorizontalContentAlignment="Stretch"
-                                                            VerticalContentAlignment="Stretch" />
-                        </mainFrame:ResizableControl>
-                    </DockPanel>
-                </mainFrame:ResizableControl>
-
-                <mainFrame:ResizableControl x:Name="WidgetAttributesResizer" 
-                                            DockPanel.Dock="Right"
-                                            MinWidth="50"
-                                            Width="300">
-                    <mainFrame:WidgetAttributesControl x:Name="WidgetAttributesControl"
-                                                       HorizontalContentAlignment="Stretch"
-                                                       VerticalContentAlignment="Stretch" />
-                </mainFrame:ResizableControl>
-
+                <mainFrame:FloatingPanelParentControl x:Name="LeftDock" DockPanel.Dock="Left"/>
+                <mainFrame:FloatingPanelParentControl x:Name="RightDock" DockPanel.Dock="Right"/>
+                <mainFrame:FloatingPanelParentControl x:Name="BottomDock" DockPanel.Dock="Bottom"/>
+                <mainFrame:FloatingPanelParentControl x:Name="TopDock" DockPanel.Dock="Top"/>
 
                 <mainFrame:CanvasEditorControl x:Name="CanvasEditorControl" />
             </DockPanel>

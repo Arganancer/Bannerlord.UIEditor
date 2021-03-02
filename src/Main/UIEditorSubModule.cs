@@ -1,11 +1,10 @@
-﻿using System;
+﻿#if STABLE_DEBUG || BETA_DEBUG
+using System;
+#endif
 using System.Collections.Generic;
 using System.Reflection;
-using Bannerlord.UIEditor.AppContext;
 using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.Main.Modules;
-using Bannerlord.UIEditor.MainFrame;
-using Bannerlord.UIEditor.WidgetLibrary;
 using HarmonyLib;
 using TaleWorlds.Core;
 using TaleWorlds.MountAndBlade;
@@ -24,15 +23,10 @@ namespace Bannerlord.UIEditor.Main
         {
             base.OnSubModuleLoad();
 
-            List<Assembly> startupAssemblies = new()
-            {
-                typeof( UIEditorSubModule ).Assembly, // Main
-                Assembly.Load(typeof( ModuleCoordinator ).Assembly.FullName), // Core
-                Assembly.Load(typeof( IApplicationManager ).Assembly.FullName) // AppContext
-            };
+            var startupPublicContainer = PublicContainerHierarchy.Instance.GetPublicContainerInfo("Main");
 
             m_ModuleCoordinator = new ModuleCoordinator();
-            m_ModuleCoordinator.Start(startupAssemblies);
+            m_ModuleCoordinator.Start(startupPublicContainer);
 
             m_SubModuleEventNotifier = (SubModuleEventNotifier)m_ModuleCoordinator.MainPublicContainer.GetModule<ISubModuleEventNotifier>();
             m_SubModuleEventNotifier.OnModulesLoaded();
@@ -44,7 +38,7 @@ namespace Bannerlord.UIEditor.Main
             Harmony harmony = new(HarmonyName);
 
             harmony.PatchAll();
-            foreach (Assembly assembly in startupAssemblies)
+            foreach (Assembly assembly in startupPublicContainer.DefaultAssemblies)
             {
                 harmony.PatchAll(assembly);
             }
@@ -73,11 +67,7 @@ namespace Bannerlord.UIEditor.Main
         {
             if (!m_ModuleCoordinator.ContainsPublicContainer("UIEditor"))
             {
-                m_ModuleCoordinator.AddPublicContainer("UIEditor", "", new List<Assembly>
-                {
-                    Assembly.Load(typeof( MainWindow ).Assembly.FullName), // MainFrame
-                    Assembly.Load(typeof( WidgetManager ).Assembly.FullName) // WidgetLibrary
-                });
+                m_ModuleCoordinator.AddPublicContainer(PublicContainerHierarchy.Instance.GetPublicContainerInfo("UIEditor"));
             }
 #if STABLE_DEBUG || BETA_DEBUG
             else

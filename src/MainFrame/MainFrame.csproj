@@ -5,11 +5,13 @@
         <Nullable>enable</Nullable>
         <TargetFrameworks>net472</TargetFrameworks>
         <UseWPF>true</UseWPF>
+        <Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release;StandaloneEditor_Debug</Configurations>
 	</PropertyGroup>
 
 	<ItemGroup>
 	  <ProjectReference Include="..\AppContext\AppContext.csproj" />
 	  <ProjectReference Include="..\Core\Core.csproj" />
+	  <ProjectReference Include="..\Gauntlet\Gauntlet.csproj" />
 	  <ProjectReference Include="..\WidgetLibrary\WidgetLibrary.csproj" />
 	</ItemGroup>
 

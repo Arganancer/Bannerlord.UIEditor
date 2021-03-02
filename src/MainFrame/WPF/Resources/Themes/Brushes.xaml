@@ -8,6 +8,9 @@
     <Color x:Key="DarkGrey">#252526</Color>
     <Color x:Key="UltraDarkGrey">#1e1e1e</Color>
 
+    <Color x:Key="GrabbableVisualGrey">#46464a</Color>
+
+    <Color x:Key="DarkBlue">#001b2e</Color>
     <Color x:Key="HighlightBlue">#007acc</Color>
     <Color x:Key="PaleHighlightBlue">#29b4ff</Color>
 
@@ -20,6 +23,8 @@
     <SolidColorBrush x:Key="Cursor" Color="White" />
     <SolidColorBrush x:Key="Cursor_Highlight" Color="{StaticResource LightGreen}" />
     <SolidColorBrush x:Key="Cursor_Error" Color="{StaticResource Red}" />
+
+    <SolidColorBrush x:Key="GrabbableArea" Color="{StaticResource GrabbableVisualGrey}"/>
 
     <SolidColorBrush x:Key="App_Background" Color="{StaticResource MediumGrey}" />
 
@@ -44,6 +49,7 @@
     <SolidColorBrush x:Key="Gadget_Foreground" Color="{StaticResource LighterGrey}" />
     <SolidColorBrush x:Key="Gadget_ForegroundHovered" Color="{StaticResource LightestGrey}" />
     <SolidColorBrush x:Key="Gadget_ForegroundSelected" Color="{StaticResource HighlightBlue}" />
+    <SolidColorBrush x:Key="Gadget_ForegroundHoveredSelected" Color="{StaticResource PaleHighlightBlue}" />
     <SolidColorBrush x:Key="Gadget_ForegroundDisabled" Color="{StaticResource LightGrey}" />
 
     <SolidColorBrush x:Key="Widget_Background" Color="{StaticResource MediumGrey}" Opacity="0.15" />

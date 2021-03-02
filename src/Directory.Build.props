@@ -3,6 +3,14 @@
     <Import Project="../Directory.Build.props" />
 
     <!--src props file-->
+
+    <PropertyGroup Condition="'$(Configuration)'=='StandaloneEditor_Debug'">
+        <DefineConstants>TRACE;STANDALONE_EDITOR</DefineConstants>
+        <DebugSymbols>true</DebugSymbols>
+        <DebugType>full</DebugType>
+        <Optimize>false</Optimize>
+    </PropertyGroup>
+
     <PropertyGroup Condition="'$(Configuration)' == 'Stable_Debug' OR '$(Configuration)' == 'Beta_Debug'">
         <DebugSymbols>true</DebugSymbols>
         <DebugType>full</DebugType>

@@ -4,6 +4,7 @@
         <LangVersion>9.0</LangVersion>
         <Nullable>enable</Nullable>
         <UseWPF>true</UseWPF>
+        <Configurations>Stable_Debug;Stable_Release;Beta_Debug;Beta_Release;StandaloneEditor_Debug</Configurations>
     </PropertyGroup>
 
     <ItemGroup>
