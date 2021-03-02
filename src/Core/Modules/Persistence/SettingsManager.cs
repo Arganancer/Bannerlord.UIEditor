@@ -17,7 +17,7 @@ namespace Bannerlord.UIEditor.Core
         public static ISettingsManager? Instance { get; private set; }
 
 #if STANDALONE_EDITOR
-        public static string ModDirectory = Path.Combine(Environment.SpecialFolder.MyDocuments.ToString(), 
+        public static string ModDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments), 
             "Mount and Blade II Bannerlord", "Configs", "UIEditor");
 #else
         public static string ModDirectory = Path.Combine(Utilities.GetConfigsPath(), "UIEditor");

@@ -37,7 +37,7 @@ namespace Bannerlord.UIEditor.MainFrame
         private DrawableWidgetViewModel? m_RootWidget;
         private IGlobalEventManager? m_GlobalEventManager;
         private InvokeGlobalEvent? m_OnRefreshLiveEditingScreen;
-        private ICanvasEditorControl m_CanvasEditorControl;
+        private ICanvasEditorControl m_CanvasEditorControl = null!;
         public event EventHandler<DrawableWidgetViewModel?>? RootWidgetChanged;
 
         public XmlDocument ToXml()

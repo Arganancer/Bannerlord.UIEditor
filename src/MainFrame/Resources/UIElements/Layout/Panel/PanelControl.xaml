@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="Bannerlord.UIEditor.MainFrame.Resources.Panel.PanelControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:resizer="clr-namespace:Bannerlord.UIEditor.MainFrame.Resources.Resizer"
+             mc:Ignorable="d"
+             x:Name="Panel"
+             HorizontalAlignment="Stretch"
+             VerticalAlignment="Stretch"
+             HorizontalContentAlignment="Stretch"
+             VerticalContentAlignment="Stretch"
+             d:DesignHeight="450" d:DesignWidth="200">
+    <UserControl.Resources>
+        <ResourceDictionary Source="../../../Theme.xaml" />
+    </UserControl.Resources>
+    <resizer:ResizableControl x:Name="ResizableControl"
+                              HorizontalAlignment="Stretch"
+                              VerticalAlignment="Stretch">
+        <Border BorderThickness="0, 1, 0, 0">
+            <Grid HorizontalAlignment="Stretch"
+                  VerticalAlignment="Stretch">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" BorderThickness="1, 0, 1, 0">
+                    <DockPanel x:Name="HeaderPanel" 
+                               LastChildFill="True"
+                               MouseMove="HeaderPanel_OnMouseMove">
+                        <TextBlock DockPanel.Dock="Left"
+                                   FontWeight="Bold"
+                                   Text="{Binding HeaderName, ElementName=Panel}"
+                                   Padding="4" />
+                        <StackPanel DockPanel.Dock="Right"
+                                    Orientation="Horizontal"
+                                    VerticalAlignment="Center">
+                            <!--TODO: Add Pin Icon and Close icon.-->
+                        </StackPanel>
+                        <Canvas VerticalAlignment="Center" ClipToBounds="True" HorizontalAlignment="Stretch" Height="5"
+                                Margin="5, 0, 5, 0" UseLayoutRounding="True">
+                            <Line X1="0" Y1=".5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}" 
+                                  Y2=".5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True"/>
+                            <Line X1="2" Y1="2.5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}"
+                                  Y2="2.5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True"/>
+                            <Line X1="0" Y1="4.5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}" 
+                                  Y2="4.5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True"/>
+                        </Canvas>
+                    </DockPanel>
+                </Border>
+
+                <TabControl Grid.Row="1"
+                            x:Name="TabControl"
+                            TabStripPlacement="Bottom"
+                            SelectionChanged="TabControl_OnSelectionChanged"
+                            Background="Transparent"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Stretch"
+                            HorizontalContentAlignment="Stretch"
+                            VerticalContentAlignment="Stretch"
+                            BorderThickness="0" />
+            </Grid>
+        </Border>
+    </resizer:ResizableControl>
+</UserControl>
