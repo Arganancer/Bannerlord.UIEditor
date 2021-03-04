@@ -9,7 +9,7 @@ using Bannerlord.UIEditor.WidgetLibrary;
 
 namespace Bannerlord.UIEditor.MainFrame
 {
-    [Panel(220, 300, _isOpen: true, _path: "Left;HorizontalLayoutContainer:Right")]
+    [Panel(220, 300, _isOpen: true, _path: "Left;HorizontalLayoutContainer:Left")]
     public partial class SceneExplorerControl : ConnectedUserControl, IPanel
     {
         public DrawableWidgetViewModel? RootWidget

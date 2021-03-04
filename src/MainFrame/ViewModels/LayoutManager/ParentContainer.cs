@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Windows.Controls;
+using System.Windows.Threading;
 using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.MainFrame.Resources.FloatingPanelParent;
 using Bannerlord.UIEditor.MainFrame.Resources.Panel;
@@ -17,6 +18,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 {
                     if (m_PrimaryChild is not null)
                     {
+                        Control.ContentStackPanel.Children.Remove(m_PrimaryChild.LayoutElement.Control);
                         m_PrimaryChild.Parent = null;
                     }
 
@@ -24,6 +26,8 @@ namespace Bannerlord.UIEditor.MainFrame
                     if (m_PrimaryChild is not null)
                     {
                         m_PrimaryChild.Parent = this;
+                        m_PrimaryChild.Dock = Orientation.GetPrimaryDock();
+                        Control.ContentStackPanel.Children.Insert(0, m_PrimaryChild.LayoutElement.Control);
                     }
                 }
             }
@@ -38,6 +42,7 @@ namespace Bannerlord.UIEditor.MainFrame
                 {
                     if (m_SecondaryChild is not null)
                     {
+                        Control.ContentStackPanel.Children.Remove(m_SecondaryChild.LayoutElement.Control);
                         m_SecondaryChild.Parent = null;
                     }
 
@@ -45,6 +50,8 @@ namespace Bannerlord.UIEditor.MainFrame
                     if (m_SecondaryChild is not null)
                     {
                         m_SecondaryChild.Parent = this;
+                        m_SecondaryChild.Dock = Orientation.GetSecondaryDock();
+                        Control.ContentStackPanel.Children.Add(m_SecondaryChild.LayoutElement.Control);
                     }
                 }
             }
@@ -58,12 +65,12 @@ namespace Bannerlord.UIEditor.MainFrame
                 m_Orientation = value;
                 if (PrimaryChild is not null)
                 {
-                    PrimaryChild.Dock = Orientation == Orientation.Horizontal ? Dock.Left : Dock.Top;
+                    PrimaryChild.Dock = Orientation.GetPrimaryDock();
                 }
 
                 if (SecondaryChild is not null)
                 {
-                    SecondaryChild.Dock = Orientation == Orientation.Horizontal ? Dock.Right : Dock.Bottom;
+                    SecondaryChild.Dock = Orientation.GetSecondaryDock();
                 }
             }
         }
@@ -72,9 +79,8 @@ namespace Bannerlord.UIEditor.MainFrame
         private LayoutContainer? m_PrimaryChild;
         private LayoutContainer? m_SecondaryChild;
 
-        public ParentContainer(FloatingPanelParentControl _layoutElement) : base(_layoutElement)
+        public ParentContainer(FloatingPanelParentControl _layoutElement, IPublicContainer _publicContainer, Dispatcher _dispatcher) : base(_layoutElement, _publicContainer, _dispatcher)
         {
-            _layoutElement.NewParentRequested += OnNewParentRequested;
         }
 
         public override T? FindContainer<T>(Control _control) where T : class
@@ -91,18 +97,39 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             if (PrimaryChild is null && SecondaryChild is null)
             {
-                LayoutElement.DesiredWidth = 0;
-                LayoutElement.DesiredHeight = 0;
-                LayoutElement.RefreshResizerBorders(true);
+                Dispatcher.Invoke(() =>
+                {
+                    LayoutElement.DesiredWidth = 0;
+                    LayoutElement.DesiredHeight = 0;
+                    LayoutElement.RefreshResizerBorders();
+                });
                 return;
             }
-            LayoutElement.RefreshResizerBorders();
-            PrimaryChild?.Refresh();
-            SecondaryChild?.Refresh();
+
+            Dispatcher.Invoke(() =>
+            {
+                PrimaryChild?.Refresh();
+                SecondaryChild?.Refresh();
+                LayoutElement.RefreshResizerBorders(GetBorders().ToArray());
+            });
         }
 
         public override void Dispose()
         {
+        }
+
+        public void RemoveChild(LayoutContainer _layoutContainer)
+        {
+            if (_layoutContainer.IsPrimaryChild)
+            {
+                PrimaryChild = null;
+            }
+            else
+            {
+                SecondaryChild = null;
+            }
+
+            Refresh();
         }
 
         public void InsertPanel(
@@ -114,7 +141,7 @@ namespace Bannerlord.UIEditor.MainFrame
         {
             string[] containerParams = _path[0].Split(':');
             var dock = (Dock)Enum.Parse(typeof( Dock ), containerParams[1]);
-            var nextContainer = dock == Dock.Left || dock == Dock.Top ? PrimaryChild : SecondaryChild;
+            var nextContainer = dock.IsPrimary() ? PrimaryChild : SecondaryChild;
 
             Orientation = containerParams[0] switch
             {
@@ -126,12 +153,14 @@ namespace Bannerlord.UIEditor.MainFrame
             {
                 if (_path.Length > 1)
                 {
-                    nextContainer = new ParentContainer(new FloatingPanelParentControl()) {Dock = dock};
+                    nextContainer = new ParentContainer(new FloatingPanelParentControl(), PublicContainer, Dispatcher) {Dock = dock};
                 }
                 else
                 {
                     PanelControl panelControl = new();
-                    nextContainer = new PanelTabContainer(panelControl) {Dock = dock};
+                    panelControl.Create(PublicContainer);
+                    panelControl.Load();
+                    nextContainer = new PanelTabContainer(panelControl, PublicContainer, Dispatcher) {Dock = dock};
                 }
 
                 AddChild(nextContainer, dock);
@@ -150,31 +179,29 @@ namespace Bannerlord.UIEditor.MainFrame
 
         public void AddChild(LayoutContainer _container, Dock _dock)
         {
-            if (_dock == Dock.Left || _dock == Dock.Top)
+            if (_dock.IsPrimary())
             {
-                if(PrimaryChild is null)
+                if (PrimaryChild is null)
                 {
                     PrimaryChild = _container;
-                    Control.ContentStackPanel.Children.Insert(0, _container.LayoutElement.Control);
                 }
-                else if(PrimaryChild is PanelTabContainer panelTabContainer)
+                else if (PrimaryChild is PanelTabContainer panelTabContainer)
                 {
-                    if(_container is PanelTabContainer newPanelTabContainer)
+                    if (_container is PanelTabContainer newPanelTabContainer)
                     {
                         panelTabContainer.MergeInto(newPanelTabContainer);
                     }
                 }
-                else if(PrimaryChild is ParentContainer parentContainer)
+                else if (PrimaryChild is ParentContainer parentContainer)
                 {
                     parentContainer.AddChild(_container, _dock);
                 }
             }
             else
             {
-                if(SecondaryChild is null)
+                if (SecondaryChild is null)
                 {
                     SecondaryChild = _container;
-                    Control.ContentStackPanel.Children.Add(_container.LayoutElement.Control);
                 }
                 else if (SecondaryChild is PanelTabContainer panelTabContainer)
                 {
@@ -188,6 +215,8 @@ namespace Bannerlord.UIEditor.MainFrame
                     parentContainer.AddChild(_container, _dock);
                 }
             }
+
+            Refresh();
         }
 
         public void FitWidthToChildren()
@@ -208,31 +237,6 @@ namespace Bannerlord.UIEditor.MainFrame
                 : Math.Max(PrimaryChild?.LayoutElement.DesiredHeight ?? 0, SecondaryChild?.LayoutElement.DesiredHeight ?? 0);
             var totalDesiredHeight = childHeight + floatingPanelParentControl.TotalBorderHeight;
             LayoutElement.DesiredHeight = totalDesiredHeight;
-        }
-
-        private void OnNewParentRequested(FloatingPanelParentControl _newParent, PanelControl _panelElement, Dock _dock)
-        {
-            var panelTabContainer = LayoutManager.Instance.FindContainer<PanelTabContainer>(_panelElement);
-            var parentContainer = LayoutManager.Instance.FindContainer<ParentContainer>(_newParent);
-            if (panelTabContainer is null || parentContainer is null)
-            {
-                return;
-            }
-
-            ParentContainer parent = panelTabContainer.Parent!;
-            parent.Control.ContentStackPanel.Children.Remove(_panelElement);
-            if (panelTabContainer.IsPrimaryChild)
-            {
-                parent.PrimaryChild = null;
-            }
-            else
-            {
-                parent.SecondaryChild = null;
-            }
-            parent.Refresh();
-
-            parentContainer.AddChild(panelTabContainer, _dock);
-            parentContainer.Refresh();
         }
     }
 }

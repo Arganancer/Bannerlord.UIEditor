@@ -53,7 +53,7 @@
     <Viewbox Stretch="Fill">
         <Grid x:Name="SpinnerGrid"
               RenderTransformOrigin=".5, .5"
-              Visibility="{Binding PathVisibility}">
+              Visibility="{Binding PathVisibility, UpdateSourceTrigger=PropertyChanged, Mode=OneWay}">
             <Grid.Resources>
                 <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource UltraDarkGrey}"/>
                 <LinearGradientBrush x:Key="ForegroundGradient" MappingMode="RelativeToBoundingBox" EndPoint="0,0.5" StartPoint="1,0.5">

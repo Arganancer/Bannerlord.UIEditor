@@ -32,24 +32,23 @@ namespace Bannerlord.UIEditor.MainFrame.Resources.Resizer
             ? m_ResizerGrid.ColumnDefinitions[0].Width.Value +
               m_ResizerGrid.ColumnDefinitions[2].Width.Value
             : 0;
+
         public double TotalBorderHeight => m_ResizerGrid?.RowDefinitions.Any() ?? false
             ? m_ResizerGrid.RowDefinitions[0].Height.Value +
               m_ResizerGrid.RowDefinitions[2].Height.Value
             : 0;
 
-        private Grid? m_ResizerGrid;
-        private readonly Dictionary<ResizeDirection, Resizer> m_Borders = new();
-        private ILayoutElement m_LayoutElement = null!;
+        public IReadOnlyDictionary<ResizeDirection, Resizer> Borders => m_Borders;
 
         public ILayoutElement LayoutElement
         {
             get => m_LayoutElement;
             set
             {
-                if(m_LayoutElement != value)
+                if (m_LayoutElement != value)
                 {
                     m_LayoutElement = value;
-                    foreach (KeyValuePair<ResizeDirection, Resizer> border in m_Borders)
+                    foreach (var border in m_Borders)
                     {
                         border.Value.LayoutElement = m_LayoutElement;
                     }
@@ -57,12 +56,19 @@ namespace Bannerlord.UIEditor.MainFrame.Resources.Resizer
             }
         }
 
+        private Grid? m_ResizerGrid;
+        private readonly Dictionary<ResizeDirection, Resizer> m_Borders;
+        private ILayoutElement m_LayoutElement = null!;
+
+        private Dock[]? m_EnabledSides;
+
         public ResizableControl()
         {
             BorderColor = Brushes.Transparent;
             BorderSize = 5;
             HorizontalContentAlignment = HorizontalAlignment.Stretch;
             VerticalContentAlignment = VerticalAlignment.Stretch;
+            m_Borders = new Dictionary<ResizeDirection, Resizer>();
         }
 
         static ResizableControl()
@@ -80,130 +86,47 @@ namespace Bannerlord.UIEditor.MainFrame.Resources.Resizer
 
             if (!m_Borders.Any())
             {
-                foreach (ResizeDirection resizeDirection in Enum.GetValues(typeof(ResizeDirection)))
+                foreach (ResizeDirection resizeDirection in Enum.GetValues(typeof( ResizeDirection )))
                 {
-                    Resizer resizer = (Resizer)Template.FindName(Enum.GetName(typeof(ResizeDirection), resizeDirection)!, this);
+                    Resizer resizer = (Resizer)Template.FindName(Enum.GetName(typeof( ResizeDirection ), resizeDirection)!, this);
                     resizer.LayoutElement = LayoutElement;
                     m_Borders.Add(resizeDirection, resizer);
                 }
             }
 
-            AdjustBorders(false);
-        }
-
-        public void RefreshResizerBorders(bool _disableAll)
-        {
-            if (m_Borders.Count > 0)
+            if (m_EnabledSides is not null)
             {
-                AdjustBorders(_disableAll);
+                AdjustBorders(m_EnabledSides);
             }
         }
 
-        private void AdjustBorders(bool _disableAll)
+        public void AdjustBorders(params Dock[] _enabledSides)
         {
-            if(m_ResizerGrid is null)
+            if (m_Borders.Count == 0 || m_ResizerGrid is null)
             {
+                m_EnabledSides = _enabledSides;
                 return;
             }
 
-            DockPanel[] ancestors = this.GetVisualAncestorsOfType<DockPanel>()?.ToArray()!;
-            DockPanel parent = ancestors[0];
-
-            Dictionary<Dock, bool> enabledSides = new() {{Dock.Left, false}, {Dock.Bottom, false}, {Dock.Right, false}, {Dock.Top, false}};
-            
-            var onlyInnerBorders = ancestors.Length > 1;
-
-            if (!_disableAll)
-            {
-                switch (LayoutElement.CurrentDock)
-                {
-                    case Dock.Left:
-                    {
-                        if (onlyInnerBorders && HasDockedChildAtPosition(Dock.Right, parent))
-                        {
-                            enabledSides[Dock.Right] = true;
-                        }
-
-                        if (!onlyInnerBorders)
-                        {
-                            enabledSides[Dock.Right] = true;
-                        }
-
-                        break;
-                    }
-                    case Dock.Right:
-                    {
-                        if (!onlyInnerBorders)
-                        {
-                            enabledSides[Dock.Left] = true;
-                        }
-
-                        break;
-                    }
-                    case Dock.Top:
-                    {
-                        if (onlyInnerBorders && HasDockedChildAtPosition(Dock.Bottom, parent))
-                        {
-                            enabledSides[Dock.Bottom] = true;
-                        }
-
-                        if (!onlyInnerBorders)
-                        {
-                            enabledSides[Dock.Bottom] = true;
-                        }
-
-                        break;
-                    }
-                    case Dock.Bottom:
-                    {
-                        if (!onlyInnerBorders)
-                        {
-                            enabledSides[Dock.Top] = true;
-                        }
-
-                        break;
-                    }
-                }
-            }
-
-            foreach (var (dock, isEnabled) in enabledSides)
-            {
-                switch (dock)
-                {
-                    case Dock.Left:
-                        m_ResizerGrid.ColumnDefinitions[0].Width = new GridLength(isEnabled ? BorderSize : 0);
-                        break;
-                    case Dock.Top:
-                        m_ResizerGrid.RowDefinitions[0].Height = new GridLength(isEnabled ? BorderSize : 0);
-                        break;
-                    case Dock.Right:
-                        m_ResizerGrid.ColumnDefinitions[2].Width = new GridLength(isEnabled ? BorderSize : 0);
-                        break;
-                    case Dock.Bottom:
-                        m_ResizerGrid.RowDefinitions[2].Height = new GridLength(isEnabled ? BorderSize : 0);
-                        break;
-                }
-            }
+            m_ResizerGrid.ColumnDefinitions[0].Width = new GridLength(_enabledSides.Contains(Dock.Left) ? BorderSize : 0);
+            m_ResizerGrid.RowDefinitions[0].Height = new GridLength(_enabledSides.Contains(Dock.Top) ? BorderSize : 0);
+            m_ResizerGrid.ColumnDefinitions[2].Width = new GridLength(_enabledSides.Contains(Dock.Right) ? BorderSize : 0);
+            m_ResizerGrid.RowDefinitions[2].Height = new GridLength(_enabledSides.Contains(Dock.Bottom) ? BorderSize : 0);
 
             foreach (var (direction, resizer) in m_Borders)
             {
                 resizer.IsEnabled = direction switch
                 {
-                    ResizeDirection.TopLeft => enabledSides[Dock.Top] && enabledSides[Dock.Left],
-                    ResizeDirection.Left => enabledSides[Dock.Left],
-                    ResizeDirection.BottomLeft => enabledSides[Dock.Bottom] && enabledSides[Dock.Left],
-                    ResizeDirection.Bottom => enabledSides[Dock.Bottom],
-                    ResizeDirection.BottomRight => enabledSides[Dock.Bottom] && enabledSides[Dock.Right],
-                    ResizeDirection.Right => enabledSides[Dock.Right],
-                    ResizeDirection.TopRight => enabledSides[Dock.Top] && enabledSides[Dock.Right],
-                    ResizeDirection.Top => enabledSides[Dock.Top],
+                    ResizeDirection.TopLeft => _enabledSides.Contains(Dock.Top) && _enabledSides.Contains(Dock.Left),
+                    ResizeDirection.Left => _enabledSides.Contains(Dock.Left),
+                    ResizeDirection.BottomLeft => _enabledSides.Contains(Dock.Bottom) && _enabledSides.Contains(Dock.Left),
+                    ResizeDirection.Bottom => _enabledSides.Contains(Dock.Bottom),
+                    ResizeDirection.BottomRight => _enabledSides.Contains(Dock.Bottom) && _enabledSides.Contains(Dock.Right),
+                    ResizeDirection.Right => _enabledSides.Contains(Dock.Right),
+                    ResizeDirection.TopRight => _enabledSides.Contains(Dock.Top) && _enabledSides.Contains(Dock.Right),
+                    ResizeDirection.Top => _enabledSides.Contains(Dock.Top),
                     _ => throw new ArgumentOutOfRangeException()
                 };
-            }
-
-            bool HasDockedChildAtPosition(Dock _position, DockPanel _dockPanel)
-            {
-                return _dockPanel.Children.OfType<ILayoutElement>().Any(_x => DockPanel.GetDock(_x.Control) == _position);
             }
         }
     }

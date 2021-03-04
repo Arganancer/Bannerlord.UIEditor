@@ -1,22 +1,16 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Windows;
 using System.Windows.Controls;
-using Bannerlord.UIEditor.MainFrame.Resources.Panel;
 
 namespace Bannerlord.UIEditor.MainFrame.Resources.FloatingPanelParent
 {
-    public delegate void NewParentRequested(FloatingPanelParentControl _newParent, PanelControl _panelElement, Dock _dock);
-
     /// <summary>
     /// Interaction logic for FloatingPanelParentControl.xaml
     /// TODO: Implement MultiDock: https://stackoverflow.com/questions/2247402/implementing-a-multidock-window-system-like-blend-visual-studio-in-wpf
     /// </summary>
     public partial class FloatingPanelParentControl : UserControl, INotifyPropertyChanged, ILayoutElement
     {
-        public event NewParentRequested? NewParentRequested;
-
         public Orientation Orientation
         {
             get => m_Orientation;
@@ -77,9 +71,9 @@ namespace Bannerlord.UIEditor.MainFrame.Resources.FloatingPanelParent
             m_DesiredHeight = _desiredHeight;
         }
 
-        public void RefreshResizerBorders(bool _disableAll = false)
+        public void RefreshResizerBorders(params Dock[] _enabledSides)
         {
-            ResizeableControl.RefreshResizerBorders(_disableAll);
+            ResizeableControl.AdjustBorders(_enabledSides);
         }
 
         protected virtual void OnPropertyChanged([CallerMemberName] string? _propertyName = null)
@@ -95,34 +89,6 @@ namespace Bannerlord.UIEditor.MainFrame.Resources.FloatingPanelParent
         private void OnDesiredHeightChanged(double _e)
         {
             DesiredHeightChanged?.Invoke(this, _e);
-        }
-
-        private void ContentStackPanel_OnDragOver(object _sender, DragEventArgs _e)
-        {
-            if (_e.Data.GetDataPresent(typeof( ILayoutElement )))
-            {
-                _e.Effects = DragDropEffects.Move;
-                _e.Handled = true;
-            }
-        }
-
-        private void ContentStackPanel_OnDragLeave(object _sender, DragEventArgs _e)
-        {
-        }
-
-        private void ContentStackPanel_OnDrop(object _sender, DragEventArgs _e)
-        {
-            if (_e.Data.GetDataPresent(typeof( PanelControl )))
-            {
-                _e.Effects = DragDropEffects.Move;
-                OnNewParentRequested(this, (PanelControl)_e.Data.GetData(typeof( PanelControl ))!, Dock.Left);
-                _e.Handled = true;
-            }
-        }
-
-        private void OnNewParentRequested(FloatingPanelParentControl _newParent, PanelControl _panelElement, Dock _dock)
-        {
-            NewParentRequested?.Invoke(_newParent, _panelElement, _dock);
         }
     }
 }

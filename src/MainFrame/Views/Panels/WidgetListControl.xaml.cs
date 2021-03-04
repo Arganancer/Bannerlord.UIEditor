@@ -51,6 +51,7 @@ namespace Bannerlord.UIEditor.MainFrame
         }
 
         public string PanelName => "Toolbox";
+        public ISettingCategory SettingCategory { get; set; } = null!;
 
         private IWidgetManager? WidgetManager
         {
@@ -84,7 +85,8 @@ namespace Bannerlord.UIEditor.MainFrame
         private bool m_IsLoading;
         private IWidgetManager? m_WidgetManager;
         private ICursorManager m_CursorManager = null!;
-        public ISettingCategory SettingCategory { get; set; } = null!;
+        private IGlobalEventManager m_GlobalEventManager;
+        private IGlobalEvent m_DebugButtonPressedEvent = null!;
 
         public WidgetListControl()
         {
@@ -104,6 +106,9 @@ namespace Bannerlord.UIEditor.MainFrame
                 _ => WidgetManager = null);
 
             m_CursorManager = PublicContainer.GetModule<ICursorManager>();
+
+
+            m_GlobalEventManager = PublicContainer.GetModule<IGlobalEventManager>();
         }
 
         protected override void OnGiveFeedback(GiveFeedbackEventArgs _e)
@@ -163,10 +168,10 @@ namespace Bannerlord.UIEditor.MainFrame
 
         private void Widget_OnMouseMove(object _sender, MouseEventArgs _e)
         {
-            if (_e.LeftButton == MouseButtonState.Pressed)
+            if (_e.LeftButton == MouseButtonState.Pressed && SelectedWidgetTemplate is not null)
             {
                 DataObject data = new();
-                data.SetData(nameof( FocusableWidgetTemplate ), SelectedWidgetTemplate!);
+                data.SetData(nameof( FocusableWidgetTemplate ), SelectedWidgetTemplate);
                 DragDrop.DoDragDrop(this, data, DragDropEffects.Copy | DragDropEffects.Move);
             }
         }

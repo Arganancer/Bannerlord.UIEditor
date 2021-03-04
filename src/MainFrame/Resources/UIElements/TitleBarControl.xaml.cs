@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Windows;
-using System.Windows.Controls;
+using Bannerlord.UIEditor.Core;
 
 namespace Bannerlord.UIEditor.MainFrame.Resources
 {
@@ -8,8 +8,10 @@ namespace Bannerlord.UIEditor.MainFrame.Resources
     /// Interaction logic for TitleBarControl.xaml
     /// Reference for window state management: https://engy.us/blog/2020/01/01/implementing-a-custom-window-title-bar-in-wpf/
     /// </summary>
-    public partial class TitleBarControl : UserControl
+    public partial class TitleBarControl : ConnectedUserControl
     {
+        private IGlobalEventManager m_GlobalEventManager = null!;
+        private InvokeGlobalEvent m_DebugButtonPressedEventInvoker = null!;
         private Window Window { get; set; } = null!;
 
         public TitleBarControl()
@@ -21,7 +23,14 @@ namespace Bannerlord.UIEditor.MainFrame.Resources
                 RefreshMaximizeRestoreButton();
                 Window.StateChanged += OnWindowStateChanged;
             };
-            DataContext = this;
+        }
+
+        public override void Load()
+        {
+            base.Load();
+
+            m_GlobalEventManager = PublicContainer.GetModule<IGlobalEventManager>();
+            m_DebugButtonPressedEventInvoker = m_GlobalEventManager.GetEventInvoker("DebugButtonPressed", this);
         }
 
         private void OnWindowStateChanged(object _sender, EventArgs _e)
@@ -61,6 +70,7 @@ namespace Bannerlord.UIEditor.MainFrame.Resources
         private void DebugRefreshButton_OnClick(object _sender, RoutedEventArgs _e)
         {
             ((MainWindow)Window).PublicContainer.GetModule<ILayoutManager>().Refresh();
+            m_DebugButtonPressedEventInvoker();
         }
     }
 }

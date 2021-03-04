@@ -9,6 +9,7 @@
                            d:DataContext="{d:DesignInstance Type=mainframe:WidgetListControl}"
                            mc:Ignorable="d"
                            d:DesignHeight="500" d:DesignWidth="180"
+                           x:Name="WidgetList"
                            DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
         <ResourceDictionary>
@@ -20,10 +21,11 @@
     <Grid Background="{StaticResource Container_Background}">
         <resources:LoadingControl Grid.Column="0"
                                   x:Name="LoadingSpinner"
-                                  IsLoading="{Binding IsLoading, UpdateSourceTrigger=PropertyChanged}"
+                                  IsLoading="{Binding IsLoading, ElementName=WidgetList, Mode=OneWay}"
                                   Width="30"
                                   Height="30"
-                                  Margin="4, 0, 4, 0" />
+                                  Margin="4, 0, 4, 0" 
+                                  Panel.ZIndex="1"/>
         <ScrollViewer x:Name="WidgetListPanel"
                       Grid.Column="0"
                       VerticalScrollBarVisibility="Auto"
@@ -34,7 +36,7 @@
             <ItemsControl Name="WidgetTemplateCategoriesControl"
                           HorizontalAlignment="Stretch"
                           HorizontalContentAlignment="Stretch"
-                          ItemsSource="{Binding WidgetTemplateCategories, UpdateSourceTrigger=PropertyChanged}">
+                          ItemsSource="{Binding WidgetTemplateCategories}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type mainframe:WidgetCategoryViewModel}">
                         <DataTemplate.Resources>
@@ -54,8 +56,8 @@
                                                                HorizontalContentAlignment="Stretch"
                                                                ScrollViewer.VerticalScrollBarVisibility="Disabled"
                                                                ScrollViewer.HorizontalScrollBarVisibility="Disabled"
-                                                               ItemsSource="{Binding WidgetTemplates, UpdateSourceTrigger=PropertyChanged}"
-                                                               SelectedItem="{Binding SelectedWidgetTemplate, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay }">
+                                                               ItemsSource="{Binding WidgetTemplates}"
+                                                               SelectedItem="{Binding SelectedWidgetTemplate, Mode=TwoWay }">
                                     <ListBox.ItemTemplate>
                                         <DataTemplate DataType="{x:Type mainframe:FocusableWidgetTemplate }">
                                             <DataTemplate.Resources>

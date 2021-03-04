@@ -16,6 +16,6 @@ namespace Bannerlord.UIEditor.MainFrame.Resources
         Control Control { get; }
         Dock CurrentDock { get; }
         Orientation Orientation { get; set; }
-        void RefreshResizerBorders(bool _disableAll = false);
+        void RefreshResizerBorders(params Dock[] _enabledSides);
     }
 }

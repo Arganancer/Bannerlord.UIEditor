@@ -7,16 +7,21 @@ namespace Bannerlord.UIEditor.MainFrame.Resources
     public partial class LoadingControl : INotifyPropertyChanged
     {
         public static readonly DependencyProperty IsLoadingProperty =
-            DependencyProperty.Register("IsLoading", typeof( bool ), typeof( LoadingControl ), new FrameworkPropertyMetadata(true, FrameworkPropertyMetadataOptions.AffectsRender));
+            DependencyProperty.Register(nameof(IsLoading), 
+                typeof( bool ), 
+                typeof( LoadingControl ),
+                new UIPropertyMetadata(false, IsLoadingChangedCallback) );
+
+        private static void IsLoadingChangedCallback(DependencyObject _d, DependencyPropertyChangedEventArgs _e)
+        {
+            LoadingControl instance = (LoadingControl)_d;
+            instance.PathVisibility = (bool)_e.NewValue ? Visibility.Visible : Visibility.Hidden;
+        }
 
         public bool IsLoading
         {
             get => (bool)GetValue(IsLoadingProperty);
-            set
-            {
-                SetValue(IsLoadingProperty, value);
-                PathVisibility = value ? Visibility.Visible : Visibility.Hidden;
-            }
+            set => SetValue(IsLoadingProperty, value);
         }
 
         public Visibility PathVisibility
@@ -32,7 +37,7 @@ namespace Bannerlord.UIEditor.MainFrame.Resources
             }
         }
 
-        private Visibility m_PathVisibility = Visibility.Visible;
+        private Visibility m_PathVisibility = Visibility.Hidden;
 
         public LoadingControl()
         {

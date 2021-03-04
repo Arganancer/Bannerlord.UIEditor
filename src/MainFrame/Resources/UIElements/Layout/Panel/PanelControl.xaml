@@ -1,18 +1,29 @@
-﻿<UserControl x:Class="Bannerlord.UIEditor.MainFrame.Resources.Panel.PanelControl"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:resizer="clr-namespace:Bannerlord.UIEditor.MainFrame.Resources.Resizer"
-             mc:Ignorable="d"
-             x:Name="Panel"
-             HorizontalAlignment="Stretch"
-             VerticalAlignment="Stretch"
-             HorizontalContentAlignment="Stretch"
-             VerticalContentAlignment="Stretch"
-             d:DesignHeight="450" d:DesignWidth="200">
+﻿<core:ConnectedUserControl x:Class="Bannerlord.UIEditor.MainFrame.Resources.Panel.PanelControl"
+                           xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                           xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                           xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                           xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                           xmlns:resizer="clr-namespace:Bannerlord.UIEditor.MainFrame.Resources.Resizer"
+                           xmlns:core="clr-namespace:Bannerlord.UIEditor.Core;assembly=Bannerlord.UIEditor.Core"
+                           xmlns:resources="clr-namespace:Bannerlord.UIEditor.MainFrame.Resources"
+                           mc:Ignorable="d"
+                           x:Name="Panel"
+                           HorizontalAlignment="Stretch"
+                           VerticalAlignment="Stretch"
+                           HorizontalContentAlignment="Stretch"
+                           VerticalContentAlignment="Stretch"
+                           d:DesignHeight="450" d:DesignWidth="200"
+                           DataContext="{Binding RelativeSource={RelativeSource Self}}">
     <UserControl.Resources>
-        <ResourceDictionary Source="../../../Theme.xaml" />
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="../../../Theme.xaml" />
+                <ResourceDictionary Source="../../../Themes/LayoutDropIcons.xaml" />
+                <ResourceDictionary>
+                    <resources:InverseBooleanConverter x:Key="InverseBooleanConverter" />
+                </ResourceDictionary>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </UserControl.Resources>
     <resizer:ResizableControl x:Name="ResizableControl"
                               HorizontalAlignment="Stretch"
@@ -20,46 +31,112 @@
         <Border BorderThickness="0, 1, 0, 0">
             <Grid HorizontalAlignment="Stretch"
                   VerticalAlignment="Stretch">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="*" />
-                </Grid.RowDefinitions>
-                <Border Grid.Row="0" BorderThickness="1, 0, 1, 0">
-                    <DockPanel x:Name="HeaderPanel" 
-                               LastChildFill="True"
-                               MouseMove="HeaderPanel_OnMouseMove">
-                        <TextBlock DockPanel.Dock="Left"
-                                   FontWeight="Bold"
-                                   Text="{Binding HeaderName, ElementName=Panel}"
-                                   Padding="4" />
-                        <StackPanel DockPanel.Dock="Right"
-                                    Orientation="Horizontal"
-                                    VerticalAlignment="Center">
-                            <!--TODO: Add Pin Icon and Close icon.-->
-                        </StackPanel>
-                        <Canvas VerticalAlignment="Center" ClipToBounds="True" HorizontalAlignment="Stretch" Height="5"
-                                Margin="5, 0, 5, 0" UseLayoutRounding="True">
-                            <Line X1="0" Y1=".5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}" 
-                                  Y2=".5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True"/>
-                            <Line X1="2" Y1="2.5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}"
-                                  Y2="2.5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True"/>
-                            <Line X1="0" Y1="4.5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}" 
-                                  Y2="4.5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True"/>
-                        </Canvas>
-                    </DockPanel>
-                </Border>
+                <!--Panel container-->
+                <Grid Grid.Row="0"
+                      HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch">
 
-                <TabControl Grid.Row="1"
-                            x:Name="TabControl"
-                            TabStripPlacement="Bottom"
-                            SelectionChanged="TabControl_OnSelectionChanged"
-                            Background="Transparent"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            HorizontalContentAlignment="Stretch"
-                            VerticalContentAlignment="Stretch"
-                            BorderThickness="0" />
+                    <!--IsHitTestVisible="{Binding IsLayoutDragDropEnabled, Converter={StaticResource InverseBooleanConverter}}"-->
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" BorderThickness="1, 0, 1, 0">
+                        <DockPanel x:Name="HeaderPanel"
+                                   LastChildFill="True"
+                                   Background="Transparent"
+                                   MouseMove="HeaderPanel_OnMouseMove">
+                            <TextBlock DockPanel.Dock="Left"
+                                       FontWeight="Bold"
+                                       Text="{Binding HeaderName, ElementName=Panel}"
+                                       Padding="4" />
+                            <StackPanel DockPanel.Dock="Right"
+                                        Orientation="Horizontal"
+                                        VerticalAlignment="Center">
+                                <!--TODO: Add Pin Icon and Close icon.-->
+                            </StackPanel>
+                            <Canvas VerticalAlignment="Center" ClipToBounds="True" HorizontalAlignment="Stretch" Height="5"
+                                    Margin="5, 0, 5, 0" UseLayoutRounding="True">
+                                <Line X1="0" Y1=".5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}"
+                                      Y2=".5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True" />
+                                <Line X1="2" Y1="2.5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}"
+                                      Y2="2.5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True" />
+                                <Line X1="0" Y1="4.5" X2="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorLevel=1, AncestorType=Canvas}}"
+                                      Y2="4.5" StrokeThickness="1" Stroke="{StaticResource GrabbableArea}" StrokeDashArray="1, 3" SnapsToDevicePixels="True" />
+                            </Canvas>
+                        </DockPanel>
+                    </Border>
+
+                    <TabControl Grid.Row="1"
+                                x:Name="TabControl"
+                                TabStripPlacement="Bottom"
+                                SelectionChanged="TabControl_OnSelectionChanged"
+                                Background="Transparent"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                HorizontalContentAlignment="Stretch"
+                                VerticalContentAlignment="Stretch"
+                                BorderThickness="0">
+                        <TabControl.Resources>
+                            <Style TargetType="{x:Type TabItem}" BasedOn="{StaticResource {x:Type TabItem}}">
+                                <Setter Property="AllowDrop" Value="True" />
+                                <EventSetter Event="PreviewMouseMove" Handler="TabItem_PreviewMouseMove" />
+                                <EventSetter Event="Drop" Handler="DropTargetTabItem_OnDrop" />
+                                <Setter Property="Panel.ZIndex" Value="6" />
+                                <Setter Property="IsHitTestVisible" Value="True" />
+                            </Style>
+                        </TabControl.Resources>
+                    </TabControl>
+                </Grid>
+
+                <!--Drag and drop hit box and visuals-->
+                <Grid HorizontalAlignment="Stretch"
+                      VerticalAlignment="Stretch"
+                      x:Name="DropTargetContainer"
+                      Background="Transparent"
+                      AllowDrop="True"
+                      DragOver="DropTargetContainer_OnDragOver"
+                      Drop="DropTargetContainer_OnDrop"
+                      DragLeave="DropTarget_OnDragLeave"
+                      IsHitTestVisible="{Binding IsLayoutDragDropEnabled}">
+                    <Grid Grid.Row="0"
+                          Panel.ZIndex="3"
+                          x:Name="DropTargetButtons"
+                          HorizontalAlignment="Center"
+                          VerticalAlignment="Center"
+                          Visibility="Hidden">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="30" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="30" />
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="30" />
+                            <ColumnDefinition Width="50" />
+                            <ColumnDefinition Width="30" />
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="DropTargetLeftButton" Grid.Row="1" Grid.Column="0" Template="{StaticResource HorizontalSnap}"
+                                OverridesDefaultStyle="True" IsHitTestVisible="{Binding IsLayoutDragDropEnabled}" />
+                        <Button x:Name="DropTargetRightButton" Grid.Row="1" Grid.Column="2" Template="{StaticResource HorizontalSnap}"
+                                OverridesDefaultStyle="True" IsHitTestVisible="{Binding IsLayoutDragDropEnabled}" />
+                        <Button x:Name="DropTargetCenterButton" Grid.Row="1" Grid.Column="1" Template="{StaticResource CenterSnap}"
+                                OverridesDefaultStyle="True" IsHitTestVisible="{Binding IsLayoutDragDropEnabled}" />
+                        <Button x:Name="DropTargetTopButton" Grid.Row="0" Grid.Column="1" Template="{StaticResource VerticalSnap}"
+                                OverridesDefaultStyle="True" IsHitTestVisible="{Binding IsLayoutDragDropEnabled}" />
+                        <Button x:Name="DropTargetBottomButton" Grid.Row="2" Grid.Column="1" Template="{StaticResource VerticalSnap}"
+                                OverridesDefaultStyle="True" IsHitTestVisible="{Binding IsLayoutDragDropEnabled}" />
+                    </Grid>
+                    <Viewbox x:Name="DropTargetPreviewViewbox" Stretch="Fill" Margin="0, 0, 0, 0"
+                             Grid.Row="0"
+                             Panel.ZIndex="1"
+                             HorizontalAlignment="Center"
+                             VerticalAlignment="Center"
+                             Visibility="Hidden"
+                             IsHitTestVisible="False">
+                        <Rectangle Fill="{StaticResource Gadget_ForegroundSelected}" Width="100" Height="100" Opacity="0.5" />
+                    </Viewbox>
+                </Grid>
             </Grid>
         </Border>
     </resizer:ResizableControl>
-</UserControl>
+</core:ConnectedUserControl>

@@ -1,5 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows.Controls;
+using System.Windows.Documents;
+using System.Windows.Threading;
+using Bannerlord.UIEditor.Core;
 using Bannerlord.UIEditor.MainFrame.Resources;
 
 namespace Bannerlord.UIEditor.MainFrame
@@ -8,11 +12,21 @@ namespace Bannerlord.UIEditor.MainFrame
     {
         public ParentContainer? Parent { get; set; }
 
+        public Dispatcher Dispatcher { get; }
+
         public abstract ILayoutElement LayoutElement { get; }
 
         public abstract Dock Dock { get; set; }
         public bool IsPrimaryChild => Equals(Parent?.PrimaryChild);
         public bool IsOnlyChild => Parent?.PrimaryChild is null || Parent?.SecondaryChild is null;
+
+        protected IPublicContainer PublicContainer { get; }
+
+        protected LayoutContainer(IPublicContainer _publicContainer, Dispatcher _dispatcher)
+        {
+            PublicContainer = _publicContainer;
+            Dispatcher = _dispatcher;
+        }
 
         public abstract void Dispose();
         public abstract void Refresh();
@@ -24,11 +38,45 @@ namespace Bannerlord.UIEditor.MainFrame
     {
         protected T Control { get; }
 
-        protected LayoutContainer(T _layoutElement)
+        protected LayoutContainer(T _layoutElement, IPublicContainer _publicContainer, Dispatcher _dispatcher) : base(_publicContainer, _dispatcher)
         {
             Control = _layoutElement;
             _layoutElement.DesiredHeightChanged += OnDesiredHeightChanged;
             _layoutElement.DesiredWidthChanged += OnDesiredWidthChanged;
+        }
+
+        protected List<Dock> GetBorders()
+        {
+            List<Dock> output = new();
+            switch (Dock)
+            {
+                case Dock.Left:
+                    if (Parent is null || !IsOnlyChild)
+                    {
+                        output.Add(Dock.Right);
+                    }
+                    break;
+                case Dock.Top:
+                    if (Parent is null || !IsOnlyChild)
+                    {
+                        output.Add(Dock.Bottom);
+                    }
+                    break;
+                case Dock.Right:
+                    if (Parent is null)
+                    {
+                        output.Add(Dock.Left);
+                    }
+                    break;
+                case Dock.Bottom:
+                    if (Parent is null)
+                    {
+                        output.Add(Dock.Top);
+                    }
+                    break;
+            }
+
+            return output;
         }
 
         public override ILayoutElement LayoutElement => Control;

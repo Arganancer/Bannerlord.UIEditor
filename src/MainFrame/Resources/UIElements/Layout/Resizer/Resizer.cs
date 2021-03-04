@@ -2,6 +2,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using Bannerlord.UIEditor.MainFrame.Resources.FloatingPanelParent;
 
 namespace Bannerlord.UIEditor.MainFrame.Resources.Resizer
 {
@@ -29,12 +30,13 @@ namespace Bannerlord.UIEditor.MainFrame.Resources.Resizer
             }
         }
 
-        public ILayoutElement LayoutElement { get; set; } = null!;
-        private Control m_Control => LayoutElement.Control;
+        public ILayoutElement? LayoutElement { get; set; }
+
+        private Control? Control => LayoutElement?.Control;
 
         static Resizer()
         {
-            DefaultStyleKeyProperty.OverrideMetadata(typeof( Resizer ), new FrameworkPropertyMetadata(typeof( Resizer )));
+            DefaultStyleKeyProperty.OverrideMetadata(typeof(Resizer), new FrameworkPropertyMetadata(typeof(Resizer)));
         }
 
         public Resizer()
@@ -42,8 +44,19 @@ namespace Bannerlord.UIEditor.MainFrame.Resources.Resizer
             DragDelta += Resizer_DragDelta;
         }
 
+        public override void OnApplyTemplate()
+        {
+            base.OnApplyTemplate();
+            LayoutElement = this.GetVisualAncestorOfType<ILayoutElement>();
+        }
+
         private void Resizer_DragDelta(object _sender, DragDeltaEventArgs _dragDeltaEvent)
         {
+            if(LayoutElement is null || Control is null)
+            {
+                return;
+            }
+
             switch (ThumbDirection)
             {
                 case ResizeDirection.TopLeft:
@@ -81,26 +94,26 @@ namespace Bannerlord.UIEditor.MainFrame.Resources.Resizer
 
         private void ResizeRight(DragDeltaEventArgs _dragDeltaEvent)
         {
-            var deltaHorizontal = Math.Min(-_dragDeltaEvent.HorizontalChange, m_Control.ActualWidth - m_Control.MinWidth);
-            LayoutElement.DesiredWidth = m_Control.ActualWidth - deltaHorizontal;
+            var deltaHorizontal = Math.Min(-_dragDeltaEvent.HorizontalChange, Control!.ActualWidth - Control.MinWidth);
+            LayoutElement!.DesiredWidth = Control.ActualWidth - deltaHorizontal;
         }
 
         private void ResizeTop(DragDeltaEventArgs _dragDeltaEvent)
         {
-            var deltaVertical = Math.Min(_dragDeltaEvent.VerticalChange, m_Control.ActualHeight - m_Control.MinHeight);
-            LayoutElement.DesiredHeight = m_Control.ActualHeight - deltaVertical;
+            var deltaVertical = Math.Min(_dragDeltaEvent.VerticalChange, Control!.ActualHeight - Control.MinHeight);
+            LayoutElement!.DesiredHeight = Control.ActualHeight - deltaVertical;
         }
 
         private void ResizeLeft(DragDeltaEventArgs _dragDeltaEvent)
         {
-            var deltaHorizontal = Math.Min(_dragDeltaEvent.HorizontalChange, m_Control.ActualWidth - m_Control.MinWidth);
-            LayoutElement.DesiredWidth = m_Control.ActualWidth - deltaHorizontal;
+            var deltaHorizontal = Math.Min(_dragDeltaEvent.HorizontalChange, Control!.ActualWidth - Control.MinWidth);
+            LayoutElement!.DesiredWidth = Control.ActualWidth - deltaHorizontal;
         }
 
         private void ResizeBottom(DragDeltaEventArgs _dragDeltaEvent)
         {
-            var deltaVertical = Math.Min(-_dragDeltaEvent.VerticalChange, m_Control.ActualHeight - m_Control.MinHeight);
-            LayoutElement.DesiredHeight = m_Control.ActualHeight - deltaVertical;
+            var deltaVertical = Math.Min(-_dragDeltaEvent.VerticalChange, Control!.ActualHeight - Control.MinHeight);
+            LayoutElement!.DesiredHeight = Control.ActualHeight - deltaVertical;
         }
     }
 

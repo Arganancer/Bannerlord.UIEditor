@@ -10,7 +10,7 @@
                 <Setter Property="Foreground" Value="{StaticResource Text}" />
                 <Setter Property="Template">
                     <Setter.Value>
-                        <ControlTemplate TargetType="{x:Type TabItem}">
+                        <ControlTemplate TargetType="{x:Type TabItem}" >
                             <Grid x:Name="templateRoot" SnapsToDevicePixels="True">
                                 <Border x:Name="mainBorder" BorderBrush="Transparent" BorderThickness="1,1,1,0"
                                         Background="{StaticResource ContainerItem_Background}" Padding="2">
@@ -27,42 +27,47 @@
                             <ControlTemplate.Triggers>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true" />
+                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="false" />
+                                        <Condition Binding="{Binding IsMouseOver, ElementName=templateRoot}" Value="true" />
                                         <Condition Binding="{Binding TabStripPlacement, 
                                     RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Left" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Border}" />
                                     <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundHoveredSelected}" />
                                     <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,0,1" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true" />
+                                        <Condition Binding="{Binding IsMouseOver, ElementName=templateRoot}" Value="true" />
                                         <Condition Binding="{Binding TabStripPlacement, 
                                     RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Bottom" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Border}" />
                                     <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundHoveredSelected}" />
                                     <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,0,1,1" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true" />
+                                        <Condition Binding="{Binding IsMouseOver, ElementName=templateRoot}" Value="true" />
                                         <Condition Binding="{Binding TabStripPlacement, 
                                     RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Right" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Border}" />
                                     <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundHoveredSelected}" />
                                     <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,1,1,1" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
-                                        <Condition Binding="{Binding IsMouseOver, RelativeSource={RelativeSource Self}}" Value="true" />
+                                        <Condition Binding="{Binding IsMouseOver, ElementName=templateRoot}" Value="true" />
                                         <Condition Binding="{Binding TabStripPlacement, 
                                     RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Top" />
                                     </MultiDataTrigger.Conditions>
                                     <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Border}" />
                                     <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundHoveredSelected}" />
                                     <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
@@ -122,6 +127,7 @@
                                     <Setter Property="Panel.ZIndex" Value="1" />
                                     <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Container_Background}" />
                                     <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundSelected}" />
                                     <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,0,1" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
@@ -134,6 +140,7 @@
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
                                     <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMouseOver, ElementName=templateRoot}" Value="false" />
                                         <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true" />
                                         <Condition Binding="{Binding TabStripPlacement, 
                                     RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Bottom" />
@@ -141,6 +148,20 @@
                                     <Setter Property="Panel.ZIndex" Value="1" />
                                     <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Container_Background}" />
                                     <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundSelected}" />
+                                    <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,0,1,1" />
+                                </MultiDataTrigger>
+                                <MultiDataTrigger>
+                                    <MultiDataTrigger.Conditions>
+                                        <Condition Binding="{Binding IsMouseOver, ElementName=templateRoot}" Value="true" />
+                                        <Condition Binding="{Binding IsSelected, RelativeSource={RelativeSource Self}}" Value="true" />
+                                        <Condition Binding="{Binding TabStripPlacement, 
+                                    RelativeSource={RelativeSource FindAncestor, AncestorLevel=1, AncestorType={x:Type TabControl}}}" Value="Bottom" />
+                                    </MultiDataTrigger.Conditions>
+                                    <Setter Property="Panel.ZIndex" Value="1" />
+                                    <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Container_Background}" />
+                                    <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundHoveredSelected}" />
                                     <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,0,1,1" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
@@ -160,6 +181,7 @@
                                     <Setter Property="Panel.ZIndex" Value="1" />
                                     <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Container_Background}" />
                                     <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundSelected}" />
                                     <Setter Property="BorderThickness" TargetName="mainBorder" Value="0,1,1,1" />
                                 </MultiDataTrigger>
                                 <MultiDataTrigger>
@@ -179,20 +201,13 @@
                                     <Setter Property="Panel.ZIndex" Value="1" />
                                     <Setter TargetName="mainBorder" Property="Background" Value="{StaticResource Container_Background}" />
                                     <Setter TargetName="mainBorder" Property="BorderBrush" Value="{StaticResource Border}" />
+                                    <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundSelected}" />
                                     <Setter Property="BorderThickness" TargetName="mainBorder" Value="1,1,1,0" />
                                 </MultiDataTrigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>
                     </Setter.Value>
                 </Setter>
-                <Style.Triggers>
-                    <Trigger Property="IsSelected" Value="True">
-                        <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundSelected}" />
-                    </Trigger>
-                    <Trigger Property="IsMouseOver" Value="True">
-                        <Setter Property="Foreground" Value="{StaticResource Gadget_ForegroundHoveredSelected}" />
-                    </Trigger>
-                </Style.Triggers>
             </Style>
         </Style.BasedOn>
     </Style>
@@ -216,7 +231,7 @@
                                 </Grid.RowDefinitions>
                                 <Grid x:Name="HeaderPanel">
                                     <TabPanel Background="Transparent" Grid.Column="0" IsItemsHost="True"
-                                              Margin="0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1" />
+                                              Margin="0" Grid.Row="0" KeyboardNavigation.TabIndex="1" Panel.ZIndex="1"/>
                                     <Border x:Name="HeaderPanelBorder" BorderThickness="0, 0, 0, 1" BorderBrush="{StaticResource Border}" />
                                 </Grid>
                                 <Border x:Name="ContentPanel" BorderBrush="{StaticResource Border}" Padding="0"
@@ -258,9 +273,6 @@
                                     <Setter Property="Height" TargetName="RowDefinition0" Value="*" />
                                     <Setter Property="Height" TargetName="RowDefinition1" Value="0" />
                                     <Setter Property="BorderThickness" TargetName="HeaderPanelBorder" Value="1, 0, 0, 0" />
-                                </Trigger>
-                                <Trigger Property="IsEnabled" Value="False">
-                                    <Setter Property="TextElement.Foreground" TargetName="templateRoot" Value="{DynamicResource {x:Static SystemColors.GrayTextBrushKey}}" />
                                 </Trigger>
                             </ControlTemplate.Triggers>
                         </ControlTemplate>

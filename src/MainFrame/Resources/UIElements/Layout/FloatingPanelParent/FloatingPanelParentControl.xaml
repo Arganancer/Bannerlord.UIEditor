@@ -11,11 +11,6 @@
                               HorizontalContentAlignment="Stretch"
                               VerticalContentAlignment="Stretch">
         <DockPanel x:Name="ContentStackPanel"
-                   DragEnter="ContentStackPanel_OnDragOver"
-                   DragOver="ContentStackPanel_OnDragOver"
-                   DragLeave="ContentStackPanel_OnDragLeave"
-                   Drop="ContentStackPanel_OnDrop"
-                   AllowDrop="True"
                    LastChildFill="True" />
     </resizer:ResizableControl>
 </UserControl>
